@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
+import { loadCompilersGuides, makeEl } from "./_compilers-harness.mjs";
 
 const require = createRequire(import.meta.url);
 const ALG = require("../CG - Lista de exercícios 1/js/lib/algorithms.js");
@@ -145,6 +146,27 @@ assertIncludes(q04Lista3, "R = 2(N·L)N − L", "Lista 3 Q4 reflection conventio
 const q07Lista3 = read("CG - Lista de exercícios 3/js/questions/q07.js");
 assertNotIncludes(q07Lista3, '"Sombras", "Duras", "Suaves / penumbra"', "Lista 3 Q7 shadow softness simplification");
 assertIncludes(q07Lista3, "extensão angular da fonte", "Lista 3 Q7 shadow softness caveat");
+assertIncludes(q07Lista3, "dureza depende da extensão da fonte", "Lista 3 Q7 legend ties shadow hardness to source extent");
+
+// The direct/global panels must DRAW the same shadow (issue #13): hardness depends
+// on the source, not the technique. Render the scene and compare the two ellipses.
+{
+  const { specs, SvgSurface } = loadCompilersGuides("CG - Lista de exercícios 3");
+  const q07spec = specs.find((s) => s.id === "q07-direta-global");
+  const step = q07spec.parts[0].build().find((s) => s.visual && s.visual.type === "svg");
+  const svgEl = makeEl("svg");
+  step.visual.draw(new SvgSurface(svgEl));
+  const ells = [];
+  (function walk(el) { if (el.tagName === "ellipse") ells.push(el.attrs || {}); (el.childNodes || []).forEach(walk); })(svgEl);
+  assert.equal(ells.length, 2, "Q7 draws one shadow per panel");
+  assert.equal(ells[0].rx, ells[1].rx, "Q7 direct/global shadows must have the same width");
+  assert.equal(ells[0].ry, ells[1].ry, "Q7 direct/global shadows must have the same height");
+  assert.equal(
+    ells[0]["fill-opacity"] ?? ells[0].opacity,
+    ells[1]["fill-opacity"] ?? ells[1].opacity,
+    "Q7 direct/global shadows must have the same darkness",
+  );
+}
 
 const q15Lista3 = read("CG - Lista de exercícios 3/js/questions/q15.js");
 assertIncludes(q15Lista3, "normal, rugosidade", "Lista 3 Q15 procedural attributes");

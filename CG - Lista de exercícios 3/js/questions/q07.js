@@ -1,7 +1,8 @@
 /*
  * q07.js — Iluminação direta × global.
  * Diagrama SVG: a mesma "caixa" com objeto e luz, mostrada de dois modos —
- * direta (só raio da fonte, sombra dura) e global (raios rebatidos, color bleeding).
+ * direta (só o raio da fonte) e global (raios rebatidos + color bleeding). A
+ * sombra é a MESMA nos dois: a dureza depende da fonte, não de direta vs global.
  */
 (function () {
   "use strict";
@@ -19,10 +20,12 @@
     // raio direto (sempre presente)
     svg.arrow(cx, oy + 36, cx, cy - R - 2, { color: "var(--yellow)", strokeWidth: 2.5, head: 10, parent: parent });
 
-    if (kind === "direta") {
-      svg.ellipse(cx + 22, oy + H - 24, 46, 11, { fill: "var(--ink)", opacity: 0.55, parent: parent }); // sombra dura
-    } else {
-      svg.ellipse(cx + 22, oy + H - 24, 54, 13, { fill: "var(--ink)", opacity: 0.2, parent: parent }); // sombra suave
+    // Sombra IGUAL nos dois painéis: ambos usam a mesma fonte pontual, logo a mesma
+    // dureza. O que distingue a global são os raios indiretos e o color bleeding —
+    // não a sombra. (Antes: direta=dura, global=suave, reforçando associação errada.)
+    svg.ellipse(cx + 22, oy + H - 24, 46, 11, { fill: "var(--ink)", opacity: 0.5, parent: parent });
+
+    if (kind === "global") {
       // raios indiretos (rebatidos)
       svg.arrow(ox + 16, cy, cx - R, cy, { color: "var(--red)", strokeWidth: 2, head: 9, dashed: "5 4", parent: parent });
       svg.arrow(cx, oy + H - 16, cx, cy + R, { color: "var(--cyan)", strokeWidth: 2, head: 9, dashed: "5 4", parent: parent });
@@ -50,6 +53,10 @@
     room(svg, gG, 430, 70, "global");
     svg.text(550, 312, "direta + indireta (rebatida)", { size: 11.5, color: "var(--ink-dim)", parent: gG });
 	    svg.text(550, 330, "color bleeding e luz indireta", { size: 11.5, color: "var(--ink-dim)", parent: gG });
+
+    // Legenda: a sombra é a mesma; a dureza depende da extensão da fonte, não de direta/global.
+    svg.text(380, 376, "A sombra é a mesma nos dois: a dureza depende da extensão da fonte (aqui, pontual), não de direta vs global.",
+      { size: 11, color: "var(--ink-dim)" });
   }
 
   function svgStep(active) { return { type: "svg", draw: function (svg) { scene(svg, active); } }; }
