@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Computação Gráfica — Lista de Exercícios 1</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script>
+      // Aplica o tema salvo antes da pintura (evita flash).
+      try { var t = localStorage.getItem("gui-theme"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="hub-hero">
+        <p class="hub-home-link"><a class="hub-back" href="../index.html">← Voltar ao índice principal</a></p>
+        <h1>Computação Gráfica — Lista de Exercícios 1</h1>
+        <p>
+          Visualização didática e interativa das questões <strong>1 a 37</strong> do estudo
+          dirigido. Cada questão mostra o raciocínio passo a passo — transformações geométricas,
+          rasterização (DDA, Bresenham), recorte e preenchimento — com grade cartesiana animada,
+          ou slides ilustrados para as questões conceituais.
+        </p>
+        <div class="meta">
+          <span class="chip"><strong>37</strong> questões</span>
+          <span class="chip">Janela de recorte: <strong>−2 ≤ x ≤ 5</strong>, <strong>1 ≤ y ≤ 6</strong></span>
+          <span class="chip">Use <strong>← →</strong> e <strong>espaço</strong> para navegar</span>
+        </div>
+      </header>
+
+      <div id="hub"></div>
+    </main>
+
+    <!-- Núcleo + biblioteca (carregados nas duas páginas) -->
+    <script src="js/core/registry.js"></script>
+    <script src="js/core/plane.js"></script>
+    <script src="js/core/theme.js"></script>
+    <script src="js/core/stepper.js"></script>
+    <script src="js/core/layout.js"></script>
+    <script src="js/lib/algorithms.js"></script>
+
+    <!-- Módulos de questão (um por arquivo; auto-registram em window.GUI) -->
+    <script src="js/questions/q01.js"></script>
+    <script src="js/questions/q02.js"></script>
+    <script src="js/questions/q03.js"></script>
+    <script src="js/questions/q04.js"></script>
+    <script src="js/questions/q05.js"></script>
+    <script src="js/questions/q06.js"></script>
+    <script src="js/questions/q07.js"></script>
+    <script src="js/questions/q08.js"></script>
+    <script src="js/questions/q09.js"></script>
+    <script src="js/questions/q10.js"></script>
+    <script src="js/questions/q11.js"></script>
+    <script src="js/questions/q12.js"></script>
+    <script src="js/questions/q13.js"></script>
+    <script src="js/questions/q14.js"></script>
+    <script src="js/questions/q15.js"></script>
+    <script src="js/questions/q16.js"></script>
+    <script src="js/questions/q17.js"></script>
+    <script src="js/questions/q18.js"></script>
+    <script src="js/questions/q19.js"></script>
+    <script src="js/questions/q20.js"></script>
+    <script src="js/questions/q21.js"></script>
+    <script src="js/questions/q22.js"></script>
+    <script src="js/questions/q23.js"></script>
+    <script src="js/questions/q24.js"></script>
+    <script src="js/questions/q25.js"></script>
+    <script src="js/questions/q26.js"></script>
+    <script src="js/questions/q27.js"></script>
+    <script src="js/questions/q28.js"></script>
+    <script src="js/questions/q29.js"></script>
+    <script src="js/questions/q30.js"></script>
+    <script src="js/questions/q31.js"></script>
+    <script src="js/questions/q32.js"></script>
+    <script src="js/questions/q33.js"></script>
+    <script src="js/questions/q34.js"></script>
+    <script src="js/questions/q35.js"></script>
+    <script src="js/questions/q36.js"></script>
+    <script src="js/questions/q37.js"></script>
+
+    <script>
+      (function () {
+        var hub = document.getElementById("hub");
+        var groups = window.GUI.bySection();
+        groups.forEach(function (g) {
+          var h = document.createElement("h2");
+          h.className = "section-title";
+          h.textContent = g.section;
+          hub.appendChild(h);
+
+          var grid = document.createElement("div");
+          grid.className = "cards";
+          g.items.forEach(function (q) {
+            var a = document.createElement("a");
+            a.className = "card";
+            a.href = "question.html?q=" + q.id;
+            a.innerHTML =
+              '<div class="card-top">' +
+              '<span class="card-num">' +
+              q.num +
+              "</span>" +
+              '<span class="tag ' +
+              q.type +
+              '">' +
+              (q.type === "computacional" ? "computacional" : "conceitual") +
+              "</span>" +
+              "</div>" +
+              "<h3>" +
+              window.escapeText(q.title) +
+              "</h3>" +
+              (q.hubDesc ? '<div class="card-desc">' + q.hubDesc + "</div>" : "");
+            grid.appendChild(a);
+          });
+          hub.appendChild(grid);
+        });
+
+        if (!groups.length) {
+          hub.innerHTML = "<p class='muted'>Nenhuma questão registrada.</p>";
+        }
+      })();
+    </script>
+  </body>
+</html>

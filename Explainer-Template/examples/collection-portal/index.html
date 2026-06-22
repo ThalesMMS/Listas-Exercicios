@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Colecao de Explainters</title>
+    <script>
+      try { var t = localStorage.getItem("ex-theme"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="portal.css" />
+  </head>
+  <body>
+    <main class="portal-wrap">
+      <header class="portal-hero">
+        <p class="portal-eyebrow">Colecao</p>
+        <h1>Explainters independentes</h1>
+        <p>
+          Use esta pagina quando voce tiver varias copias do Explainer no mesmo
+          projeto. Edite os cards para apontar para cada pasta publicada.
+        </p>
+      </header>
+
+      <section class="portal-grid" aria-label="Explainters disponiveis">
+        <a class="portal-card" href="../explainer-a/index.html">
+          <span class="portal-badge">A</span>
+          <h2>Explainer A</h2>
+          <p>Descricao curta do primeiro conjunto de explicacoes.</p>
+          <span class="portal-link">Abrir</span>
+        </a>
+
+        <a class="portal-card" href="../explainer-b/index.html">
+          <span class="portal-badge">B</span>
+          <h2>Explainer B</h2>
+          <p>Descricao curta do segundo conjunto de explicacoes.</p>
+          <span class="portal-link">Abrir</span>
+        </a>
+
+        <a class="portal-card" href="../guia/index.html">
+          <span class="portal-badge">G</span>
+          <h2>Guia complementar</h2>
+          <p>Material de apoio, roteiro de estudo ou indice externo.</p>
+          <span class="portal-link">Abrir</span>
+        </a>
+      </section>
+    </main>
+
+    <button class="theme-toggle" id="theme-toggle" type="button">Tema claro</button>
+    <script src="portal.js"></script>
+  </body>
+</html>
