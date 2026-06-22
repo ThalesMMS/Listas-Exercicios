@@ -76,6 +76,20 @@ assert.deepEqual(
   "Q24 right-first pedagogical trace"
 );
 
+// Q24 view bounds must contain every pedagogical point, incl. the start (8,10)
+// whose y was clipped by the old ymax=9 (issue #11). BOUNDS = [xmin,xmax,ymin,ymax].
+const q24Bounds = q24.match(/var BOUNDS = \[\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*\]/);
+assert.ok(q24Bounds, "Q24 should declare BOUNDS as [xmin, xmax, ymin, ymax]");
+const [bxmin, bxmax, bymin, bymax] = q24Bounds.slice(1).map(Number);
+for (const [px, py] of [[8, 10], [5, 7], [4, 6], [0, 2]]) {
+  assert.ok(
+    px >= bxmin && px <= bxmax && py >= bymin && py <= bymax,
+    `Q24 BOUNDS [${bxmin},${bxmax},${bymin},${bymax}] must contain (${px},${py})`,
+  );
+}
+// and keep headroom above (8,10) so its label is not clipped.
+assert.ok(bymax >= 11, "Q24 ymax should leave headroom above (8,10) for its label");
+
 const q32 = read("CG - Lista de exercícios 1/js/questions/q32.js");
 assertIncludes(q32, "ALG.sutherlandHodgman(POLY, W).result", "Lista 1 Q32 generated clipped polygon");
 assertNotIncludes(q32, "[0, 7]", "Lista 1 Q32 impossible manual vertex");

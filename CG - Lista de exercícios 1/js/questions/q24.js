@@ -12,7 +12,8 @@
   var ALG = window.ALG;
   var COL = window.CartesianPlane.COLORS;
   var W = ALG.DEFAULT_WINDOW; // {xmin:-2,xmax:5,ymin:1,ymax:6}
-  var BOUNDS = [-4, 11, -5, 9];
+  // ymax=11 para o ponto inicial (8,10) e seu rótulo caberem (antes 9, cortava).
+  var BOUNDS = [-4, 11, -5, 11];
 
   var OUT = { x: 8, y: 10 };
   var IN = { x: 0, y: 2 };
