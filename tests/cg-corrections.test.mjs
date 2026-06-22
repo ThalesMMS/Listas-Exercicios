@@ -105,6 +105,16 @@ const q32Poly = [
 const clipped = ALG.sutherlandHodgman(q32Poly, ALG.DEFAULT_WINDOW).result;
 assert.ok(clipped.every((p) => !p.y.gtInt(6)), "Q32 clipped result should satisfy y <= 6");
 
+// Q32 Sutherland-Hodgman caveat must be precise: the *window* is convex, while a
+// concave *input* can produce disconnected components a single list won't capture,
+// and the closure claim is qualified to the shown example (issue #12).
+assertIncludes(q32, "janela recortadora deve ser convexa", "Lista 1 Q32 convex-window caveat");
+assertIncludes(q32, "côncavo", "Lista 1 Q32 concave-input mention");
+assertIncludes(q32, "componentes desconectados", "Lista 1 Q32 disconnected-components caveat");
+assertIncludes(q32, "única lista", "Lista 1 Q32 single-list limitation");
+assertIncludes(q32, "Neste exemplo", "Lista 1 Q32 closure claim qualified to the example");
+assertNotIncludes(q32, "janela côncava pode gerar", "Lista 1 Q32 dropped the wrong concave-window claim");
+
 const q37 = read("CG - Lista de exercícios 1/js/questions/q37.js");
 const makeScanlinePart = q37.match(/function makeScanlinePart\(\) \{[\s\S]*?window\.GUI\.register/);
 assert.ok(makeScanlinePart, "Lista 1 Q37 should define makeScanlinePart");

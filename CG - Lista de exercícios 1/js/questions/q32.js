@@ -143,13 +143,16 @@
             {
               titulo: "Polígono recortado, pronto para preencher",
               explicacao:
-                "<p>O resultado é um <b>polígono fechado</b>, descrito por sua lista de " +
-                "vértices, que pode ser preenchido ou rasterizado normalmente quando a janela de recorte é convexa.</p>" +
+                "<p><b>Neste exemplo</b>, o resultado é um <b>polígono fechado</b>, descrito por sua lista " +
+                "de vértices, que pode ser preenchido ou rasterizado normalmente.</p>" +
                 "<div class='proscons'>" +
                 "<div class='pro'>+ Mantém o polígono como contorno fechado</div>" +
                 "<div class='pro'>+ Entrada e saída têm o mesmo formato (lista de vértices), o que permite " +
                 "encadear o recorte de uma fronteira na próxima</div>" +
-                "<div class='con'>− A janela de recorte deve ser convexa; uma janela côncava pode gerar componentes desconectados difíceis de representar por uma única lista</div>" +
+                "<div class='con'>− A <b>janela recortadora deve ser convexa</b>. O polígono de entrada " +
+                "pode ser côncavo, mas, se a interseção resultar em <b>componentes desconectados</b>, uma " +
+                "implementação que retorna uma <b>única lista</b> de vértices pode não representá-los " +
+                "separadamente</div>" +
                 "</div>",
               bounds: BOUNDS,
               draw: function (plane) {
