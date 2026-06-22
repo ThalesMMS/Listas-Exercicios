@@ -93,10 +93,10 @@
             "<p>O <code>let</code> da linha 6 so vale para seu corpo imediato, a linha 7. Depois dele, volta a valer o <code>let</code> da linha 4.</p>",
           headers: ["uso", "declaracao encontrada", "motivo"],
           rows: [
-            ["linha 5", "linha 4", "o <code>let x <- 4</code> esta mais perto que o parametro"],
-            ["linha 7", "linha 6", "e o corpo do <code>let x <- 7</code>"],
+            ["linha 5", "linha 4", { html: "o <code>let x <- 4</code> esta mais perto que o parametro" }],
+            ["linha 7", "linha 6", { html: "e o corpo do <code>let x <- 7</code>" }],
             ["linha 8", "linha 4", "a linha 6 ja terminou"],
-            ["linha 10", "linha 2", "fora do <code>let</code>, resta o parametro do metodo"],
+            ["linha 10", "linha 2", { html: "fora do <code>let</code>, resta o parametro do metodo" }],
           ],
         }),
         C.choiceStep({
@@ -132,10 +132,10 @@
             "<p>Uma regra boa nao deve prometer um tipo que a avaliacao real nao entrega.</p>",
           headers: ["regra", "veredito", "comentario"],
           rows: [
-            ["Sequencia", "<span class='ok'>boa</span>", "o tipo do bloco e o tipo da ultima expressao"],
-            ["Comparacao <code>&lt;</code>", "<span class='no'>ruim</span>", "a conclusao deveria ser <code>Bool</code>, nao <code>Int</code>"],
-            ["Divisao", "<span class='no'>ruim</span>", "<code>Int / Int</code> deve produzir <code>Int</code>, nao <code>Bool</code>"],
-            ["<code>isvoid(e)</code>", "<span class='ok'>boa</span>", "testa vazio e retorna <code>Bool</code> para qualquer tipo de <code>e</code>"],
+            ["Sequencia", { html: "<span class='ok'>boa</span>" }, "o tipo do bloco e o tipo da ultima expressao"],
+            [{ html: "Comparacao <code>&lt;</code>" }, { html: "<span class='no'>ruim</span>" }, { html: "a conclusao deveria ser <code>Bool</code>, nao <code>Int</code>" }],
+            ["Divisao", { html: "<span class='no'>ruim</span>" }, { html: "<code>Int / Int</code> deve produzir <code>Int</code>, nao <code>Bool</code>" }],
+            [{ html: "<code>isvoid(e)</code>" }, { html: "<span class='ok'>boa</span>" }, { html: "testa vazio e retorna <code>Bool</code> para qualquer tipo de <code>e</code>" }],
           ],
         }),
         C.choiceStep({
@@ -221,10 +221,10 @@
             "<p>Quando um tipo e subtipo do outro, o LUB e o mais geral entre eles.</p>",
           headers: ["expressao", "resultado", "veredito"],
           rows: [
-            ["lub(Point, Quad)", "Object", "<span class='ok'>verdadeiro</span>"],
-            ["lub(Square, Rect)", "Rect", "<span class='no'>nao e Quad</span>"],
-            ["lub(Square, Rect)", "Rect", "<span class='ok'>verdadeiro</span>"],
-            ["lub(Square, Circle)", "Shape", "<span class='no'>nao e Object</span>"],
+            ["lub(Point, Quad)", "Object", { html: "<span class='ok'>verdadeiro</span>" }],
+            ["lub(Square, Rect)", "Rect", { html: "<span class='no'>nao e Quad</span>" }],
+            ["lub(Square, Rect)", "Rect", { html: "<span class='ok'>verdadeiro</span>" }],
+            ["lub(Square, Circle)", "Shape", { html: "<span class='no'>nao e Object</span>" }],
           ],
         }),
       ];
@@ -345,10 +345,10 @@
             "<p>Substitua mentalmente <code>SELF_TYPE_C</code> por algo que se comporta como uma instancia de <code>C</code> ou subtipo de <code>C</code>.</p>",
           headers: ["relacao", "veredito", "motivo"],
           rows: [
-            ["Square <= SELF_TYPE_Shape", "<span class='no'>falsa</span>", "classe comum nao e subtipo de SELF_TYPE"],
-            ["SELF_TYPE_Circle <= Quad", "<span class='no'>falsa</span>", "Circle e irma de Quad sob Shape"],
-            ["SELF_TYPE_Shape <= Shape", "<span class='ok'>verdadeira</span>", "Shape <= Shape"],
-            ["SELF_TYPE_Rect <= Shape", "<span class='ok'>verdadeira</span>", "Rect <= Quad <= Shape"],
+            ["Square <= SELF_TYPE_Shape", { html: "<span class='no'>falsa</span>" }, "classe comum nao e subtipo de SELF_TYPE"],
+            ["SELF_TYPE_Circle <= Quad", { html: "<span class='no'>falsa</span>" }, "Circle e irma de Quad sob Shape"],
+            ["SELF_TYPE_Shape <= Shape", { html: "<span class='ok'>verdadeira</span>" }, "Shape <= Shape"],
+            ["SELF_TYPE_Rect <= Shape", { html: "<span class='ok'>verdadeira</span>" }, "Rect <= Quad <= Shape"],
           ],
         }),
       ];

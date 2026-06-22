@@ -17,10 +17,15 @@
    * EX.Content.table(host, spec)
    *   host: elemento <div> onde a tabela será anexada.
    *   spec:
-   *     headers   : string[]            cabeçalhos das colunas (opcional)
-   *     rows      : any[][]             matriz de células (linhas x colunas)
+   *     headers   : Cell[]             cabeçalhos das colunas (opcional)
+   *     rows      : Cell[][]           matriz de células (linhas x colunas)
    *     activeRow : number             índice da linha a receber class "active" (opcional)
    *     cellClass : (r,c)=>string      classe extra por célula, ex. "hl" (opcional)
+   *
+   * Cell = string | number | { html: string }
+   *   Strings/números são SEMPRE escapados (seguro por padrão). Para injetar
+   *   marcação confiável já formatada (ex.: <code>, <span class='ok'>, <br>),
+   *   passe um objeto { html: "..." }. Use apenas com conteúdo de autoria própria.
    * Retorna o elemento <table> criado.
    */
   EX.Content.table = function (host, spec) {
@@ -30,13 +35,22 @@
     var activeRow = spec.activeRow;
     var cellClass = typeof spec.cellClass === "function" ? spec.cellClass : null;
 
+    // Conteúdo de uma célula: { html } injeta HTML confiável sem escapar; qualquer
+    // outro valor é tratado como texto e escapado.
+    function cellHtml(cell) {
+      if (cell && typeof cell === "object" && typeof cell.html === "string") {
+        return cell.html;
+      }
+      return U.escapeHtml(cell == null ? "" : cell);
+    }
+
     var t = U.el("table", "ex-table");
 
     if (headers.length) {
       var thead = U.el("thead");
       var htr = U.el("tr");
       for (var h = 0; h < headers.length; h++) {
-        htr.appendChild(U.el("th", null, U.escapeHtml(headers[h])));
+        htr.appendChild(U.el("th", null, cellHtml(headers[h])));
       }
       thead.appendChild(htr);
       t.appendChild(thead);
@@ -48,7 +62,7 @@
       var tr = U.el("tr", r === activeRow ? "active" : null);
       for (var c = 0; c < row.length; c++) {
         var cls = cellClass ? cellClass(r, c) : "";
-        var td = U.el("td", cls || null, U.escapeHtml(row[c]));
+        var td = U.el("td", cls || null, cellHtml(row[c]));
         tr.appendChild(td);
       }
       tbody.appendChild(tr);

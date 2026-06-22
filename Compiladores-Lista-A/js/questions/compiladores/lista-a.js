@@ -108,14 +108,14 @@
     build: function () {
       var rows = [
         ["1", "cb", "c*b", "X", "maior prefixo no inicio"],
-        ["2", "acc", "c*ac*", "Z", "<code>acc</code> vence <code>ac</code> por tamanho"],
-        ["3", "ac", "ac", "Y", "empate de tamanho com <code>c*ac*</code>; regra 2 vem antes"],
+        ["2", "acc", "c*ac*", "Z", { html: "<code>acc</code> vence <code>ac</code> por tamanho" }],
+        ["3", "ac", "ac", "Y", { html: "empate de tamanho com <code>c*ac*</code>; regra 2 vem antes" }],
         ["4", "accc", "c*ac*", "Z", "maior prefixo"],
-        ["5", "b", "c*b", "X", "<code>c*</code> pode ser vazio"],
+        ["5", "b", "c*b", "X", { html: "<code>c*</code> pode ser vazio" }],
         ["6", "b", "c*b", "X", "novo lexema independente"],
-        ["7", "cccb", "c*b", "X", "prefixo longo ate o <code>b</code>"],
+        ["7", "cccb", "c*b", "X", { html: "prefixo longo ate o <code>b</code>" }],
         ["8", "acc", "c*ac*", "Z", "maior prefixo"],
-        ["9", "ac", "ac", "Y", "empate; regra <code>ac</code> vence"],
+        ["9", "ac", "ac", "Y", { html: "empate; regra <code>ac</code> vence" }],
       ];
       return [
         C.codeStep({
@@ -224,8 +224,8 @@
             "<p>Quando duas alternativas comecam igual, isolamos o prefixo comum e empurramos a escolha para um novo nao terminal.</p>",
           headers: ["nao terminal", "antes", "depois"],
           rows: [
-            ["S", "S -> S + S | S + P", "S -> S + S'<br>S' -> S | P"],
-            ["P", "P -> P * P | P * I", "P -> P * P'<br>P' -> P | I"],
+            ["S", "S -> S + S | S + P", { html: "S -> S + S'<br>S' -> S | P" }],
+            ["P", "P -> P * P | P * I", { html: "P -> P * P'<br>P' -> P | I" }],
             ["I, D, N", "sem prefixo comum util", "permanecem iguais"],
           ],
         }),
@@ -416,10 +416,10 @@
             "Se uma alternativa gera <code>lambda</code>, compare tambem com o FOLLOW.</p>",
           headers: ["caso", "decisao", "motivo"],
           rows: [
-            ["(a)", "<span class='ok'>LL(1)</span>", "<code>FIRST(aY)={a}</code> e <code>FIRST(Z)={b}</code>; sem intersecao."],
-            ["(b)", "<span class='no'>nao LL(1)</span>", "Em <code>R -> o | S</code>, <code>FIRST(o)</code> e <code>FIRST(S)</code> contem <code>o</code>."],
-            ["(c)", "<span class='no'>nao LL(1)</span>", "<code>K -> c | lambda</code> e <code>FOLLOW(K)={c}</code>; conflito no lookahead <code>c</code>."],
-            ["(d)", "<span class='ok'>LL(1)</span>", "<code>FIRST(c)={c}</code> e <code>FOLLOW(K)={b}</code>; disjuntos."],
+            ["(a)", { html: "<span class='ok'>LL(1)</span>" }, { html: "<code>FIRST(aY)={a}</code> e <code>FIRST(Z)={b}</code>; sem intersecao." }],
+            ["(b)", { html: "<span class='no'>nao LL(1)</span>" }, { html: "Em <code>R -> o | S</code>, <code>FIRST(o)</code> e <code>FIRST(S)</code> contem <code>o</code>." }],
+            ["(c)", { html: "<span class='no'>nao LL(1)</span>" }, { html: "<code>K -> c | lambda</code> e <code>FOLLOW(K)={c}</code>; conflito no lookahead <code>c</code>." }],
+            ["(d)", { html: "<span class='ok'>LL(1)</span>" }, { html: "<code>FIRST(c)={c}</code> e <code>FOLLOW(K)={b}</code>; disjuntos." }],
           ],
         }),
         C.choiceStep({

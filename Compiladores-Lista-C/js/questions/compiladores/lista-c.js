@@ -64,9 +64,9 @@
             "<p><code>sub $a0 $t1 $a0</code> calcula valor empilhado menos acumulador: <code>4 - 3</code>. Depois o <code>add</code> soma o <code>5</code> empilhado antes.</p>",
           headers: ["trecho", "resultado"],
           rows: [
-            ["empilha <code>5</code>", "guarda operando esquerdo externo"],
-            ["empilha <code>4</code>; carrega <code>3</code>; <code>sub</code>", "<code>4 - 3</code>"],
-            ["carrega <code>5</code>; <code>add</code>", "<code>5 + (4 - 3)</code>"],
+            [{ html: "empilha <code>5</code>" }, "guarda operando esquerdo externo"],
+            [{ html: "empilha <code>4</code>; carrega <code>3</code>; <code>sub</code>" }, { html: "<code>4 - 3</code>" }],
+            [{ html: "carrega <code>5</code>; <code>add</code>" }, { html: "<code>5 + (4 - 3)</code>" }],
           ],
         }),
         C.choiceStep({
@@ -135,9 +135,9 @@
             "<p>O total e o pico necessario em uma avaliacao; os ramos do <code>if</code> nao executam ao mesmo tempo.</p>",
           headers: ["subexpressao", "temporarios", "por que"],
           rows: [
-            ["<code>x % 2 == 0</code>", "2", "um valor para <code>x % 2</code> e outro para a comparacao"],
-            ["<code>potenciaDeDois(x/2)</code>", "1", "calcular o argumento <code>x/2</code>"],
-            ["<code>x == 1</code>", "0", "pode comparar direto com registrador/imediato"],
+            [{ html: "<code>x % 2 == 0</code>" }, "2", { html: "um valor para <code>x % 2</code> e outro para a comparacao" }],
+            [{ html: "<code>potenciaDeDois(x/2)</code>" }, "1", { html: "calcular o argumento <code>x/2</code>" }],
+            [{ html: "<code>x == 1</code>" }, "0", "pode comparar direto com registrador/imediato"],
             ["total", "2", "maior pico entre condicao e ramos"],
           ],
         }),
@@ -228,10 +228,10 @@
             "<p>Depois de propagacao de constantes, <code>e = 9</code>, <code>f = 4</code> e <code>g = 5</code>.</p>",
           headers: ["opcao", "valida?", "motivo"],
           rows: [
-            ["a", "<span class='no'>nao</span>", "trocar <code>3</code> por <code>b</code> nao e propagacao de copia"],
-            ["b", "<span class='no'>nao</span>", "<code>a*3</code> e <code>b*3</code> nao sao a mesma expressao"],
-            ["c", "<span class='ok'>sim</span>", "<code>c</code> nao e usado e sua expressao nao tem efeito colateral"],
-            ["d", "<span class='ok'>sim</span>", "apos simplificacoes validas, o bloco pode virar <code>g := 5</code>"],
+            ["a", { html: "<span class='no'>nao</span>" }, { html: "trocar <code>3</code> por <code>b</code> nao e propagacao de copia" }],
+            ["b", { html: "<span class='no'>nao</span>" }, { html: "<code>a*3</code> e <code>b*3</code> nao sao a mesma expressao" }],
+            ["c", { html: "<span class='ok'>sim</span>" }, { html: "<code>c</code> nao e usado e sua expressao nao tem efeito colateral" }],
+            ["d", { html: "<span class='ok'>sim</span>" }, { html: "apos simplificacoes validas, o bloco pode virar <code>g := 5</code>" }],
           ],
         }),
       ];
@@ -349,10 +349,10 @@
             "<p>Uma variavel esta viva se seu valor atual pode ser lido antes de ser redefinido em algum caminho.</p>",
           headers: ["variavel", "viva?", "motivo"],
           rows: [
-            ["W", "<span class='ok'>sim</span>", "pode ser usada em <code>Z := W + 4</code>"],
-            ["X", "<span class='ok'>sim</span>", "e usada imediatamente no teste <code>X > 0</code>"],
-            ["Y", "<span class='ok'>sim</span>", "e usada em <code>Y := Y + 1</code>"],
-            ["Z", "<span class='no'>nao</span>", "nos ramos, <code>Z</code> e redefinida antes de ser lida"],
+            ["W", { html: "<span class='ok'>sim</span>" }, { html: "pode ser usada em <code>Z := W + 4</code>" }],
+            ["X", { html: "<span class='ok'>sim</span>" }, { html: "e usada imediatamente no teste <code>X > 0</code>" }],
+            ["Y", { html: "<span class='ok'>sim</span>" }, { html: "e usada em <code>Y := Y + 1</code>" }],
+            ["Z", { html: "<span class='no'>nao</span>" }, { html: "nos ramos, <code>Z</code> e redefinida antes de ser lida" }],
           ],
         }),
         C.choiceStep({
@@ -431,10 +431,10 @@
             "<p>A sequencia <code>d,e,c,b,a,f</code> sempre escolhe um no de grau menor que 3 no grafo restante.</p>",
           headers: ["opcao", "valida?", "comentario"],
           rows: [
-            ["a", "<span class='ok'>sim</span>", "d e e tem grau 2; depois c, b, a e f ficam removiveis"],
-            ["b", "<span class='no'>nao</span>", "apos remover e, <code>f</code> ainda tem grau 3"],
-            ["c", "<span class='no'>nao</span>", "apos remover d, <code>c</code> ainda tem grau 3"],
-            ["d", "<span class='no'>nao</span>", "apos remover d e e, <code>b</code> ainda tem grau 3"],
+            ["a", { html: "<span class='ok'>sim</span>" }, "d e e tem grau 2; depois c, b, a e f ficam removiveis"],
+            ["b", { html: "<span class='no'>nao</span>" }, { html: "apos remover e, <code>f</code> ainda tem grau 3" }],
+            ["c", { html: "<span class='no'>nao</span>" }, { html: "apos remover d, <code>c</code> ainda tem grau 3" }],
+            ["d", { html: "<span class='no'>nao</span>" }, { html: "apos remover d e e, <code>b</code> ainda tem grau 3" }],
           ],
         }),
       ];
@@ -603,8 +603,8 @@
             "<p>Quando <code>B</code> perde as referencias de <code>C</code> e de <code>A</code>, sua contagem zera e ele e liberado. Ao liberar <code>B</code>, sua referencia para <code>C</code> tambem cai; <code>C</code> zera e e liberado.</p>",
           headers: ["objeto", "resultado"],
           rows: [
-            ["B", "fica <code>free</code>"],
-            ["C", "fica <code>free</code> em cascata"],
+            ["B", { html: "fica <code>free</code>" }],
+            ["C", { html: "fica <code>free</code> em cascata" }],
             ["D/F", "permanecem porque formam ciclo de referencias"],
             ["A/E", "permanecem alcancaveis pela raiz"],
           ],

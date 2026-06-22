@@ -60,7 +60,7 @@
           EX.Content.table(host, {
             headers: spec.headers || [],
             rows: spec.rows || [],
-            active: spec.active,
+            activeRow: spec.activeRow,
           });
         },
       },
