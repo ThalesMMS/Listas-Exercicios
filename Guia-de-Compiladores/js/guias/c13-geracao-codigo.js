@@ -1,13 +1,52 @@
 /*
  * c13-geracao-codigo.js — Guia: Geração de código (máquina de pilha).
+ * Agora com a ANIMAÇÃO do acumulador ($a0) + pilha ($sp) avaliando 5 + (4 − 3),
+ * instrução a instrução. Reusa EX.Compilers.box + EX.Diagram.boxes.
  */
 (function () {
   "use strict";
   var EX = window.EX;
   var C = EX.Compilers;
 
+  // o: { a0, stack:[...], hot:bool }
+  function machineVisual(o) {
+    return {
+      type: "svg",
+      draw: function (svg) {
+        svg.view(720, 300);
+        // acumulador $a0
+        svg.text(135, 70, "acumulador", { size: 13, weight: 700, color: "var(--ink-dim)" });
+        C.box(svg, 60, 90, 150, 64, ["$a0", o.a0 == null ? "—" : String(o.a0)], {
+          fill: o.hot ? "var(--yellow-soft)" : "var(--accent-soft)",
+          stroke: o.hot ? "var(--yellow)" : "var(--accent)",
+          mono: true, size: 18,
+        });
+        // pilha ($sp → topo)
+        svg.text(470, 70, "pilha ($sp → topo)", { size: 13, weight: 700, color: "var(--ink-dim)" });
+        if (o.stack && o.stack.length) {
+          EX.Diagram.boxes(svg, {
+            cells: o.stack.slice().reverse(), x: 430, y: 90, cellW: 76, cellH: 40, orientation: "v",
+          }, { pointers: [{ index: 0, label: "$sp", color: "var(--yellow)" }] });
+        } else {
+          svg.rect(430, 90, 76, 40, { fill: "var(--bg)", stroke: "var(--border)", strokeWidth: 1.5, dashed: true, rx: 6 });
+          svg.text(468, 110, "vazia", { size: 12, color: "var(--ink-mute)" });
+        }
+      },
+    };
+  }
+
+  var ANIM = [
+    { a0: "5", stack: [], asm: "li $a0 5", note: "avalia 5 → fica no acumulador", hot: true },
+    { a0: "5", stack: ["5"], asm: "sw $a0 0($sp)\naddiu $sp $sp -4", note: "empilha 5 — libera o acumulador para o outro operando" },
+    { a0: "4", stack: ["5"], asm: "li $a0 4", note: "começa (4 − 3): avalia 4", hot: true },
+    { a0: "4", stack: ["5", "4"], asm: "sw $a0 0($sp)\naddiu $sp $sp -4", note: "empilha 4" },
+    { a0: "3", stack: ["5", "4"], asm: "li $a0 3", note: "avalia 3", hot: true },
+    { a0: "1", stack: ["5"], asm: "lw $t1 4($sp)\nsub $a0 $t1 $a0\naddiu $sp $sp 4", note: "desempilha 4 → $t1; $a0 = 4 − 3 = 1", hot: true },
+    { a0: "6", stack: [], asm: "lw $t1 4($sp)\nadd $a0 $t1 $a0\naddiu $sp $sp 4", note: "desempilha 5 → $t1; $a0 = 5 + 1 = 6 ✓", hot: true },
+  ];
+
   function build() {
-    return [
+    var steps = [
       C.domStep(
         "Gerar código para expressões",
         "Um gerador simples trata a CPU como uma <b>máquina de pilha</b> com um acumulador " +
@@ -19,9 +58,20 @@
         "Por que uma pilha",
         "Com <b>um</b> acumulador não dá para segurar dois resultados ao mesmo tempo. A pilha guarda os " +
           "valores intermediários enquanto a outra metade da expressão é avaliada — e isso compõe " +
-          "recursivamente para <b>qualquer</b> aninhamento.",
+          "recursivamente para <b>qualquer</b> aninhamento. Vamos ver <code>5 + (4 − 3)</code> rodar:",
         C.codeHtml("para 5 + (4 - 3):\n  avalia 5, empilha\n  avalia (4 - 3): avalia 4 empilha, avalia 3, subtrai → 1\n  desempilha 5, soma → 6")
       ),
+    ];
+
+    ANIM.forEach(function (s, i) {
+      steps.push({
+        title: "Máquina de pilha — passo " + (i + 1) + "/7",
+        body: "<p>" + s.note + "</p>" + C.codeHtml(s.asm),
+        visual: machineVisual(s),
+      });
+    });
+
+    steps.push(
       C.codeStep({
         title: "Lendo o assembly (Lista C, Q1)",
         body: "A ordem das operações na pilha revela a expressão. As linhas em destaque consomem da " +
@@ -43,13 +93,6 @@
         active: [9, 12],
         lang: "text",
       }),
-      C.domStep(
-        "Resultado",
-        "Reconstruindo a árvore a partir da ordem de push/pop:",
-        "<p style='text-align:center;font-size:18px'><code>5 + (4 − 3)</code></p>" +
-          "<p>O operando empilhado primeiro (5) é o da <b>esquerda</b> da soma final; o " +
-          "<code>sub</code> mais interno corresponde aos parênteses.</p>"
-      ),
       C.tableStep({
         title: "Quantos temporários? (Lista C, Q3)",
         body: "O número de temporários é o <b>pico</b> simultâneo, não a soma — e os ramos de um " +
@@ -66,10 +109,11 @@
         "Resumo",
         "A máquina de pilha gera código correto para qualquer expressão aninhada.",
         "<div class='ex-callout tip'><div class='ex-callout-title'>Em uma frase</div>" +
-          "Avalie no acumulador, <b>empilhe</b> o que precisa esperar; o nº de temporários é o " +
-          "<b>pico</b> de valores vivos ao mesmo tempo.</div>"
-      ),
-    ];
+          "Avalie no acumulador, <b>empilhe</b> o que precisa esperar; a profundidade da pilha segue o " +
+          "aninhamento e o nº de temporários é o <b>pico</b> de valores vivos ao mesmo tempo.</div>"
+      )
+    );
+    return steps;
   }
 
   EX.registry.add({
@@ -79,10 +123,10 @@
     section: "Geração de Código",
     title: "Geração de código (máquina de pilha)",
     type: "computacional",
-    hubDesc: "cgen com acumulador + pilha; reconstruir a expressão do assembly; pico de temporários.",
+    hubDesc: "cgen com acumulador + pilha animados (5+(4−3)); ler o assembly; pico de temporários.",
     statement:
-      "Entenda a geração de código por máquina de pilha: o padrão cgen com acumulador e pilha, como ler " +
-      "o assembly gerado e como contar os temporários necessários.",
+      "Entenda a geração de código por máquina de pilha: o padrão cgen com acumulador e pilha animado " +
+      "passo a passo, como ler o assembly gerado e como contar os temporários necessários.",
     parts: [{ label: "Guia", build: build }],
   });
 })();

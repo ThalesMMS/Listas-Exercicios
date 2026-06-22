@@ -36,7 +36,7 @@
                 { id: "p", label: "+" },
                 { id: "d2", label: "D", children: [{ id: "t2", label: "1" }] },
               ],
-            }, { nodeShape: "circle", view: [560, 320] });
+            }, { nodeShape: "circle", view: [560, 420] });
           },
         },
       },
