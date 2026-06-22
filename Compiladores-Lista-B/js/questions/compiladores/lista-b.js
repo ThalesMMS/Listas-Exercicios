@@ -331,7 +331,10 @@
       return [
         C.domStep(
           "Regras praticas",
-          "<p><code>SELF_TYPE_C</code> representa a classe dinamica de <code>self</code> quando a classe estatica atual e <code>C</code>.</p>",
+          "<p><code>SELF_TYPE_C</code> e um <b>tipo estatico</b> especial, ancorado na classe corrente " +
+            "<code>C</code>: denota o tipo de <code>self</code> (<code>C</code> ou uma subclasse de " +
+            "<code>C</code>) e e usado na <b>checagem</b>. A implementacao executada continua escolhida " +
+            "pelo <b>despacho dinamico</b> &mdash; nao confunda com a classe dinamica do objeto.</p>",
           html([
             "<div class='ex-callout tip'><div class='ex-callout-title'>Conformidade</div>",
             "<ul>",

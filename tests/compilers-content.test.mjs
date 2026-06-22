@@ -256,4 +256,42 @@ const norm = (s) =>
   assert.ok(/limite superior mínimo/.test(c10), "#6: guia c10 defines LUB as the least upper bound");
 }
 
+/* ───────────────────────── issue #7: Lista B Q7/Q8 / Guia c12 ──────────────────────
+ * SELF_TYPE_C is a special *static* type; the run implementation is dynamic dispatch.
+ * Q7 conformance verdicts must stay correct; the prose must distinguish the two and
+ * not claim c.baz().foo() necessarily runs C.foo().
+ */
+{
+  const parent = {
+    Object: null, Shape: "Object", Quad: "Shape", Circle: "Shape", Rect: "Quad", Square: "Rect",
+  };
+  const anc = (x) => { const o = []; for (let c = x; c; c = parent[c]) o.push(c); return o; };
+  const isSub = (a, b) => anc(a).includes(b);
+  // SELF_TYPE_C ≤ P  ⇔  C ≤ P ; a concrete type never conforms to SELF_TYPE_P.
+  const selfLeNormal = (c, p) => isSub(c, p);
+  const normalLeSelf = () => false;
+
+  assert.equal(normalLeSelf("Square", "Shape"), false, "#7: Square ≤ SELF_TYPE_Shape is false");
+  assert.equal(selfLeNormal("Circle", "Quad"), false, "#7: SELF_TYPE_Circle ≤ Quad is false (siblings)");
+  assert.equal(selfLeNormal("Shape", "Shape"), true, "#7: SELF_TYPE_Shape ≤ Shape is true");
+  assert.equal(selfLeNormal("Rect", "Shape"), true, "#7: SELF_TYPE_Rect ≤ Shape is true");
+
+  const listB = read("Compiladores-Lista-B/js/questions/compiladores/lista-b.js");
+  const c12 = read("Guia-de-Compiladores/js/guias/c12-self-type.js");
+  const c11 = read("Guia-de-Compiladores/js/guias/c11-tipos-dispatch.js");
+
+  // Q7 verdict rows still present and correct.
+  assert.ok(listB.includes('["Square <= SELF_TYPE_Shape", { html: "<span class=\'no\'>falsa</span>" }'), "#7: Q7 keeps Square ≤ SELF_TYPE_Shape = falsa");
+  assert.ok(listB.includes('["SELF_TYPE_Rect <= Shape", { html: "<span class=\'ok\'>verdadeira</span>" }'), "#7: Q7 keeps SELF_TYPE_Rect ≤ Shape = verdadeira");
+
+  // Prose distinguishes static type / SELF_TYPE / dynamic, in both list and guide.
+  assert.ok(!/representa a classe dinamica de self/.test(listB), "#7: Q7 no longer frames SELF_TYPE as the dynamic class");
+  assert.ok(/tipo estatico/.test(listB) && /despacho dinamico/.test(listB), "#7: Q7 names static type and dynamic dispatch");
+  assert.ok(!/chama o <code>foo<\/code> de C/.test(c12), "#7: c12 no longer claims c.baz().foo() runs C.foo()");
+  assert.ok(/tipo estático/.test(c12) && /despacho dinâmico/.test(c12), "#7: c12 names static type and dynamic dispatch");
+  assert.ok(/D ≤ C/.test(c12) && /D\.foo\(\)/.test(c12), "#7: c12 has a subclass-D example (static preserved, dynamic dispatch)");
+  // c11 is the correct model the others are aligned to.
+  assert.ok(/classe real retornada/.test(c11), "#7: c11 keeps the correct dynamic-dispatch wording");
+}
+
 console.log("Compilers content checks passed.");
