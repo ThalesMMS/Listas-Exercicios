@@ -177,4 +177,30 @@ assertNotIncludes(q18Lista3, "var P = polyAt(Ap, B, 0.5);", "Lista 3 Q18 edge mo
 assertNotIncludes(q18Lista3, "interseção de arestas consecutivas", "Lista 3 Q18 underdefined edge reconstruction claim");
 assertIncludes(q18Lista3, "edgePolyAt", "Lista 3 Q18 defined edge morphing helper");
 
+// Q10 (Lista 2): the Bézier endpoint and its marker must fit inside the SVG view.
+// The last control point sits at x=485 (+ marker radius), clipped by the old width
+// of 480 (issue #14). Render the curves and check the rightmost drawn x.
+{
+  const { specs, SvgSurface } = loadCompilersGuides("CG - Lista de exercícios 2");
+  const q10 = specs.find((s) => s.id && /q10/.test(s.id));
+  assert.ok(q10, "Lista 2 Q10 spec found");
+  const step = q10.parts[0].build().find((s) => s.visual && s.visual.type === "svg");
+  const svgEl = makeEl("svg");
+  step.visual.draw(new SvgSurface(svgEl));
+  const vb = String(svgEl.attrs.viewBox || "0 0 480 240").split(/\s+/).map(Number);
+  const viewW = vb[2];
+  let maxX = -Infinity;
+  (function walk(el) {
+    const a = el.attrs || {};
+    if (el.tagName === "circle") maxX = Math.max(maxX, +a.cx + (+a.r || 0));
+    if (el.tagName === "path" || el.tagName === "polyline" || el.tagName === "polygon") {
+      const ns = (String(a.d || a.points).match(/-?\d+(?:\.\d+)?/g) || []).map(Number);
+      for (let i = 0; i + 1 < ns.length; i += 2) maxX = Math.max(maxX, ns[i]);
+    }
+    (el.childNodes || []).forEach(walk);
+  })(svgEl);
+  assert.ok(maxX > 480, "Q10 sanity: the Bézier endpoint really extends past the old 480 width");
+  assert.ok(maxX <= viewW, `Q10 rightmost drawn x (${maxX}) must fit the ${viewW}-wide view`);
+}
+
 console.log("CG correction checks passed.");

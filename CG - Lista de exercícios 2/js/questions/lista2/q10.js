@@ -18,7 +18,9 @@
     return d;
   }
   function curves(svg) {
-    svg.view(480, 240);
+    // Largura 500 (antes 480): o último ponto da Bézier fica em x=235+250=485 e,
+    // com o marcador (raio 4), chegava a 489 — cortado pela borda direita.
+    svg.view(500, 240);
     var Li = [[40, 165], [100, 70], [165, 150], [235, 80]];
     svg.path(crPath(Li), { stroke: "var(--accent)", strokeWidth: 2.5 });
     Li.forEach(function (p) { svg.circle(p[0], p[1], 4, { fill: "var(--accent)" }); });
