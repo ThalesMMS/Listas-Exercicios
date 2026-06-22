@@ -31,24 +31,28 @@ const problems = [];
 let checked = 0;
 
 for (const spec of specs) {
-  const steps = spec.parts[0].build();
-  steps.forEach((st, i) => {
-    const v = st.visual;
-    if (!v || v.type !== "svg" || typeof v.draw !== "function") return;
-    const svgEl = makeEl("svg");
-    v.draw(new SvgSurface(svgEl));
-    checked++;
-    const vb = nums(svgEl.attrs.viewBox || "0 0 1000 700");
-    const W = vb[2], H = vb[3];
-    const bb = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
-    accumulate(svgEl, bb);
-    if (bb.minX === Infinity) { problems.push(`${spec.id}#${i} "${st.title}" — EMPTY svg`); return; }
-    const over = [];
-    if (bb.minX < -MARGIN) over.push(`left ${bb.minX.toFixed(0)}`);
-    if (bb.minY < -MARGIN) over.push(`top ${bb.minY.toFixed(0)}`);
-    if (bb.maxX > W + MARGIN) over.push(`right ${bb.maxX.toFixed(0)}>${W}`);
-    if (bb.maxY > H + MARGIN) over.push(`bottom ${bb.maxY.toFixed(0)}>${H}`);
-    if (over.length) problems.push(`${spec.id}#${i} "${st.title}" [${W}x${H}]: ${over.join(", ")}`);
+  spec.parts.forEach((part) => {
+    const steps = part.build();
+    steps.forEach((st, i) => {
+      const v = st.visual;
+      if (!v || v.type !== "svg" || typeof v.draw !== "function") return;
+      const svgEl = makeEl("svg");
+      const s = new SvgSurface(svgEl);
+      if (v.view) s.view(v.view[0], v.view[1]); // mirror stage.js: visual.view applied before draw
+      v.draw(s);
+      checked++;
+      const vb = nums(svgEl.attrs.viewBox || "0 0 1000 700");
+      const W = vb[2], H = vb[3];
+      const bb = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
+      accumulate(svgEl, bb);
+      if (bb.minX === Infinity) { problems.push(`${spec.id}#${i} "${st.title}" — EMPTY svg`); return; }
+      const over = [];
+      if (bb.minX < -MARGIN) over.push(`left ${bb.minX.toFixed(0)}`);
+      if (bb.minY < -MARGIN) over.push(`top ${bb.minY.toFixed(0)}`);
+      if (bb.maxX > W + MARGIN) over.push(`right ${bb.maxX.toFixed(0)}>${W}`);
+      if (bb.maxY > H + MARGIN) over.push(`bottom ${bb.maxY.toFixed(0)}>${H}`);
+      if (over.length) problems.push(`${spec.id}#${i} "${st.title}" [${W}x${H}]: ${over.join(", ")}`);
+    });
   });
 }
 

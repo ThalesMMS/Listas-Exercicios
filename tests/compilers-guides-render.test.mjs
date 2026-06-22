@@ -16,27 +16,36 @@ const failures = [];
 for (const spec of specs) {
   assert.ok(spec.id, "every guide spec must have an id");
   assert.ok(Array.isArray(spec.parts) && spec.parts.length, `${spec.id} must have parts`);
-  let steps;
-  try {
-    steps = spec.parts[0].build();
-  } catch (e) {
-    failures.push(`BUILD ${spec.id}: ${e.message}`);
-    continue;
-  }
-  assert.ok(Array.isArray(steps) && steps.length, `${spec.id} build() must return steps`);
-  steps.forEach((st, i) => {
-    stepCount++;
-    assert.equal(typeof st.title, "string", `${spec.id} step ${i} needs a string title`);
-    if (st.body != null) assert.equal(typeof st.body, "string", `${spec.id} step ${i} body must be HTML string`);
-    const v = st.visual;
-    if (!v || typeof v.draw !== "function") return;
+  spec.parts.forEach((part, pi) => {
+    let steps;
     try {
-      if (v.type === "svg") v.draw(new SvgSurface(makeEl("svg")));
-      else if (v.type === "dom") v.draw(makeEl("div"));
-      // "plane" (canvas) is not used by the compilers guides.
+      steps = part.build();
     } catch (e) {
-      failures.push(`DRAW ${spec.id} step ${i} "${st.title}": ${e.message}`);
+      failures.push(`BUILD ${spec.id} part ${pi}: ${e.message}`);
+      return;
     }
+    assert.ok(Array.isArray(steps) && steps.length, `${spec.id} part ${pi} build() must return steps`);
+    steps.forEach((st, i) => {
+      stepCount++;
+      assert.equal(typeof st.title, "string", `${spec.id} part ${pi} step ${i} needs a string title`);
+      if (st.body != null) assert.equal(typeof st.body, "string", `${spec.id} part ${pi} step ${i} body must be HTML string`);
+      const v = st.visual;
+      if (!v || typeof v.draw !== "function") return;
+      try {
+        if (v.type === "svg") {
+          const s = new SvgSurface(makeEl("svg"));
+          if (v.view) s.view(v.view[0], v.view[1]); // mirror stage.js: visual.view applied before draw
+          v.draw(s);
+        } else if (v.type === "dom") {
+          v.draw(makeEl("div"));
+        } else {
+          // "plane" (canvas) isn't used by the compilers guides; any other type is unexpected.
+          throw new Error(`unsupported visual type "${v.type}"`);
+        }
+      } catch (e) {
+        failures.push(`DRAW ${spec.id} part ${pi} step ${i} "${st.title}": ${e.message}`);
+      }
+    });
   });
 }
 

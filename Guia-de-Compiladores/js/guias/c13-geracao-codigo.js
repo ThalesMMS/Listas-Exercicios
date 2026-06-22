@@ -65,7 +65,7 @@
 
     ANIM.forEach(function (s, i) {
       steps.push({
-        title: "Máquina de pilha — passo " + (i + 1) + "/7",
+        title: "Máquina de pilha — passo " + (i + 1) + "/" + ANIM.length,
         body: "<p>" + s.note + "</p>" + C.codeHtml(s.asm),
         visual: machineVisual(s),
       });

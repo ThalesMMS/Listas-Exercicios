@@ -41,8 +41,8 @@
           var rm = removed[id];
           var fill = colors[id] || "var(--bg-soft)";
           var stroke = "var(--ink)", sw = 2;
-          if (hi[id]) { stroke = "var(--yellow)"; sw = 4; }
           if (rm) { fill = "var(--bg)"; stroke = "var(--border)"; }
+          if (hi[id]) { stroke = "var(--yellow)"; sw = 4; }
           svg.circle(n.x, n.y, 19, { fill: fill, stroke: stroke, strokeWidth: sw, dashed: rm });
           svg.text(n.x, n.y - 32, id, { color: rm ? "var(--ink-mute)" : "var(--red)", weight: 700, size: 18 });
         });

@@ -79,7 +79,7 @@
         body:
           "<p>No final do programa nada mais será lido: <code>LIVE_out[fim] = {}</code>. " +
           "É daqui que a propagação <b>para trás</b> parte.</p>",
-        visual: cfgVisual({ hi: ["fim"], live: { fim: "{ }" } }),
+        visual: cfgVisual({ hi: ["fim"], out: { fim: "{ }" } }),
       },
       {
         title: "Passo 2 — ramo then",
