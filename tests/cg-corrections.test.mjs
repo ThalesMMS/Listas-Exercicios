@@ -97,6 +97,10 @@ assert.ok(makeScanlinePart, "Lista 1 Q37 should define makeScanlinePart");
 assert.doesNotMatch(makeScanlinePart[0], /ALG\.flood/, "Lista 1 Q37 scan-line should not source spans from flood fill");
 assertIncludes(q37, "scanlineSpans", "Lista 1 Q37 independent scan-line helper");
 
+// Intentional brittle smoke baselines for explanatory copy. These modules are
+// static educational pages, and the checks below catch accidental regression to
+// the reviewed misleading phrasing. If the prose is intentionally refined while
+// preserving meaning, update these sentinel strings with the copy change.
 const q03 = read("CG - Lista de exercícios 2/js/questions/lista2/q03.js");
 assertNotIncludes(q03, "preserva proporções", "Lista 2 Q3 projection copy");
 
