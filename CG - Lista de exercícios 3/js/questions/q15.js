@@ -19,7 +19,7 @@
       }
     }
     svg.rect(x, y, n * cw, n * cw, { fill: "none", stroke: "var(--ink-dim)", strokeWidth: 1.5, parent: g });
-    svg.text(x + n * cw / 2, 80, "f(u, v, w) → cor", { size: 12, weight: 700, color: "var(--ink-dim)", parent: g });
+    svg.text(x + n * cw / 2, 80, "f(u, v, w) → atributos", { size: 12, weight: 700, color: "var(--ink-dim)", parent: g });
   }
 
   function bump(svg, g) {
@@ -48,7 +48,7 @@
     var gP = grp("proc"), gB = grp("bump");
     svg.text(188, 54, "Mapeamento procedural", { size: 14, weight: 700, color: "var(--ink)", parent: gP });
     procedural(svg, gP);
-    svg.text(188, 286, "padrão de COR gerado por função", { size: 11.5, color: "var(--ink-dim)", parent: gP });
+	    svg.text(188, 286, "atributos gerados por função", { size: 11.5, color: "var(--ink-dim)", parent: gP });
     svg.text(565, 54, "Bump mapping", { size: 14, weight: 700, color: "var(--ink)", parent: gB });
     bump(svg, gB);
     svg.text(565, 286, "perturba NORMAIS → relevo aparente", { size: 11.5, color: "var(--ink-dim)", parent: gB });
@@ -63,8 +63,8 @@
         body:
           "<p>Ambos enriquecem superfícies sem usar uma imagem de textura comum — mas atuam em " +
           "coisas <b>diferentes</b>:</p>" +
-          "<ul><li><span class='accent'>Procedural</span> muda a <b>cor</b> (o padrão);</li>" +
-          "<li><span class='hl'>Bump</span> muda a <b>iluminação</b> (finge relevo).</li></ul>",
+	          "<ul><li><span class='accent'>Procedural</span> gera atributos por função: cor, normal, rugosidade, deslocamento;</li>" +
+	          "<li><span class='hl'>Bump</span> muda a <b>iluminação</b> (finge relevo).</li></ul>",
         visual: svgStep("all"),
       }),
       {
@@ -73,8 +73,8 @@
           "<p>A textura é definida por uma <b>função/algoritmo</b> avaliado nas coordenadas " +
           "(frequentemente 3D — <i>solid texturing</i>, ruído de Perlin): madeira, mármore, " +
           "xadrez.</p>" +
-          "<p>Gera o <b>padrão de cor</b> <b>sem armazenar imagem</b>: não tem resolução fixa, " +
-          "não distorce nem mostra costura (<i>seam</i>).</p>",
+	          "<p>Pode controlar <b>cor</b>, <b>normal, rugosidade</b>, deslocamento e outros atributos <b>sem armazenar imagem</b>: não tem resolução fixa. " +
+	          "A ausência de costuras vale especialmente para texturas procedurais tridimensionais.</p>",
         visual: svgStep(["proc"]),
       },
       {
@@ -91,8 +91,8 @@
         title: "Resumo: procedural × bump",
         headers: ["", "Procedural", "Bump mapping"],
         rows: [
-          ["O que define", "Função/algoritmo → padrão", "Perturbação das normais"],
-          ["Altera", "A cor/aparência", "A iluminação (relevo aparente)"],
+	          ["O que define", "Função/algoritmo → atributos", "Perturbação das normais"],
+	          ["Altera", "Cor, normal, rugosidade, deslocamento etc.", "A iluminação (relevo aparente)"],
           ["Geometria", "Não muda", "Não muda (só parece)"],
           ["Silhueta", "Lisa", "Lisa (não acompanha o relevo)"],
           ["Exemplos", "Madeira, mármore, xadrez", "Rugosidade, casca de laranja, tijolos"],

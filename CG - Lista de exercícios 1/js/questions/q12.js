@@ -30,6 +30,9 @@
             {
               titulo: "p vem de distâncias (magnitudes)",
               explicacao:
+                "<p>O delta bruto <code>x₁ − x₀</code> ou <code>y₁ − y₀</code> pode ser negativo. " +
+                "O algoritmo é que separa magnitude e sentido: define <code>dx = |x₁ − x₀|</code>, " +
+                "<code>dy = |y₁ − y₀|</code> e guarda a direção em <code>sx</code> e <code>sy</code>.</p>" +
                 "<p>A variável de decisão <code>p</code> nasce de uma comparação de " +
                 "<b>distâncias</b> (o erro em relação à reta ideal). Distâncias são " +
                 "<b>magnitudes</b> — não-negativas.</p>" +
@@ -56,9 +59,8 @@
               titulo: "Uma fórmula para todos os octantes",
               explicacao:
                 "<p>Mantendo Δ <b>positivo</b>, a <b>mesma</b> fórmula de decisão serve a todos os " +
-                "octantes — só mudam <code>sx, sy</code>. Se Δ pudesse ser negativo, os sinais em " +
-                "<code>p</code> e nos incrementos <code>2Δy</code>, <code>2Δy−2Δx</code> se " +
-                "inverteriam e a lógica de decisão <span class='no'>quebraria</span>.</p>",
+                "octantes — só mudam <code>sx, sy</code>. Assim, os sinais ficam concentrados no passo, " +
+                "e os incrementos de erro continuam sendo calculados com magnitudes.</p>",
             },
           ];
         },

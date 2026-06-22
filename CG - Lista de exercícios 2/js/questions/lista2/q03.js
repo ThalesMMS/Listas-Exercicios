@@ -64,7 +64,7 @@
         body:
           "<p>Pela natureza dos <b>projetores</b>, toda projeção planar é <span class='hl'>paralela</span> " +
           "ou <span class='hl'>perspectiva</span>.</p>" +
-          "<ul><li><b>Paralela</b> — projetores paralelos (COP no infinito); preserva proporções.</li>" +
+	          "<ul><li><b>Paralela</b> — projetores paralelos (COP no infinito); preserva paralelismo e propriedades afins, mas não todos os comprimentos ou ângulos.</li>" +
           "<li><b>Perspectiva</b> — projetores convergem (COP finito); gera pontos de fuga.</li></ul>",
         visual: tree(S1, ["par", "per"]),
       },

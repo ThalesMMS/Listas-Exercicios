@@ -2,7 +2,7 @@
 
 Interface gráfica **interativa** que mostra, passo a passo, a resolução das questões 20 a 37
 do estudo dirigido de Computação Gráfica (Prova 01): rasterização de circunferências, recorte
-(Cohen-Sutherland, Liang-Barsky, Sutherland-Hodgeman) e preenchimento de áreas.
+(Cohen-Sutherland, Liang-Barsky, Sutherland-Hodgman) e preenchimento de áreas.
 
 Sem build, sem instalação, sem dependências: **HTML/CSS/JS puro + Canvas**.
 

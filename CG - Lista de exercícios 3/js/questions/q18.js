@@ -19,7 +19,53 @@
   }
   function mid(p, q) { return [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]; }
   function lerp(p, q, t) { return [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t]; }
+  function lerpNum(a, b, t) { return a + (b - a) * t; }
+  function add(p, q) { return [p[0] + q[0], p[1] + q[1]]; }
+  function sub(p, q) { return [p[0] - q[0], p[1] - q[1]]; }
+  function scale(p, s) { return [p[0] * s, p[1] * s]; }
+  function cross(p, q) { return p[0] * q[1] - p[1] * q[0]; }
+  function len(p) { return Math.sqrt(p[0] * p[0] + p[1] * p[1]); }
+  function unit(p) {
+    var m = len(p);
+    return m < 1e-8 ? [1, 0] : [p[0] / m, p[1] / m];
+  }
   function polyAt(Aps, Bs, t) { return Aps.map(function (p, k) { return lerp(p, Bs[k], t); }); }
+  function edgeFromPoly(poly, i) {
+    var a = poly[i];
+    var b = poly[(i + 1) % poly.length];
+    var d = sub(b, a);
+    return { mid: mid(a, b), dir: unit(d), len: len(d) };
+  }
+  function edgeAt(a, b, t) {
+    var dir = unit(lerp(a.dir, b.dir, t));
+    var length = lerpNum(a.len, b.len, t);
+    var center = lerp(a.mid, b.mid, t);
+    return {
+      mid: center,
+      dir: dir,
+      len: length,
+      p0: add(center, scale(dir, -length / 2)),
+      p1: add(center, scale(dir, length / 2)),
+    };
+  }
+  function lineIntersection(a, b) {
+    var p = a.mid;
+    var r = a.dir;
+    var q = b.mid;
+    var s = b.dir;
+    var denom = cross(r, s);
+    if (Math.abs(denom) < 1e-8) return mid(a.p1, b.p0);
+    var u = cross(sub(q, p), s) / denom;
+    return add(p, scale(r, u));
+  }
+  function edgePolyAt(Aedges, Bedges, t) {
+    var edges = Aedges.map(function (e, i) { return edgeAt(e, Bedges[i], t); });
+    var verts = edges.map(function (e, i) {
+      var prev = edges[(i + edges.length - 1) % edges.length];
+      return lineIntersection(prev, e);
+    });
+    return { edges: edges, verts: verts };
+  }
   function r2(n) { return (Math.round(n * 100) / 100).toFixed(2); }
 
   var A = ngon(5, 4);                 // pentágono original (5)
@@ -28,6 +74,8 @@
   var Ap = [A[0], A[1], mid(A[1], A[2]), A[2], A[3], mid(A[3], A[4]), A[4]];
   var midsA = Ap.map(function (p, i) { return mid(p, Ap[(i + 1) % 7]); });
   var midsB = B.map(function (p, i) { return mid(p, B[(i + 1) % 7]); });
+  var edgesA = Ap.map(function (_, i) { return edgeFromPoly(Ap, i); });
+  var edgesB = B.map(function (_, i) { return edgeFromPoly(B, i); });
 
   var BOUNDS = [-6.5, 6.5, -6, 6.5];
 
@@ -135,9 +183,10 @@
       title: "Por arestas — a aresta é a primitiva",
       body:
         "<p><b>Por arestas:</b> em vez do vértice, a unidade do morphing é a <b>aresta</b>. " +
-        "Pareamos as arestas e interpolamos um <b>representante</b> de cada uma — tipicamente o " +
-        "seu <b>ponto médio</b>.</p>" +
-        "<div class='formula'>M_i(t) = (1−t)·M_i^A + t·M_i^B</div>" +
+        "Para cada aresta pareada, interpolamos <b>ponto médio</b>, <b>direção</b> e <b>comprimento</b>.</p>" +
+        "<div class='formula'>M_i(t) = (1−t)·M_i^A + t·M_i^B\n" +
+        "D_i(t) = normalize((1−t)·D_i^A + t·D_i^B)\n" +
+        "L_i(t) = (1−t)·L_i^A + t·L_i^B</div>" +
         tbl(midsA[0], midsB[0], "Exemplo — aresta i = 0 (médios):", null),
       visual: planeStep(function (plane) {
         faintBoth(plane);
@@ -152,19 +201,20 @@
     steps.push({
       title: "Por arestas — interpolando (t = 0,5)",
       body:
-        "<p>Em t = 0,5 cada ponto médio caminhou metade do trajeto. As arestas do polígono " +
-        "intermediário passam por esses <b>médios interpolados</b> (em amarelo).</p>" +
+        "<p>Em t = 0,5 cada aresta recebe seu médio, direção e comprimento intermediários. " +
+        "Assim a aresta intermediária fica totalmente definida, não apenas marcada por um ponto.</p>" +
         "<div class='formula'>M_0(0,5) = (" + r2(lerp(midsA[0], midsB[0], 0.5)[0]) + ", " +
         r2(lerp(midsA[0], midsB[0], 0.5)[1]) + ")</div>" +
-        "<p>Os <b>vértices</b> do intermediário saem da <b>interseção de arestas consecutivas</b> " +
-        "(aqui mostramos o polígono já reconstruído).</p>",
+        "<p>Os <b>vértices</b> do intermediário são obtidos pelo cruzamento das retas suporte de arestas vizinhas " +
+        "(aqui mostramos o polígono reconstruído por esse método).</p>",
       visual: planeStep(function (plane) {
         faintBoth(plane);
-        var P = polyAt(Ap, B, 0.5);
-        plane.polygon(P, { stroke: COL.yellow, lineWidth: 3 });
-        for (var i = 0; i < 7; i++) {
-          var m = lerp(midsA[i], midsB[i], 0.5);
-          plane.point(m[0], m[1], { color: COL.yellow, radius: 4 });
+        var edgeResult = edgePolyAt(edgesA, edgesB, 0.5);
+        plane.polygon(edgeResult.verts, { stroke: COL.yellow, lineWidth: 3 });
+        for (var i = 0; i < edgeResult.edges.length; i++) {
+          var e = edgeResult.edges[i];
+          plane.segment(e.p0, e.p1, { color: COL.orange, lineWidth: 1.5, dashed: [4, 3] });
+          plane.point(e.mid[0], e.mid[1], { color: COL.yellow, radius: 4 });
         }
         plane.text(-6, 5.4, "arestas em t = 0,5", { color: COL.yellow });
       }),
@@ -177,8 +227,8 @@
       headers: ["", "Por vértices", "Por arestas"],
       rows: [
         ["Primitiva", "O vértice", "A aresta"],
-        ["O que se interpola", "Posição dos cantos", "Pontos médios das arestas"],
-        ["Vértices do intermediário", "Diretos (são o resultado)", "Interseção de arestas consecutivas"],
+        ["O que se interpola", "Posição dos cantos", "Médio, direção e comprimento"],
+        ["Vértices do intermediário", "Diretos (são o resultado)", "Cruzamento das retas suporte vizinhas"],
         ["Quando preferir", "Caso geral, simples", "Preservar estrutura/orientação das arestas"],
       ],
     }));

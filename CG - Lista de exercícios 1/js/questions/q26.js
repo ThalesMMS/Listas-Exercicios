@@ -45,8 +45,8 @@
             {
               titulo: "Os valores originais NÃO são alterados",
               explicacao:
-                "<p>Durante o recorte, as coordenadas dos extremos são atualizadas a cada iteração — mas isso acontece sobre <b>cópias</b> de trabalho, não sobre os dados da cena.</p>" +
-                "<p>A geometria original permanece <span class='ok'>preservada no modelo/cena</span>. O algoritmo apenas <b>calcula o que aparece</b> na janela; ele não modifica permanentemente o objeto.</p>",
+                "<p>Durante o recorte, as coordenadas dos extremos são atualizadas a cada iteração. Em uma implementação de visualização, normalmente fazemos isso sobre <b>cópias</b> de trabalho, não sobre os dados da cena.</p>" +
+                "<p>A geometria original permanece <span class='ok'>preservada no modelo/cena</span>. Essa é uma boa decisão de projeto para renderização; não é uma obrigação matemática do Cohen-Sutherland, pois uma implementação poderia sobrescrever os extremos recebidos.</p>",
             },
             {
               titulo: "Por que separar original e cópia",

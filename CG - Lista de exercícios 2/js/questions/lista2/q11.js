@@ -56,8 +56,8 @@
       {
         title: "Igualando as bases",
         body:
-          "<p>Como <code>U·M<sub>B</sub>·G<sub>B</sub> = U·M<sub>I</sub>·G<sub>I</sub></code> vale para <b>todo u</b>, " +
-          "podemos cancelar <code>U</code>:</p>" +
+	          "<p>Como <code>U·M<sub>B</sub>·G<sub>B</sub> = U·M<sub>I</sub>·G<sub>I</sub></code> vale para <b>todo u</b> " +
+	          "e os monômios são linearmente independentes, os vetores de coeficientes devem ser iguais:</p>" +
           "<p style='text-align:center'><code>M<sub>B</sub>·G<sub>B</sub> = M<sub>I</sub>·G<sub>I</sub></code></p>" +
           "<p>Multiplicando à esquerda por <code>M<sub>B</sub>⁻¹</code>:</p>" +
           "<p style='text-align:center'><code>G<sub>B</sub> = (M<sub>B</sub>⁻¹·M<sub>I</sub>)·G<sub>I</sub></code></p>" +

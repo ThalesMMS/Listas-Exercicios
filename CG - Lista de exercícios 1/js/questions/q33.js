@@ -88,7 +88,7 @@
   window.GUI.register({
     id: 33,
     num: "33",
-    section: "IV) Recorte — Sutherland-Hodgeman",
+    section: "IV) Recorte — Sutherland-Hodgman",
     title: "Critérios de atualização da lista de vértices",
     type: "conceitual",
     hubDesc: "Os 4 casos S→P: dentro/fora decidem o que entra na nova lista.",

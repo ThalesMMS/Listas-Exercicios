@@ -61,9 +61,9 @@
     svg.text(486, 215, "V (p/ o olho)", { size: 13, weight: 700, color: "var(--green)", parent: gV });
     svg.text(566, 158, "observador", { size: 12, color: "var(--ink-dim)", parent: gV });
 
-    // ---- Reflexão R (espelho de L em torno de N) ----
+    // ---- Reflexão R (espelho do raio incidente -L em torno de N) ----
     svg.arrow(P[0], P[1], 524, 150, { color: "var(--orange)", strokeWidth: 3, head: 12, dashed: "7 5", parent: gR });
-    svg.text(560, 250, "R (reflexão de L)", { size: 13, weight: 700, color: "var(--orange)", parent: gR });
+    svg.text(560, 250, "R = 2(N·L)N − L", { size: 13, weight: 700, color: "var(--orange)", parent: gR });
   }
 
   function svgStep(active) {
@@ -111,9 +111,10 @@
       {
         title: "Reflexão R e luz ambiente",
         body:
-          "<p>O vetor <span style='color:var(--orange);font-weight:600'>R</span> é a " +
-          "<b>reflexão de L em torno de N</b>; o brilho especular é forte quando <b>R</b> se " +
-          "alinha com <b>V</b>.</p>" +
+	          "<p>Como <b>L</b> foi definido de <b>P para a luz</b>, o raio incidente que chega em P tem direção <b>−L</b>. " +
+	          "Para vetores normalizados, o vetor refletido em direção ao observador é " +
+	          "<span style='color:var(--orange);font-weight:600'>R = 2(N·L)N − L</span>.</p>" +
+	          "<p>O brilho especular é forte quando <b>R</b> se alinha com <b>V</b>.</p>" +
           "<p>A <b>luz ambiente</b> é uma iluminação de fundo, uniforme, que aproxima a luz " +
           "indireta da cena.</p>",
         visual: svgStep(["surf", "N", "L", "V", "R", "amb"]),
@@ -127,7 +128,7 @@
           ["Superfície + normal N", "Geometria local; orienta os ângulos"],
           ["Material (k_a, k_d, k_s, n)", "Como a superfície reflete (ambiente/difuso/especular)"],
           ["Observador V", "Direção de visão; necessária ao especular"],
-          ["Reflexão R", "Espelho de L em N; pico do brilho especular"],
+	          ["Reflexão R", "Com L apontando para a luz: R = 2(N·L)N − L; pico do brilho especular"],
           ["Luz ambiente", "Iluminação de fundo (aproxima a indireta)"],
         ],
       }),

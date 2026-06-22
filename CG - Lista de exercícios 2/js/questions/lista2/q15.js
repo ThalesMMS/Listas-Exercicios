@@ -55,26 +55,28 @@
           "<span class='hl'>se fundem suavemente</span>, sozinhas.</p>",
         visual: { type: "plane", bounds: B, draw: blobby },
       },
-      {
-        title: "Por que facilita a representação",
-        body:
-          "<ul>" +
-          "<li><b>Compacto</b>: bastam alguns <b>centros + raios</b> (uns poucos números) para uma forma rica;</li>" +
-          "<li><b>Blending automático</b>: a fusão é consequência da soma — sem costurar nada;</li>" +
-          "<li><b>Orgânico e suave</b>: contornos lisos, ótimos para fluidos, gotas, músculos;</li>" +
-          "<li><b>Fácil de animar</b>: basta <b>mover/escalar os centros</b>; a topologia se ajusta sozinha;</li>" +
-          "<li><b>Resolução livre</b>: avalia-se f em qualquer ponto (sem \"células\").</li>" +
-          "</ul>",
-        visual: { type: "plane", bounds: B, draw: blobby },
-      },
+	      {
+	        title: "Por que facilita a representação",
+	        body:
+	          "<ul>" +
+	          "<li><b>Compacto</b>: bastam alguns <b>centros + raios</b> (uns poucos números) para uma forma rica;</li>" +
+	          "<li><b>Blending automático</b>: a fusão é consequência da soma — sem costurar nada;</li>" +
+	          "<li><b>Orgânico e suave</b>: contornos lisos, ótimos para fluidos, gotas, músculos;</li>" +
+	          "<li><b>Fácil de animar</b>: basta <b>mover/escalar os centros</b>; a topologia se ajusta sozinha;</li>" +
+	          "<li><b>Resolução livre</b>: avalia-se f em qualquer ponto (sem \"células\").</li>" +
+	          "</ul>" +
+	          "<p class='muted'>O custo é <b>menor controle preciso</b> da superfície e a necessidade de avaliar o campo e extrair uma malha quando se quer renderizar como polígonos.</p>",
+	        visual: { type: "plane", bounds: B, draw: blobby },
+	      },
       {
         title: "Comparando com voxels",
         body:
           "<p>A <b>mesma</b> forma em voxels precisa de uma <b>grade</b>: a silhueta fica <span class='no'>facetada</span> " +
           "(aliasing) e a memória cresce com <code>O(n³)</code>. Para suavizar, só aumentando a resolução — mais memória ainda.</p>" +
-          "<p>O Blobby descreve a mesma superfície com <b>pouquíssimos parâmetros</b> e de forma <b>contínua</b>.</p>",
-        visual: { type: "plane", bounds: B, draw: voxel },
-      },
+	          "<p>O Blobby descreve a mesma superfície com <b>pouquíssimos parâmetros</b> e de forma <b>contínua</b>.</p>" +
+	          "<p>Já os voxels são melhores quando os dados já são volumétricos medidos, com densidades, tecidos ou <b>materiais heterogêneos</b>.</p>",
+	        visual: { type: "plane", bounds: B, draw: voxel },
+	      },
       EX.Slides.comparison({
         title: "Blobby × Voxels",
         intro: "<p>Lado a lado:</p>",
@@ -82,12 +84,13 @@
         rows: [
           ["Armazenamento", "poucos centros + raios", "grade O(n³)"],
           ["Suavidade", "contínua/analítica", "facetada (aliasing)"],
-          ["Fusão/junção", "automática e orgânica", "presa à célula"],
-          ["Animação", "mover/escalar centros", "recomputar a grade"],
-          ["Resolução", "avalia onde quiser", "fixa pela célula"],
-          ["Memória", "mínima", "alta"],
-        ],
-      }),
+	          ["Fusão/junção", "automática e orgânica", "presa à célula"],
+	          ["Animação", "mover/escalar centros", "recomputar a grade"],
+	          ["Resolução", "avalia onde quiser", "fixa pela célula"],
+	          ["Controle local", "menos preciso; depende do campo", "explícito por célula"],
+	          ["Dados medidos", "menos natural", "bom para volumes e materiais heterogêneos"],
+	        ],
+	      }),
     ];
   }
 

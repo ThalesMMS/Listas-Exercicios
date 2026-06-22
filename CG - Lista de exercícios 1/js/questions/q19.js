@@ -8,8 +8,9 @@
   var ALG = window.ALG;
   var COL = window.CartesianPlane.COLORS;
   var XC = 3, YC = 4, R = 4, BOUNDS = [-3, 9, -2, 10];
-  var OCT = ALG.circleBresenham(XC, YC, R).octant;   // relativos
+  var OCT = ALG.circleBresenham(0, 0, R).octant;     // relativos
   var THIRD = OCT[2] || OCT[OCT.length - 1];          // 3º ponto relativo
+  var ABS_THIRD = { x: XC + THIRD.x, y: YC + THIRD.y };
   var SYM = ALG.symmetricPoints(THIRD.x, THIRD.y, XC, YC);
 
   function circleOutline(plane, cx, cy) {
@@ -53,8 +54,10 @@
                 "plotar</b>: cada ponto relativo (x, y) e seus 8 simétricos são <b>transladados " +
                 "somando o centro</b>:</p>" +
                 "<div class='formula'>(xc ± x, yc ± y)   e   (xc ± y, yc ± x)</div>" +
-                "<p>3º ponto relativo " + ALG.plabel(ALG.P(THIRD.x - XC, THIRD.y - YC)) +
-                " → com centro (" + XC + ", " + YC + "), os simétricos absolutos são:</p>" +
+                "<p>3º ponto relativo " + ALG.plabel(ALG.P(THIRD.x, THIRD.y)) +
+                " → somando o centro (" + XC + ", " + YC + "), o ponto absoluto correspondente é " +
+                "<span class='ok'>" + ALG.plabel(ALG.P(ABS_THIRD.x, ABS_THIRD.y)) + "</span>.</p>" +
+                "<p>Os 8 simétricos absolutos desse ponto relativo são:</p>" +
                 "<div class='coordlist'>" +
                 SYM.map(function (s) { return "<span class='coord green'>(" + s.x + ", " + s.y + ")</span>"; }).join("") +
                 "</div>",
@@ -63,7 +66,21 @@
                 circleOutline(plane, XC, YC);
                 plane.point(XC, YC, { color: COL.purple, radius: 4, label: "C", labelColor: COL.ink });
                 SYM.forEach(function (s) { plane.point(s.x, s.y, { color: COL.green, radius: 5 }); });
-                plane.point(THIRD.x, THIRD.y, { color: COL.yellow, radius: 6, ring: COL.ink, label: "3º ponto", labelColor: COL.yellow });
+                plane.point(THIRD.x, THIRD.y, {
+                  color: COL.yellow,
+                  radius: 5,
+                  ring: COL.ink,
+                  label: "rel. " + ALG.plabel(ALG.P(THIRD.x, THIRD.y)),
+                  labelColor: COL.yellow,
+                });
+                plane.point(ABS_THIRD.x, ABS_THIRD.y, {
+                  color: COL.orange,
+                  radius: 7,
+                  ring: COL.ink,
+                  label: "abs. " + ALG.plabel(ALG.P(ABS_THIRD.x, ABS_THIRD.y)),
+                  labelColor: COL.orange,
+                  labelDy: 16,
+                });
               },
             },
             {

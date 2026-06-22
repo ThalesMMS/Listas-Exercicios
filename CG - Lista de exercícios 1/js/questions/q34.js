@@ -121,7 +121,7 @@
   window.GUI.register({
     id: 34,
     num: "34",
-    section: "IV) Recorte — Sutherland-Hodgeman",
+    section: "IV) Recorte — Sutherland-Hodgman",
     title: "Sutherland-Hodgman para o triângulo ABC",
     type: "computacional",
     hubDesc: "Recorte progressivo do triângulo pelas 4 fronteiras → 5 vértices.",

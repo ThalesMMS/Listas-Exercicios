@@ -112,19 +112,13 @@
                 "<div class='con'>− Pode não atravessar regiões conectadas apenas diagonalmente.</div>" +
                 "<div class='con'>− Pode deixar pixels diagonais sem preenchimento.</div>" +
                 "</div>" +
-                "<p>No diagrama: a semente <span class='ok'>(0,0)</span> preenche o bloco inferior, " +
-                "mas a célula <span class='no'>(1,1)</span> só toca a região na diagonal — por " +
+                "<p>No diagrama: a semente <span class='ok'>(0,0)</span> preenche a célula inicial, " +
+                "mas a célula <span class='no'>(1,1)</span> só toca essa região pela diagonal — por " +
                 "conn-4 ela fica <b>de fora</b>.</p>",
               bounds: [-2, 4, -2, 4],
               draw: function (plane) {
-                // Bloco preenchível alcançado por conn-4 a partir de (0,0).
-                [
-                  [0, 0],
-                  [1, 0],
-                  [0, 1],
-                ].forEach(function (c) {
-                  plane.pixel(c[0], c[1], { fill: COL.greenSoft, stroke: COL.green, lineWidth: 2 });
-                });
+                // Região alcançada por conn-4 a partir de (0,0).
+                plane.pixel(0, 0, { fill: COL.greenSoft, stroke: COL.green, lineWidth: 2 });
                 plane.point(0, 0, { color: COL.green, radius: 4, label: "semente", labelColor: COL.ink });
                 // Célula conectada só pela diagonal — não alcançada.
                 plane.pixel(1, 1, { fill: "transparent", stroke: COL.red, lineWidth: 2 });

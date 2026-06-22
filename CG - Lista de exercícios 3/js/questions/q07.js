@@ -43,13 +43,13 @@
 
     svg.text(190, 50, "Iluminação direta", { size: 14, weight: 700, color: "var(--ink)", parent: gD });
     room(svg, gD, 70, 70, "direta");
-    svg.text(190, 312, "só a luz da fonte · sombra dura", { size: 11.5, color: "var(--ink-dim)", parent: gD });
+	    svg.text(190, 312, "só a luz da fonte direta", { size: 11.5, color: "var(--ink-dim)", parent: gD });
     svg.text(190, 330, "sem inter-reflexão", { size: 11.5, color: "var(--ink-dim)", parent: gD });
 
     svg.text(550, 50, "Iluminação global", { size: 14, weight: 700, color: "var(--ink)", parent: gG });
     room(svg, gG, 430, 70, "global");
     svg.text(550, 312, "direta + indireta (rebatida)", { size: 11.5, color: "var(--ink-dim)", parent: gG });
-    svg.text(550, 330, "sombra suave · color bleeding", { size: 11.5, color: "var(--ink-dim)", parent: gG });
+	    svg.text(550, 330, "color bleeding e luz indireta", { size: 11.5, color: "var(--ink-dim)", parent: gG });
   }
 
   function svgStep(active) { return { type: "svg", draw: function (svg) { scene(svg, active); } }; }
@@ -70,8 +70,8 @@
         body:
           "<p>Considera apenas a luz que vai <b>diretamente da fonte</b> para a superfície (e daí " +
           "ao olho). Não trata a luz que rebate entre objetos.</p>" +
-          "<p>Resultado: cálculo <b>barato</b>, porém sombras <b>duras</b> e regiões fora da luz " +
-          "ficariam pretas — por isso usa-se um termo <b>ambiente</b> constante como aproximação.</p>",
+	          "<p>Resultado: cálculo <b>barato</b>. Regiões fora da luz direta ficariam pretas — por isso usa-se um termo <b>ambiente</b> constante como aproximação.</p>" +
+	          "<p class='muted'>A sombra pode ser dura ou suave conforme a extensão angular da fonte: uma fonte pontual tende a sombra dura; uma área luminosa pode gerar penumbra mesmo em iluminação direta.</p>",
         visual: svgStep(["direta"]),
       },
       {
@@ -79,10 +79,11 @@
         body:
           "<p>Considera também a luz <b>indireta</b>: múltiplas <b>reflexões/refrações</b> entre " +
           "superfícies. Surgem efeitos realistas:</p>" +
-          "<ul><li><b>Sombras suaves</b> e penumbra;</li>" +
-          "<li><b>Color bleeding</b> — uma parede colorida tinge o objeto vizinho;</li>" +
-          "<li>cáusticas e iluminação indireta.</li></ul>" +
-          "<p>Muito mais <b>realista</b>, porém <b>caro</b> (radiosidade, path tracing).</p>",
+	          "<ul><li><b>Iluminação indireta</b> em regiões que não recebem luz direta;</li>" +
+	          "<li><b>Color bleeding</b> — uma parede colorida tinge o objeto vizinho;</li>" +
+	          "<li>cáusticas e iluminação indireta.</li></ul>" +
+	          "<p class='muted'>Global não significa automaticamente sombra suave: uma fonte pontual ainda pode produzir sombra dura em um renderizador global.</p>" +
+	          "<p>Muito mais <b>realista</b>, porém <b>caro</b> (radiosidade, path tracing).</p>",
         visual: svgStep(["global"]),
       },
       S.comparison({
@@ -92,7 +93,7 @@
         rows: [
           ["Considera", "Só luz vinda da fonte", "Também luz refletida por outras superfícies"],
           ["Inter-reflexão", "Não", "Sim"],
-          ["Sombras", "Duras", "Suaves / penumbra"],
+	          ["Sombras", "Dependem do tamanho/angular da fonte", "Também dependem da fonte; indireta pode suavizar a cena"],
           ["Realismo", "Menor", "Maior"],
           ["Custo", "Baixo", "Alto"],
           ["Exemplos", "Phong local, ambiente constante", "Radiosidade, path tracing, ray tracing"],

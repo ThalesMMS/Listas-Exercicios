@@ -1,6 +1,6 @@
 /*
  * q18.js — "A atualização de x tem que ser feita antes de p? É de y? Explique." (conceitual, círculo)
- * x (independente) incrementa sempre, ANTES de p; y só decrementa quando p ≥ 0.
+ * x (independente) incrementa sempre nesta recorrência; y só decrementa quando p ≥ 0.
  */
 (function () {
   "use strict";
@@ -24,9 +24,9 @@
     id: 18,
     num: "18",
     section: "III) Rasterização de Circunferências",
-    title: "Atualização de x antes de p (e de y)",
+    title: "Atualização de x, p e y",
     type: "conceitual",
-    hubDesc: "x incrementa sempre antes de p; y só decrementa quando p ≥ 0.",
+    hubDesc: "Nesta recorrência, x incrementa sempre; y só decrementa quando p ≥ 0.",
     enunciado:
       "A atualização de x tem que ser feita antes da atualização da variável de decisão p? É de y? Explique.",
     parts: [
@@ -38,8 +38,8 @@
               titulo: "x é a variável independente",
               explicacao:
                 "<p>No 2º octante, <span class='hl'>x</span> avança em <b>todo</b> passo: " +
-                "<code>x++</code> incondicional, e <b>antes</b> de atualizar <code>p</code> — pois " +
-                "<code>p</code> mede o erro <b>no novo x</b>.</p>" +
+                "<code>x++</code> incondicional. Na recorrência mostrada, esse avanço aparece antes " +
+                "da atualização de <code>p</code>, pois <code>p</code> mede o erro <b>no novo x</b>.</p>" +
                 "<p>Do ponto atual <span class='hl'>" + ALG.plabel(ALG.P(CUR.x, CUR.y)) + "</span>, " +
                 "passamos para a coluna <code>x + 1</code>.</p>",
               bounds: BOUNDS,
@@ -72,8 +72,9 @@
               explicacao:
                 "<p>Resumindo a iteração (já com x incrementado):</p>" +
                 "<div class='formula'>x++;                       // sempre, primeiro\nif (p &lt; 0)  p += 2x + 1;       // y mantém\nelse        { y--;  p += 2(x − y) + 1; }</div>" +
-                "<p><b>x antes de p</b>: sim — p depende do x novo. <b>y antes de p</b>: não — y só " +
-                "muda no ramo <code>p ≥ 0</code>, junto da decisão.</p>",
+                "<p>Para esta recorrência, <b>x</b> é avançado antes do novo <code>p</code>. " +
+                "<b>y</b> não vem antes da decisão; só muda no ramo <code>p ≥ 0</code>. " +
+                "Outras formulações podem reorganizar a ordem algébrica mantendo a mesma escolha de pixels.</p>",
               bounds: BOUNDS,
               draw: function (plane) {
                 arc(plane);

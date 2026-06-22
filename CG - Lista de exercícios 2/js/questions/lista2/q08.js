@@ -55,7 +55,7 @@
         rows: [
           ["Subdivisão (Catmull-Clark)", "ideal — segue edge loops", "menos natural"],
           ["Deformação / animação", "dobra de forma previsível", "pode \"pinçar\""],
-          ["Rasterização / GPU", "é convertido em triângulos", "nativo do hardware"],
+	          ["Rasterização / GPU", "normalmente é triangulado", "primitiva fundamental do pipeline"],
           ["Planaridade", "4 pontos podem não ser coplanares", "sempre plano"],
           ["Topologia arbitrária", "exige cuidado", "qualquer superfície"],
         ],
@@ -86,7 +86,7 @@
         title: "Na prática",
         body:
           "<p>O fluxo comum: <b>modelar e animar em quads</b> (topologia limpa, subdivisão e deformação) e, " +
-          "na exportação para a <b>GPU</b>, <b>triangular</b> tudo (o hardware só desenha triângulos).</p>",
+	          "na exportação para a <b>GPU</b>, <b>triangular</b> tudo, porque os pipelines gráficos normalmente rasterizam triângulos como primitiva fundamental.</p>",
       }),
     ];
   }

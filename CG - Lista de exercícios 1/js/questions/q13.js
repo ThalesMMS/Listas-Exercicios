@@ -17,9 +17,9 @@
     id: 13,
     num: "13",
     section: "II) Rasterização de Retas — Bresenham",
-    title: "Atualização de x antes de p (e de y)",
+    title: "Atualização de x, p e y",
     type: "conceitual",
-    hubDesc: "x incrementa sempre, antes de p; y só muda quando p ≥ 0.",
+    hubDesc: "Nesta recorrência, x é a variável independente; y só muda quando p ≥ 0.",
     enunciado:
       "A atualização de x tem que ser feita antes da atualização da variável de decisão p no 1º caso? É de y? Explique.",
     parts: [
@@ -28,12 +28,12 @@
         build: function () {
           return [
             {
-              titulo: "x é independente — anda sempre, antes de p",
+              titulo: "Nesta recorrência, x é independente",
               explicacao:
                 "<p>No 1º caso (anda em x), <span class='hl'>x</span> é a variável " +
                 "<b>independente</b>: <code>x += sx</code> em <b>todo</b> passo, " +
-                "<b>incondicionalmente</b> e <b>antes</b> de atualizar <code>p</code> — porque " +
-                "<code>p</code> mede o erro <b>no novo x</b>.</p>",
+                "<b>incondicionalmente</b>. Na organização de pseudocódigo abaixo, ele aparece " +
+                "antes de atualizar <code>p</code>, porque <code>p</code> mede o erro <b>no novo x</b>.</p>",
               bounds: BOUNDS,
               draw: function (plane) {
                 idealArrow(plane);
@@ -61,8 +61,9 @@
               titulo: "A ordem na iteração",
               explicacao:
                 "<div class='formula'>x += sx;                  // sempre, primeiro\nif (p &lt; 0)  p += 2Δy;        // y mantém (E)\nelse        { y += sy;  p += 2Δy − 2Δx; }   // diagonal (NE)</div>" +
-                "<p><b>x antes de p</b>: sim. <b>y antes de p</b>: não — y só muda no ramo " +
-                "<code>p ≥ 0</code>. No 2º caso, trocam-se os papéis de x e y.</p>",
+                "<p>Para esta recorrência: atualizamos <b>x antes de recalcular p</b>. " +
+                "<b>y</b> não vem antes da decisão; só muda no ramo <code>p ≥ 0</code>. " +
+                "Formulações equivalentes podem reorganizar operações algébricas sem mudar os pixels escolhidos.</p>",
             },
           ];
         },

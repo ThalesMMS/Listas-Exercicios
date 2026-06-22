@@ -7,34 +7,30 @@
  */
 (function () {
   "use strict";
+  var ALG = window.ALG;
   var COL = window.CartesianPlane.COLORS;
-  var W = window.ALG.DEFAULT_WINDOW; // {xmin:-2, xmax:5, ymin:1, ymax:6}
+  var W = ALG.DEFAULT_WINDOW; // {xmin:-2, xmax:5, ymin:1, ymax:6}
 
   var BOUNDS = [-6, 9, -2, 10];
 
+  function asNum(p) {
+    return [ALG.nx(p), ALG.ny(p)];
+  }
+
   // Polígono ilustrativo (concavo): parte dentro, parte fora da janela.
   var POLY = [
-    [-4, 3],
-    [1, 8],
-    [3, 4],
-    [7, 7],
-    [6, -1],
-    [1, 0.5],
-    [-3, -0.5],
+    ALG.P(-4, 3),
+    ALG.P(1, 8),
+    ALG.P(3, 4),
+    ALG.P(7, 7),
+    ALG.P(6, -1),
+    ALG.P(1, 0.5),
+    ALG.P(-3, -0.5),
   ];
 
-  // Resultado conceitual após recortar POLY pela janela [-2,5]x[1,6].
-  // (apenas ilustrativo do "miolo visível" — confere com o contorno interno)
-  var CLIPPED = [
-    [-2, 4.5],
-    [-2, 5],
-    [0, 7],
-    [3, 4],
-    [5, 5.5],
-    [5, 1],
-    [-0.6, 1],
-    [-2, 1],
-  ];
+  var POLY_DRAW = POLY.map(asNum);
+  var CLIPPED_RAW = ALG.sutherlandHodgman(POLY, W).result;
+  var CLIPPED = CLIPPED_RAW.map(asNum);
 
   function drawWindow(plane, opts) {
     opts = opts || {};
@@ -55,13 +51,13 @@
 
     if (mode === "input" || mode === "split") {
       // Polígono de entrada: contorno cheio, leve preenchimento.
-      plane.polygon(POLY, {
+      plane.polygon(POLY_DRAW, {
         stroke: mode === "split" ? "rgba(120,140,170,0.6)" : COL.purple,
         fill: mode === "split" ? "rgba(120,140,170,0.06)" : "rgba(183,148,246,0.12)",
         lineWidth: mode === "split" ? 1.5 : 2.5,
         dashed: mode === "split" ? [5, 4] : false,
       });
-      POLY.forEach(function (p) {
+      POLY_DRAW.forEach(function (p) {
         plane.point(p[0], p[1], {
           color: mode === "split" ? "rgba(120,140,170,0.7)" : COL.purple,
           radius: mode === "split" ? 2.5 : 3.5,
@@ -94,7 +90,7 @@
   window.GUI.register({
     id: 32,
     num: "32",
-    section: "IV) Recorte — Sutherland-Hodgeman",
+    section: "IV) Recorte — Sutherland-Hodgman",
     title: "Qual é o propósito desse algoritmo?",
     type: "conceitual",
     hubDesc: "Recortar polígonos contra a janela e gerar uma nova lista de vértices.",
@@ -147,13 +143,13 @@
             {
               titulo: "Polígono recortado, pronto para preencher",
               explicacao:
-                "<p>O resultado é um <b>polígono fechado e válido</b>, descrito por sua lista de " +
-                "vértices, que pode ser preenchido ou rasterizado normalmente.</p>" +
+                "<p>O resultado é um <b>polígono fechado</b>, descrito por sua lista de " +
+                "vértices, que pode ser preenchido ou rasterizado normalmente quando a janela de recorte é convexa.</p>" +
                 "<div class='proscons'>" +
                 "<div class='pro'>+ Mantém o polígono como contorno fechado</div>" +
                 "<div class='pro'>+ Entrada e saída têm o mesmo formato (lista de vértices), o que permite " +
                 "encadear o recorte de uma fronteira na próxima</div>" +
-                "<div class='con'>− Em polígonos côncavos pode gerar arestas degeneradas ao longo da borda</div>" +
+                "<div class='con'>− A janela de recorte deve ser convexa; uma janela côncava pode gerar componentes desconectados difíceis de representar por uma única lista</div>" +
                 "</div>",
               bounds: BOUNDS,
               draw: function (plane) {

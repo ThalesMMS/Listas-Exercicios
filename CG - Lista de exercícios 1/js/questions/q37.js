@@ -2,12 +2,12 @@
  * q37.js — Aplicação dos algoritmos de preenchimento (computacional).
  *
  * Três abas sobre a MESMA figura rasterizada (contorno preto):
- *   a) Boundary Fill — conn-4, semente (6,8): anima o preenchimento por linha.
- *   b) Flood Fill    — conn-4, semente (8,5): recolore o branco interno de preto.
- *   c) Scan-Line     — para cada linha, vértices da borda + span interno.
+ *   a) Boundary Fill — conn-4, semente (6,8): para pela cor de borda.
+ *   b) Flood Fill    — conn-4, semente (8,5): troca a cor-alvo inicial.
+ *   c) Scan-Line     — calcula interseções com as arestas e pinta spans internos.
  *
- * Toda a animação é dirigida pelos traços do ALG (flood / runsByRow /
- * groupByRow) — nenhum número é fixado à mão.
+ * As animações por semente usam um BFS local com predicados diferentes; a
+ * scan-line usa as arestas do contorno, sem reutilizar o resultado do flood.
  */
 (function () {
   "use strict";
@@ -32,6 +32,108 @@
   });
 
   var BORDER_DARK = "#10151f";
+  var BACKGROUND_COLOR = "branco";
+
+  // Contorno vetorial correspondente ao raster acima, usado pela scan-line.
+  var SCAN_POLY = [
+    [3, 7],
+    [5, 9],
+    [9, 9],
+    [9, 4],
+    [7, 4],
+    [5, 5],
+  ];
+
+  function isBorder(x, y) {
+    return !!BLOCKED[ALG.key(x, y)];
+  }
+
+  function colorAt(x, y) {
+    return isBorder(x, y) ? "preto-borda" : BACKGROUND_COLOR;
+  }
+
+  function seededFill(seed, accepts, bounds, conn) {
+    var n4 = [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ];
+    var n8 = n4.concat([
+      [1, 1],
+      [1, -1],
+      [-1, 1],
+      [-1, -1],
+    ]);
+    var nbrs = conn === 8 ? n8 : n4;
+    var visited = {};
+    var order = [];
+    var queue = [seed];
+    visited[ALG.key(seed.x, seed.y)] = true;
+
+    while (queue.length) {
+      var c = queue.shift();
+      if (!accepts(c.x, c.y)) continue;
+      order.push(c);
+      nbrs.forEach(function (d) {
+        var nx = c.x + d[0], ny = c.y + d[1];
+        var key = ALG.key(nx, ny);
+        if (nx < bounds.xmin || nx > bounds.xmax || ny < bounds.ymin || ny > bounds.ymax) return;
+        if (visited[key] || !accepts(nx, ny)) return;
+        visited[key] = true;
+        queue.push({ x: nx, y: ny });
+      });
+    }
+
+    return order;
+  }
+
+  function boundaryFillCells(seed) {
+    return seededFill(seed, function (x, y) {
+      return !isBorder(x, y);
+    }, FLOOD_BOUNDS, 4);
+  }
+
+  function floodFillCells(seed) {
+    var target = colorAt(seed.x, seed.y);
+    return seededFill(seed, function (x, y) {
+      return colorAt(x, y) === target;
+    }, FLOOD_BOUNDS, 4);
+  }
+
+  function scanlineSpans(poly) {
+    var minY = Math.min.apply(null, poly.map(function (p) { return p[1]; }));
+    var maxY = Math.max.apply(null, poly.map(function (p) { return p[1]; }));
+    var rows = {};
+
+    for (var y = Math.ceil(minY) + 1; y < maxY; y++) {
+      var xs = [];
+      for (var i = 0; i < poly.length; i++) {
+        var a = poly[i];
+        var b = poly[(i + 1) % poly.length];
+        var y0 = a[1], y1 = b[1];
+        if (y0 === y1) continue;
+        var ymin = Math.min(y0, y1);
+        var ymax = Math.max(y0, y1);
+        if (y < ymin || y >= ymax) continue;
+        var t = (y - y0) / (y1 - y0);
+        xs.push(a[0] + t * (b[0] - a[0]));
+      }
+      xs.sort(function (a, b) { return a - b; });
+
+      var spans = [];
+      for (var k = 0; k + 1 < xs.length; k += 2) {
+        var left = xs[k];
+        var right = xs[k + 1];
+        var x0 = Math.floor(left) + 1;
+        var x1 = Math.ceil(right) - 1;
+        if (x0 <= x1) spans.push({ x0: x0, x1: x1, left: left, right: right });
+      }
+      if (spans.length) rows[y] = spans;
+    }
+
+    return rows;
+  }
 
   function fmtPt(x, y) {
     return "(" + x + ", " + y + ")";
@@ -77,7 +179,7 @@
     return {
       label: label,
       build: function (plane) {
-        var cells = ALG.flood(seed, BLOCKED, FLOOD_BOUNDS, 4); // ordem BFS
+        var cells = opts.cells(seed); // ordem BFS
         var runs = ALG.runsByRow(cells); // { y: [[x0,x1]] }
         // Linhas de cima para baixo (y decrescente).
         var ys = Object.keys(runs)
@@ -228,8 +330,7 @@
     return {
       label: "c) Scan-Line",
       build: function (plane) {
-        var cells = ALG.flood({ x: 6, y: 8 }, BLOCKED, FLOOD_BOUNDS, 4);
-        var spans = ALG.runsByRow(cells); // { y: [[x0,x1]] } — interior
+        var spans = scanlineSpans(SCAN_POLY); // { y: [{x0,x1,left,right}] } — interior por interseção
         // Vértices da borda agrupados por linha.
         var borderCells = BORDER.map(function (b) {
           return { x: b[0], y: b[1] };
@@ -309,21 +410,23 @@
               .join("") +
             "</div>";
           var spanCells = [];
-          for (var x = span[0]; x <= span[1]; x++) spanCells.push({ x: x, y: y });
+          for (var x = span.x0; x <= span.x1; x++) spanCells.push({ x: x, y: y });
 
           steps.push({
-            titulo: "Linha y = " + y + " — span x = " + span[0] + " até " + span[1],
+            titulo: "Linha y = " + y + " — span x = " + span.x0 + " até " + span.x1,
             bounds: VIEW,
             explicacao:
               "<p>Linha <span class='hl'>y = " +
               y +
               "</span>. Pixels de borda nesta linha:</p>" +
               vertsHtml +
-              "<p>Entre a borda esquerda e a direita, o intervalo interno preenchido é " +
+              "<p>As interseções geométricas da linha de varredura com as arestas ficam em " +
+              "<span class='hl'>x = " + span.left + "</span> e <span class='hl'>x = " + span.right + "</span>. " +
+              "Entre a borda esquerda e a direita, o intervalo interno preenchido é " +
               "<span class='ok'>x = " +
-              span[0] +
+              span.x0 +
               " até " +
-              span[1] +
+              span.x1 +
               "</span> (a própria borda fica de fora do span):</p>" +
               coordList(spanCells, "green"),
             draw: function (plane) {
@@ -339,7 +442,7 @@
                 plane.pixel(x, y, { fill: "rgba(255,209,102,0.25)", stroke: COL.yellow, lineWidth: 2 });
               });
               // Pinta o span interno.
-              for (var xx = span[0]; xx <= span[1]; xx++) {
+              for (var xx = span.x0; xx <= span.x1; xx++) {
                 plane.pixel(xx, y, { fill: COL.greenSoft, stroke: COL.green, lineWidth: 2 });
               }
             },
@@ -350,7 +453,7 @@
         var spanSummary = fillYs
           .map(function (y) {
             var s = spans[y][0];
-            return "y = " + y + ": x = " + s[0] + " até " + s[1];
+            return "y = " + y + ": x = " + s.x0 + " até " + s.x1;
           })
           .join("\n");
         steps.push({
@@ -367,7 +470,7 @@
             drawBorder(plane);
             fillYs.forEach(function (y) {
               var s = spans[y][0];
-              for (var xx = s[0]; xx <= s[1]; xx++) {
+              for (var xx = s.x0; xx <= s.x1; xx++) {
                 plane.pixel(xx, y, { fill: COL.greenSoft, stroke: COL.green, lineWidth: 1.5 });
               }
             });
@@ -398,29 +501,30 @@
         strong: "rgba(78,161,255,0.40)",
         cls: "accent",
         targetWord: "interno (não-borda)",
-        ruleHtml:
-          "<b>Regra:</b> propaga e <span class='no'>para ao encontrar a cor de BORDA</span> (preto). " +
-          "A cor de preenchimento aqui também é preta, então o interior se funde com a borda.",
-        endHtml:
-          "Como a cor de preenchimento é igual à da borda, no fim não há distinção visual entre " +
-          "borda e interior — mas o algoritmo ainda <b>parou</b> ao tocar nos pixels já pretos.",
-      }),
-      makeSeedPart("b) Flood Fill", { x: 8, y: 5 }, {
+	        ruleHtml:
+	          "<b>Regra:</b> propaga enquanto a célula não tem a <span class='no'>cor de BORDA</span> (preto). " +
+	          "Na animação, a cor de preenchimento é azul para destacar o interior.",
+	        endHtml:
+	          "O algoritmo <b>parou</b> ao tocar nos pixels de borda pretos; a regra depende da cor de borda, não da cor inicial da região.",
+	        cells: boundaryFillCells,
+	      }),
+	      makeSeedPart("b) Flood Fill", { x: 8, y: 5 }, {
         algName: "Flood Fill",
         color: COL.cyan,
         soft: "rgba(51,214,208,0.18)",
         strong: "rgba(51,214,208,0.40)",
         cls: "accent",
         targetWord: "branco (cor inicial)",
-        ruleHtml:
-          "<b>Regra:</b> recolore todos os pixels conectados de cor <span class='hl'>branca</span> " +
-          "(a cor inicial) para preto. Ele olha a cor-alvo, não a cor da borda.",
-        endHtml:
-          "Partindo de " +
-          "(8, 5)" +
-          ", a mesma região branca interna é recolorida de preto — idêntica à do Boundary Fill, " +
-          "pois a região conectada por conn-4 é a mesma.",
-      }),
+	        ruleHtml:
+	          "<b>Regra:</b> recolore todos os pixels conectados de cor <span class='hl'>branca</span> " +
+	          "(a cor inicial) para ciano. Ele olha a cor-alvo, não a cor da borda.",
+	        endHtml:
+	          "Partindo de " +
+	          "(8, 5)" +
+	          ", a mesma região branca interna é recolorida em ciano — idêntica à do Boundary Fill, " +
+	          "pois a região conectada por conn-4 é a mesma.",
+	        cells: floodFillCells,
+	      }),
       makeScanlinePart(),
     ],
   });
