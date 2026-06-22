@@ -65,10 +65,11 @@
       {
         title: "O lattice dos valores",
         body:
-          "<p>Os valores abstratos formam um <b>lattice</b>: no topo <code>⊤</code> (“não-constante”), " +
-          "no fundo <code>⊥</code> (“sem informação ainda”), e entre eles <b>todas as constantes</b>. " +
-          "A análise começa otimista (em <code>⊥</code>) e só <b>sobe</b> — nunca desce — até " +
-          "estabilizar.</p>",
+          "<p>Os valores abstratos formam um <b>lattice</b>: no topo <code>⊤</code> (“alcançável, mas " +
+          "não-constante”), no fundo <code>⊥</code> (“ainda sem valor / inalcançável”), e entre eles " +
+          "<b>todas as constantes</b>. <code>⊥</code> e <code>⊤</code> <b>não são sinônimos</b>. Os " +
+          "pontos internos começam otimistas em <code>⊥</code> e só <b>sobem</b>; já os valores que " +
+          "chegam <b>desconhecidos de fora</b> (parâmetros) entram como <code>⊤</code>.</p>",
         visual: latticeVisual(),
       },
       C.domStep(
@@ -84,9 +85,11 @@
       {
         title: "Exemplo: um if e a junção",
         body:
-          "<p>Os dois ramos definem variáveis; no ponto <code>?</code> (junção) aplicamos a regra:</p>" +
+          "<p><b>Entrada:</b> <code>X</code> e <code>Y</code> chegam desconhecidos (<code>⊤</code>); " +
+          "<code>Z</code> é fixado antes do if. No ponto <code>?</code> (junção) aplicamos a regra:</p>" +
           "<ul><li><b>X = 4</b>: ambos os ramos atribuem 4 → constante;</li>" +
-          "<li><b>Y = ⊤</b>: só o ramo esquerdo define Y → desconhecido no outro caminho;</li>" +
+          "<li><b>Y = ⊤</b>: <code>Y</code> entra como <code>⊤</code> e o ramo direito não o redefine → " +
+          "<code>1 ⊔ ⊤ = ⊤</code> (se entrasse como <code>⊥</code>, seria 1);</li>" +
           "<li><b>Z = 5</b>: vem de antes do if, igual nos dois → constante.</li></ul>",
         visual: {
           type: "svg",

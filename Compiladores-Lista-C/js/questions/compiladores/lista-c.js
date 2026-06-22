@@ -245,7 +245,10 @@
     title: "Propagacao de constantes com juncao simples",
     tags: ["constantes", "fluxo"],
     hubDesc: "Encontrar X, Y e Z no ponto de juncao apos dois caminhos.",
-    statement: "Depois de propagacao de constantes, quais valores chegam ao ponto indicado?",
+    statement:
+      "Apos propagacao de constantes, quais valores de X, Y e Z chegam ao ponto destacado? Reticulado: " +
+      "<code>⊥</code> = ainda sem valor / inalcancavel; uma constante; <code>⊤</code> = " +
+      "alcancavel, mas nao-constante.",
     build: function () {
       var nodes = [
         { id: "entry", x: 300, y: 20, w: 150, h: 70, lines: ["Z := 5", "C > 0"] },
@@ -257,7 +260,8 @@
         {
           title: "Fluxo de controle",
           body:
-            "<p>Nos dois caminhos, <code>X</code> termina como 4. <code>Z</code> tambem termina como 5. Mas <code>Y</code> so e definido no caminho da esquerda.</p>",
+            "<p>No bloco de entrada, <code>Z := 5</code>. Nos dois caminhos <code>X</code> termina como 4 e " +
+            "<code>Z</code> como 5. Mas <code>Y</code> so e redefinido no caminho da esquerda.</p>",
           visual: { type: "svg", draw: function (svg) {
             C.flow(svg, { w: 720, h: 390, nodes: nodes, edges: [
               { from: "entry", to: "left" },
@@ -267,15 +271,43 @@
             ] });
           } },
         },
+        C.tableStep({
+          title: "Estado de entrada (condicoes de contorno)",
+          body:
+            "<p><code>X</code> e <code>Y</code> chegam ao bloco como valores arbitrarios (parametros / " +
+            "preexistentes), entao entram como <code>⊤</code>. <code>Z</code> nao tem valor antes do " +
+            "bloco (<code>⊥</code>), mas <code>Z := 5</code> o fixa. <code>⊥</code> (sem informacao) e " +
+            "<code>⊤</code> (alcancavel, nao-constante) <b>nao sao sinonimos</b>.</p>",
+          headers: ["variavel", "entrada", "papel ate a juncao"],
+          rows: [
+            ["X", "⊤", "redefinida (4) nos dois caminhos"],
+            ["Y", "⊤", "redefinida so na esquerda (1)"],
+            ["Z", "⊥ → 5", "fixada no bloco de entrada"],
+          ],
+        }),
+        C.tableStep({
+          title: "Juncao variavel a variavel",
+          body:
+            "<p>No encontro aplicamos <code>⊔</code> (juncao): valores iguais mantem a constante; valores " +
+            "diferentes, ou algum <code>⊤</code>, sobem para <code>⊤</code>.</p>",
+          headers: ["variavel", "caminho esquerdo", "caminho direito", "juncao"],
+          rows: [
+            ["X", "4", "4", "4 ⊔ 4 = 4"],
+            ["Y", "1", "⊤ (entrada, nao redefinida)", "1 ⊔ ⊤ = ⊤"],
+            ["Z", "5", "5", "5 ⊔ 5 = 5"],
+          ],
+        }),
         C.choiceStep({
           title: "Resposta",
           body:
-            "<p>No encontro dos caminhos: <code>X=4</code>, <code>Y=top</code> e <code>Z=5</code>.</p>",
+            "<p>No encontro: <code>X=4</code>, <code>Y=⊤</code> e <code>Z=5</code>. <code>Y</code> nao e 1 " +
+            "porque entra como <code>⊤</code> e a direita nao a redefine; se <code>Y</code> entrasse como " +
+            "<code>⊥</code> (local ainda sem valor), seria <code>1 ⊔ ⊥ = 1</code>.</p>",
           choices: [
-            { id: "a", html: "<code>4, top, top</code>" },
-            { id: "b", html: "<code>4, top, 5</code>" },
+            { id: "a", html: "<code>4, ⊤, ⊤</code>" },
+            { id: "b", html: "<code>4, ⊤, 5</code>" },
             { id: "c", html: "<code>4, 1, 5</code>" },
-            { id: "d", html: "<code>top, top, top</code>" },
+            { id: "d", html: "<code>⊤, ⊤, ⊤</code>" },
           ],
           correct: ["b"],
         }),
@@ -289,7 +321,7 @@
     section: "Otimizacao",
     title: "Propagacao de constantes com lacos",
     tags: ["constantes", "laco", "ponto-fixo"],
-    hubDesc: "Entender como back-edges fazem constantes virarem top em ponto fixo.",
+    hubDesc: "Entender como back-edges fazem constantes virarem ⊤ em ponto fixo.",
     statement: "No fluxo com lacos, quais valores de X, Y e Z chegam ao ponto indicado?",
     build: function () {
       var nodes = [
@@ -303,7 +335,7 @@
         {
           title: "O efeito do ciclo",
           body:
-            "<p>O caminho vindo do laco mistura valores que eram constantes com valores recalculados a partir de <code>Z</code>. Em ponto fixo, isso perde precisao para <code>top</code>.</p>",
+            "<p>O caminho vindo do laco mistura valores que eram constantes com valores recalculados a partir de <code>Z</code>. Em ponto fixo, isso perde precisao para <code>⊤</code>.</p>",
           visual: { type: "svg", draw: function (svg) {
             C.flow(svg, { w: 720, h: 430, nodes: nodes, edges: [
               { from: "top", to: "lz" },
@@ -319,12 +351,12 @@
         C.choiceStep({
           title: "Resposta",
           body:
-            "<p>No ponto indicado apos o bloco <code>X := 4</code>, ainda sabemos <code>X=4</code>. Ja <code>Y</code> e <code>Z</code> recebem informacao conflitante pelos ciclos, entao ficam <code>top</code>.</p>",
+            "<p>No ponto indicado apos o bloco <code>X := 4</code>, ainda sabemos <code>X=4</code>. Ja <code>Y</code> e <code>Z</code> recebem informacao conflitante pelos ciclos, entao ficam <code>⊤</code>.</p>",
           choices: [
-            { id: "a", html: "<code>top, 1, top</code>" },
-            { id: "b", html: "<code>4, top, 5</code>" },
+            { id: "a", html: "<code>⊤, 1, ⊤</code>" },
+            { id: "b", html: "<code>4, ⊤, 5</code>" },
             { id: "c", html: "<code>4, 1, 5</code>" },
-            { id: "d", html: "<code>4, top, top</code>" },
+            { id: "d", html: "<code>4, ⊤, ⊤</code>" },
           ],
           correct: ["d"],
         }),

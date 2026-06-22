@@ -294,4 +294,40 @@ const norm = (s) =>
   assert.ok(/classe real retornada/.test(c11), "#7: c11 keeps the correct dynamic-dispatch wording");
 }
 
+/* ───────────────────────── issue #8: Lista C Q6 / Guia c16 ─────────────────────────
+ * Constant propagation: the answer Y=⊤ only holds if Y *enters* as ⊤. With the usual
+ * lattice (⊥ < c < ⊤) and join ⊔, a branch that doesn't write Y does NOT turn ⊥ into ⊤.
+ * We reproduce the join and show the result depends on the entry state.
+ */
+{
+  const BOT = "⊥", TOP = "⊤";
+  const join = (a, b) => (a === BOT ? b : b === BOT ? a : a === TOP || b === TOP ? TOP : a === b ? a : TOP);
+  // sanity: the lattice table from the issue
+  assert.equal(join(BOT, 1), 1, "#8: ⊥ ⊔ 1 = 1");
+  assert.equal(join(1, 1), 1, "#8: 1 ⊔ 1 = 1");
+  assert.equal(join(1, 2), TOP, "#8: 1 ⊔ 2 = ⊤");
+  assert.equal(join(TOP, 1), TOP, "#8: ⊤ ⊔ 1 = ⊤");
+
+  // CFG: entry {Z:=5} → left {Y:=1; X:=4; Z:=X+Y} and right {X:=4} → join.
+  function atJoin(entryY) {
+    const left = { X: 4, Y: 1, Z: 5 };               // Z := X+Y = 4+1 = 5
+    const right = { X: 4, Y: entryY, Z: 5 };          // right doesn't touch Y or Z
+    return { X: join(left.X, right.X), Y: join(left.Y, right.Y), Z: join(left.Z, right.Z) };
+  }
+  assert.deepEqual(atJoin(TOP), { X: 4, Y: TOP, Z: 5 }, "#8: with Y entering as ⊤, join is (4, ⊤, 5)");
+  assert.deepEqual(atJoin(BOT), { X: 4, Y: 1, Z: 5 }, "#8: with Y entering as ⊥, join would be (4, 1, 5)");
+
+  const q6 = read("Compiladores-Lista-C/js/questions/compiladores/lista-c.js");
+  const c16 = read("Guia-de-Compiladores/js/guias/c16-propagacao-constantes.js");
+  // entry state declared, ⊥/⊤ distinguished, the join shown, ⊤-notation (not "top").
+  assert.ok(/entram como <code>⊤<\/code>/.test(q6), "#8: Q6 declares X/Y enter as ⊤");
+  assert.ok(/não são sinonimos|nao sao sinonimos/.test(q6), "#8: Q6 states ⊥ and ⊤ are not synonyms");
+  assert.ok(q6.includes("1 ⊔ ⊤ = ⊤"), "#8: Q6 shows the join 1 ⊔ ⊤ = ⊤");
+  assert.ok(q6.includes("4, ⊤, 5"), "#8: Q6 answer uses ⊤ notation");
+  assert.ok(!/, top,|top<\/code>/.test(q6), "#8: lista C uses ⊤ (not ASCII 'top') for the lattice top");
+  assert.ok(c16.includes("1 ⊔ ⊤ = ⊤"), "#8: c16 shows the join 1 ⊔ ⊤ = ⊤");
+  assert.ok(/não são sinônimos/.test(c16), "#8: c16 states ⊥ and ⊤ are not synonyms");
+  assert.ok(/entram como <code>⊤<\/code>|chegam <b>desconhecidos de fora<\/b>/.test(c16), "#8: c16 states parameters enter as ⊤");
+}
+
 console.log("Compilers content checks passed.");
