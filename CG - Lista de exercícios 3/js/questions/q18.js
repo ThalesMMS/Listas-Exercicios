@@ -70,7 +70,8 @@
 
   var A = ngon(5, 4);                 // pentágono original (5)
   var B = ngon(7, 4);                 // heptágono (7)
-  // A' = pentágono reamostrado p/ 7 pontos (insere ponto médio em 2 arestas)
+  // A' = pentágono refinado p/ 7 pontos (insere ponto médio em 2 arestas; iguala
+  // a cardinalidade, não é amostragem uniforme por comprimento de arco)
   var Ap = [A[0], A[1], mid(A[1], A[2]), A[2], A[3], mid(A[3], A[4]), A[4]];
   var midsA = Ap.map(function (p, i) { return mid(p, Ap[(i + 1) % 7]); });
   var midsB = B.map(function (p, i) { return mid(p, B[(i + 1) % 7]); });
@@ -122,16 +123,21 @@
       }),
     }));
 
-    // 2) reamostragem
+    // 2) refinamento do contorno (igualar a cardinalidade, não amostragem uniforme)
     steps.push({
-      title: "Solução: reamostrar para 7 pontos",
+      title: "Solução: refinar o contorno para 7 pontos",
       body:
-        "<p>Igualamos o número de pontos: inserimos <b>2 pontos médios</b> em duas arestas do " +
-        "pentágono (entre A₁A₂ e entre A₃A₄). Agora <b>A′</b> também tem <b>7 pontos</b>.</p>" +
+        "<p>Igualamos a <b>quantidade</b> de pontos (cardinalidade): inserimos <b>2 pontos médios</b> em " +
+        "duas arestas do pentágono (entre A₁A₂ e entre A₃A₄). Agora <b>A′</b> também tem <b>7 pontos</b>.</p>" +
         "<div class='formula'>A′₂ = (A₁+A₂)/2 = (" + r2(Ap[2][0]) + ", " + r2(Ap[2][1]) + ")\n" +
         "A′₅ = (A₃+A₄)/2 = (" + r2(Ap[5][0]) + ", " + r2(Ap[5][1]) + ")</div>" +
-        "<p class='muted'>(A reamostragem totalmente uniforme usaria mmc(5,7)=35 pontos; 7 já " +
-        "basta e é mais claro.)</p>",
+        "<p>Isto é um <b>refinamento por adição de pontos</b>: iguala a cardinalidade, mas <b>não</b> " +
+        "garante espaçamento uniforme ao longo do contorno. \"Reamostragem uniforme\" seria distribuir os " +
+        "pontos por <b>comprimento de arco</b> — outro procedimento. Após o refinamento, a correspondência " +
+        "é em ordem: A′ᵢ ↔ Bᵢ.</p>" +
+        "<p class='muted'>(Uma amostragem comum uniforme que preservasse todos os vértices originais dos " +
+        "dois polígonos poderia usar mmc(5,7)=35 pontos; isso não é necessário para toda estratégia de " +
+        "correspondência — aqui 7 já basta e é mais claro.)</p>",
       visual: planeStep(function (plane) {
         plane.polygon(B, { stroke: COL.green, lineWidth: 1.5, dashed: true });
         plane.polygon(Ap, { stroke: COL.accent, lineWidth: 2.5 });

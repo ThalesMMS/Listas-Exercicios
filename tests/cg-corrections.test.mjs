@@ -177,6 +177,15 @@ assertNotIncludes(q18Lista3, "var P = polyAt(Ap, B, 0.5);", "Lista 3 Q18 edge mo
 assertNotIncludes(q18Lista3, "interseção de arestas consecutivas", "Lista 3 Q18 underdefined edge reconstruction claim");
 assertIncludes(q18Lista3, "edgePolyAt", "Lista 3 Q18 defined edge morphing helper");
 
+// Q18 morphing terminology (issue #15): the implemented step is a refinement that
+// equalizes cardinality, not arc-length-uniform resampling; the mmc(5,7)=35 note is
+// presented as a conditional strategy, not a requirement.
+assertNotIncludes(q18Lista3, "Solução: reamostrar para 7 pontos", "Lista 3 Q18 step no longer titled as resampling");
+assertIncludes(q18Lista3, "refinar o contorno", "Lista 3 Q18 step framed as contour refinement");
+assertIncludes(q18Lista3, "cardinalidade", "Lista 3 Q18 distinguishes cardinality from uniformity");
+assertIncludes(q18Lista3, "comprimento de arco", "Lista 3 Q18 reserves uniform resampling for arc-length");
+assertIncludes(q18Lista3, "não é necessário para toda estratégia", "Lista 3 Q18 qualifies the mmc(5,7)=35 observation");
+
 // Q10 (Lista 2): the Bézier endpoint and its marker must fit inside the SVG view.
 // The last control point sits at x=485 (+ marker radius), clipped by the old width
 // of 480 (issue #14). Render the curves and check the rightmost drawn x.
