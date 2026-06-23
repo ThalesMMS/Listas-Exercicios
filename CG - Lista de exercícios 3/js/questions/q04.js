@@ -105,10 +105,13 @@
           "<p>Cada <b>fonte de luz</b> tem posição/direção e cor/intensidade (I_L). Dela vem o vetor " +
           "<span class='hl'>L</span>, que aponta de P <b>para a luz</b> e é normalizado:</p>" +
           "<ul><li><b>Luz pontual</b>: L = (posição_luz − P), normalizado — muda a cada ponto;</li>" +
-          "<li><b>Luz direcional</b> (Sol): L é <b>constante</b> em toda a cena.</li></ul>" +
+          "<li><b>Luz direcional</b> (Sol): L é <b>constante</b> em toda a cena;</li>" +
+          "<li><b>Spot / holofote</b>: como uma pontual, mas a luz é restrita a um cone; " +
+          "veja o diagrama comparativo na <a href='question.html?q=q08-fontes-de-luz'>Questão 8</a>.</li></ul>" +
           "<p>O ângulo θ entre <b>N</b> e <b>L</b> controla a componente <b>difusa</b>: " +
-          "<b>N·L = cos θ</b>. Vale a luz só quando N·L &gt; 0 (a fonte está acima do horizonte da " +
-          "superfície); valores negativos são <b>cortados em 0</b>.</p>",
+          "<b>N·L = cos θ</b>. Só contribui luz quando N·L &gt; 0, ou seja, quando a fonte está do lado " +
+          "da normal (acima do horizonte da superfície). Se N·L for negativo, a luz está atrás da " +
+          "superfície, então usamos <b>max(0, N·L)</b> — valores negativos são <b>cortados em 0</b>.</p>",
         visual: svgStep(["surf", "N", "L"]),
       },
       {
