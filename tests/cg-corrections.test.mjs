@@ -212,4 +212,19 @@ assertIncludes(q18Lista3, "não é necessário para toda estratégia", "Lista 3 
   assert.ok(maxX <= viewW, `Q10 rightmost drawn x (${maxX}) must fit the ${viewW}-wide view`);
 }
 
+// Bézier guide (g15): the conversion step is justified by polynomial identity +
+// linear independence of the monomials, not by "cancelling U" (U is a vector).
+const g15 = read("Guia-de-Computacao-Grafica/js/guias/g15-bezier.js");
+assertIncludes(g15, "Igualar os coeficientes e isolar G_B", "g15 step retitled to coefficient equality");
+assertIncludes(g15, "linearmente independentes", "g15 uses linear independence of the monomials");
+assertNotIncludes(g15, "Cancelar U", "g15 drops the 'cancel U' step title");
+assertNotIncludes(g15, "cancelá-lo", "g15 drops the scalar-cancellation framing");
+
+// Sutherland-Hodgman guide (g07): SH already clips against any convex window;
+// Cyrus-Beck is parametric clipping of line SEGMENTS, not polygons.
+const g07 = read("Guia-de-Computacao-Grafica/js/guias/g07-sutherland-hodgman.js");
+assertNotIncludes(g07, "a mesma ideia vira <b>Cyrus-Beck</b>", "g07 drops the wrong 'convex window becomes Cyrus-Beck' claim");
+assertIncludes(g07, "Sutherland-Hodgman <b>já resolve</b>", "g07 says SH already clips any convex window");
+assertIncludes(g07, "Recorta <b>segmentos</b>, não polígonos", "g07 frames Cyrus-Beck as segment clipping");
+
 console.log("CG correction checks passed.");

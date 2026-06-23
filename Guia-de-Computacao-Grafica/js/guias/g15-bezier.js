@@ -285,14 +285,17 @@
       },
       // 9) Igualando as bases
       {
-        title: "Cancelar U e isolar G_B",
+        title: "Igualar os coeficientes e isolar G_B",
         body:
-          "<p>A igualdade vale para <b>todo u</b>. Aqui está o passo sutil: como o vetor <code>U</code> " +
-          "aparece dos dois lados e é <b>arbitrário</b> (vale para qualquer <code>u</code>), os " +
-          "fatores à direita dele têm de ser iguais — então podemos <b>cancelá-lo</b>:</p>" +
+          "<p>A igualdade <code>U·M<sub>B</sub>·G<sub>B</sub> = U·M<sub>I</sub>·G<sub>I</sub></code> vale " +
+          "para <b>todo u</b> — é uma <b>identidade polinomial</b>. Como os monômios " +
+          "<code>1, u, u², u³</code> (as entradas de <code>U</code>) são <b>linearmente independentes</b>, " +
+          "dois polinômios iguais para todo <code>u</code> têm os <b>mesmos coeficientes</b>. Logo os " +
+          "vetores de coeficientes coincidem:</p>" +
           "<p style='text-align:center'><code>M<sub>B</sub>·G<sub>B</sub> = M<sub>I</sub>·G<sub>I</sub></code></p>" +
-          "<p>(Formalmente: se <code>U·A = U·B</code> para todo <code>U</code>, então <code>A = " +
-          "B</code> — basta testar com os <code>U</code> da base canônica.)</p>" +
+          "<p>(Não é “cancelar” <code>U</code> como um escalar — <code>U</code> é um <b>vetor</b>. O que " +
+          "vale é: <code>U·A = U·B</code> para todo <code>u</code> ⟹ <code>A = B</code>, justamente pela " +
+          "independência linear da base de monômios.)</p>" +
           "<p>Agora multiplicamos <b>à esquerda</b> por <code>M<sub>B</sub>⁻¹</code> para deixar " +
           "<code>G<sub>B</sub></code> sozinho (a ordem importa: matrizes não comutam, como na " +
           "<span class='accent'>composição de transformações</span>):</p>" +
@@ -353,8 +356,8 @@
               html:
                 "Bézier = 4 pontos de controle com pesos de <b>Bernstein</b>; avalie por " +
                 "<b>de Casteljau</b> (lerps). Mudar de curva é <b>mudar de base</b>: iguale " +
-                "<code>U·M·G</code> nas duas bases, cancele <code>U</code> e inverta a matriz da base " +
-                "de destino.",
+                "<code>U·M·G</code> nas duas bases, <b>iguale os coeficientes</b> (os monômios são " +
+                "linearmente independentes) e inverta a matriz da base de destino.",
             });
           },
         },
@@ -374,8 +377,8 @@
     statement:
       "Entenda a curva de Bézier — polígono de controle, base de Bernstein, algoritmo de de Casteljau, " +
       "casca convexa, tangentes nas pontas e continuidade C0/C1 ao emendar — e o procedimento " +
-      "matricial para converter uma curva interpolada em Bézier: igualar as duas bases, cancelar U e " +
-      "obter a matriz de conversão M = M_B⁻¹·M_I.",
+      "matricial para converter uma curva interpolada em Bézier: igualar as duas bases, igualar os " +
+      "coeficientes (monômios linearmente independentes) e obter a matriz de conversão M = M_B⁻¹·M_I.",
     parts: [{ label: "Guia", build: build }],
   });
 })();

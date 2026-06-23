@@ -130,11 +130,13 @@
     build: function () {
       return [
         C.codeStep({
-          title: "A funcao e o que conta como temporario",
+          title: "A funcao",
           body:
-            "<p>Um <b>temporario</b> e um valor intermediario que precisa ser guardado (num registrador) " +
-            "enquanto outra parte da expressao e avaliada. Contamos o <b>pico</b> de temporarios vivos ao " +
-            "mesmo tempo &mdash; nao a soma de todos, pois os ramos do <code>if</code> nao executam juntos.</p>",
+            "<p>Um <b>temporario</b> e um valor intermediario guardado num registrador enquanto outra " +
+            "parte e avaliada. A contagem <b>depende da estrategia de geracao de codigo</b> &mdash; nao e " +
+            "intrinseca a expressao &mdash;, entao a fixamos no proximo passo. Contamos o <b>pico</b> de " +
+            "temporarios vivos ao mesmo tempo, nao a soma, pois os ramos do <code>if</code> nao executam " +
+            "juntos.</p>",
           code:
             "def potenciaDeDois(x) =\n" +
             "  if x % 2 == 0\n" +
@@ -142,21 +144,46 @@
             "  else x == 1",
           active: [2, 3, 4],
         }),
-        C.tableStep({
-          title: "Contagem por subexpressao",
+        C.codeStep({
+          title: "Estrategia adotada e o codigo de tres enderecos",
           body:
-            "<p>O total e o pico necessario em uma avaliacao; os ramos do <code>if</code> nao executam ao mesmo tempo.</p>",
-          headers: ["subexpressao", "temporarios", "por que"],
+            "<p>Fixamos esta estrategia: variaveis ficam em <b>registradores</b> e constantes sao " +
+            "<b>imediatos</b> (operandos gratis); a <b>condicao</b> do <code>if</code> e materializada num " +
+            "temporario para o branch testar; o <b>valor de cada ramo</b> e calculado direto no " +
+            "<b>registrador-resultado <code>r</code></b> (o destino do <code>if</code>), que nao conta " +
+            "como temporario. Daqui sai a contagem &mdash; e e isto que resolve a aparente inconsistencia " +
+            "entre <code>x % 2 == 0</code> e <code>x == 1</code>.</p>",
+          code:
+            "t1 = x % 2            ; condicao: subexpressao\n" +
+            "t2 = (t1 == 0)        ; booleano materializado p/ o branch\n" +
+            "ifFalse t2 goto Lelse\n" +
+            "t3 = x / 2            ; then: argumento da chamada\n" +
+            "r  = call pot(t3)     ; retorno vai ao registrador-resultado\n" +
+            "goto Lend\n" +
+            "Lelse:\n" +
+            "r  = (x == 1)         ; else: direto no destino r (sem temporario)\n" +
+            "Lend: return r",
+          active: [1, 2, 4, 8],
+        }),
+        C.tableStep({
+          title: "Contagem por subexpressao (sob essa estrategia)",
+          body:
+            "<p>O total e o <b>pico</b> numa avaliacao: os ramos do <code>if</code> nao coexistem, entao " +
+            "tomamos o maior, nao a soma.</p>",
+          headers: ["subexpressao", "temporarios", "por que (pelo IR acima)"],
           rows: [
-            [{ html: "<code>x % 2 == 0</code>" }, "2", { html: "um valor para <code>x % 2</code> e outro para a comparacao" }],
-            [{ html: "<code>potenciaDeDois(x/2)</code>" }, "1", { html: "calcular o argumento <code>x/2</code>" }],
-            [{ html: "<code>x == 1</code>" }, "0", "pode comparar direto com registrador/imediato"],
-            ["total", "2", "maior pico entre condicao e ramos"],
+            [{ html: "<code>x % 2 == 0</code>" }, "2", { html: "<code>t1=x%2</code> e <code>t2=(t1==0)</code> vivos juntos no teste do branch" }],
+            [{ html: "<code>potenciaDeDois(x/2)</code>" }, "1", { html: "<code>t3=x/2</code> (o argumento); o retorno vai para <code>r</code>" }],
+            [{ html: "<code>x == 1</code>" }, "0", { html: "valor de ramo escrito direto em <code>r</code> (<code>x</code> em reg., <code>1</code> imediato)" }],
+            ["total", "2", { html: "pico = max(condicao, then, else); ramos nao somam" }],
           ],
         }),
         C.choiceStep({
           title: "Resposta",
-          body: "<p>A sequencia correta e <code>2, 1, 0, 2</code>.</p>",
+          body:
+            "<p>Sob a estrategia acima: <code>2, 1, 0, 2</code>. A contagem e <b>convencional</b>: se todo " +
+            "resultado (inclusive o de um ramo) fosse a um temporario, <code>x == 1</code> usaria 1 e a " +
+            "sequencia seria <code>2, 1, 1, 2</code> &mdash; mas o total continua sendo o <b>pico</b>, 2.</p>",
           choices: [
             { id: "a", html: "<code>1, 2, 2, 3</code>" },
             { id: "b", html: "<code>1, 1, 1, 1</code>" },

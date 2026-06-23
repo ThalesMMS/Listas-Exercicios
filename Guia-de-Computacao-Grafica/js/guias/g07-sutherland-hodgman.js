@@ -269,8 +269,12 @@
         "triângulo é recortado contra os planos do volume de visão; como triângulos são convexos, o " +
         "artefato côncavo não acontece — a saída é re-triangulada (um leque de triângulos) e segue.</p>" +
         "<ul>" +
-        "<li><b>Janela convexa qualquer</b> (não retângulo): a mesma ideia vira <b>Cyrus-Beck</b>, " +
-        "testando cada vértice contra a normal de cada aresta — o irmão paramétrico do Liang-Barsky.</li>" +
+        "<li><b>Janela convexa qualquer</b> (não retângulo): Sutherland-Hodgman <b>já resolve</b> — " +
+        "basta recortar o polígono contra o semiplano de <b>cada aresta</b> da janela, uma de cada vez " +
+        "(a exigência de convexidade é da <em>janela</em>).</li>" +
+        "<li><b>Recorte de segmentos de reta</b> contra uma janela convexa: aí entra o <b>Cyrus-Beck</b> " +
+        "— paramétrico, testando o segmento contra a normal de cada aresta; é a generalização do " +
+        "Liang-Barsky. Recorta <b>segmentos</b>, não polígonos.</li>" +
         "<li><b>Recorte por polígono arbitrário</b> (côncavo, com buracos): aí entra o " +
         "<b>Weiler-Atherton</b>, que percorre os dois contornos e sabe separar ilhas — resolvendo " +
         "justamente o artefato do passo anterior.</li>" +
