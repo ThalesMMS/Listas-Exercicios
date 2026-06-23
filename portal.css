@@ -1,0 +1,116 @@
+/* portal.css — estilo da página inicial (raiz) e do placeholder do Guia.
+ * Reaproveita a paleta do Explainer-Template (tema claro/escuro via data-theme),
+ * sincronizado com as listas pela chave de localStorage "ex-theme". */
+:root {
+  --bg: #0b111c;
+  --bg-card: #131c2b;
+  --bg-soft: #1a2435;
+  --border: #243049;
+  --border-soft: #1c2638;
+  --ink: #e7edf7;
+  --ink-dim: #9fb0cc;
+  --ink-mute: #64748b;
+  --accent: #4ea1ff;
+  --accent-soft: rgba(78, 161, 255, 0.16);
+  --green: #3ddc84;
+  --purple: #b794f6;
+  --purple-soft: rgba(183, 148, 246, 0.16);
+  --orange: #ff9f43;
+  --cyan: #33d6d0;
+  --radius: 14px;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  --body-grad: radial-gradient(1200px 700px at 70% -10%, #16223a 0%, var(--bg) 55%);
+  --card-grad: linear-gradient(180deg, var(--bg-card), #101826);
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+html[data-theme="light"] {
+  --bg: #f4f7fb;
+  --bg-card: #ffffff;
+  --bg-soft: #eef2f8;
+  --border: #d7deea;
+  --border-soft: #e4e9f1;
+  --ink: #14213a;
+  --ink-dim: #45526b;
+  --ink-mute: #6b7689;
+  --accent: #1f6feb;
+  --accent-soft: rgba(31, 111, 235, 0.12);
+  --green: #18794e;
+  --purple: #7c3aed;
+  --purple-soft: rgba(124, 58, 237, 0.12);
+  --orange: #c2410c;
+  --cyan: #0e7490;
+  --shadow: 0 8px 28px rgba(30, 50, 90, 0.12);
+  --body-grad: radial-gradient(1200px 700px at 70% -10%, #e6edf8 0%, var(--bg) 55%);
+  --card-grad: linear-gradient(180deg, #ffffff, #eef3fb);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--body-grad) fixed;
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+
+.wrap { max-width: 1100px; margin: 0 auto; padding: 52px 22px 96px; }
+
+/* Hero */
+.hero { margin-bottom: 34px; }
+.hero .eyebrow {
+  font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--accent);
+}
+.hero h1 { font-size: clamp(28px, 4vw, 44px); margin: 0.25em 0 0.3em; line-height: 1.1; }
+.hero p { color: var(--ink-dim); max-width: 64ch; font-size: 1.05rem; }
+
+/* Cards */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 18px; }
+.card {
+  display: flex; flex-direction: column; gap: 10px;
+  background: var(--card-grad); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 22px;
+  transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+}
+.card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: var(--shadow); text-decoration: none; }
+.card .top { display: flex; align-items: center; justify-content: space-between; }
+.card .badge {
+  font-family: var(--mono); font-weight: 700; font-size: 14px;
+  width: 42px; height: 42px; display: grid; place-items: center; border-radius: 11px;
+  background: var(--accent-soft); color: var(--accent); border: 1px solid var(--border);
+}
+.card .count { font-family: var(--mono); font-size: 12px; color: var(--ink-mute); }
+.card h2 { font-size: 1.12rem; margin: 4px 0 0; color: var(--ink); }
+.card p { margin: 0; color: var(--ink-dim); font-size: 0.92rem; }
+.card .go { margin-top: auto; color: var(--accent); font-weight: 600; font-size: 0.9rem; }
+.card.soon { border-style: dashed; }
+.card.soon:hover { border-color: var(--purple); }
+.card.soon .badge { color: var(--purple); background: var(--purple-soft); }
+.card.soon .go { color: var(--purple); }
+.tag-soon {
+  font-family: var(--mono); font-size: 11px; color: var(--purple);
+  border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px;
+}
+
+.footer { margin-top: 42px; color: var(--ink-mute); font-size: 0.85rem; }
+
+/* Placeholder (Guia) */
+.placeholder { display: grid; place-items: center; min-height: 62vh; text-align: center; }
+.placeholder .box { max-width: 56ch; }
+.placeholder .big { font-size: clamp(26px, 4vw, 40px); margin: 0.2em 0; }
+.placeholder p { color: var(--ink-dim); font-size: 1.05rem; }
+.back { display: inline-block; margin-top: 20px; font-weight: 600; }
+
+/* Botão de tema */
+.theme-toggle {
+  position: fixed; bottom: 18px; right: 18px; z-index: 50;
+  font-family: var(--sans); font-size: 13px; font-weight: 600; color: var(--ink);
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 999px;
+  padding: 9px 15px; cursor: pointer; box-shadow: var(--shadow);
+  transition: border-color 0.12s ease, transform 0.12s ease;
+}
+.theme-toggle:hover { border-color: var(--accent); transform: translateY(-2px); }

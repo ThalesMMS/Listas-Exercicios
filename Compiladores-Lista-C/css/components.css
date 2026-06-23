@@ -1,0 +1,235 @@
+/* components.css — Estilos dos componentes de conteúdo e formatação da explicação. */
+
+/* ---- Formatação dentro de .ex-step-body e .ex-dom-surface ---- */
+.ex-step-body p,
+.ex-dom-surface p {
+  margin: 0 0 10px;
+}
+.ex-step-body ul,
+.ex-step-body ol,
+.ex-dom-surface ul,
+.ex-dom-surface ol {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+.ex-step-body li,
+.ex-dom-surface li {
+  margin-bottom: 4px;
+}
+.muted {
+  color: var(--ink-dim);
+}
+.hl {
+  color: var(--yellow);
+  font-weight: 600;
+}
+.ok {
+  color: var(--green);
+  font-weight: 600;
+}
+.no {
+  color: var(--red);
+  font-weight: 600;
+}
+.accent {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Bloco de fórmula / código curto */
+.formula,
+.ex-step-body pre,
+.ex-dom-surface pre {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--code-bg);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  padding: 10px 12px;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--cyan);
+  margin: 10px 0;
+}
+
+/* ---- Tabela passo a passo ---- */
+table.ex-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  margin: 10px 0;
+}
+table.ex-table th,
+table.ex-table td {
+  border: 1px solid var(--border);
+  padding: 5px 8px;
+  text-align: center;
+}
+table.ex-table th {
+  background: var(--bg-soft);
+  color: var(--ink-dim);
+  font-weight: 600;
+}
+table.ex-table tr.active td {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+table.ex-table td.hl {
+  background: var(--yellow-soft);
+}
+
+/* ---- Bloco de código com realce de linha ---- */
+.ex-code {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--code-bg);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 10px 0;
+}
+.ex-code .ex-code-line {
+  display: flex;
+  gap: 12px;
+  padding: 1px 12px;
+  white-space: pre;
+}
+.ex-code .ex-code-line.active {
+  background: var(--accent-soft);
+}
+.ex-code .ex-code-line.dim {
+  opacity: 0.45;
+}
+.ex-code .ex-ln {
+  color: var(--ink-mute);
+  user-select: none;
+  text-align: right;
+  min-width: 2em;
+}
+.tok-key {
+  color: var(--purple);
+}
+.tok-str {
+  color: var(--green);
+}
+.tok-num {
+  color: var(--orange);
+}
+.tok-com {
+  color: var(--ink-mute);
+  font-style: italic;
+}
+.tok-fn {
+  color: var(--cyan);
+}
+
+/* ---- Callouts / definição / pró-contra ---- */
+.ex-callout {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 10px 0;
+  background: var(--bg-soft);
+  font-size: 14px;
+}
+.ex-callout.tip {
+  border-left-color: var(--green);
+}
+.ex-callout.warn {
+  border-left-color: var(--orange);
+}
+.ex-callout.danger {
+  border-left-color: var(--red);
+}
+.ex-callout .ex-callout-title {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.ex-proscons {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0;
+}
+.ex-proscons .pro {
+  color: var(--green);
+}
+.ex-proscons .con {
+  color: var(--orange);
+}
+
+/* ---- Chips de coordenadas / valores ---- */
+.ex-coordlist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+.ex-coord {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+.ex-coord.accent {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.ex-coord.green {
+  border-color: var(--green);
+  color: var(--green);
+}
+.ex-coord.yellow {
+  border-color: var(--yellow);
+  color: var(--yellow);
+}
+
+/* ---- Legenda ---- */
+.ex-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--ink-dim);
+}
+.ex-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ex-legend i {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+/* ---- Defaults para diagramas SVG (classes opcionais) ---- */
+.ex-svg .node-box {
+  fill: var(--bg-soft);
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+.ex-svg .node-label {
+  fill: var(--ink);
+}
+.ex-svg .edge {
+  stroke: var(--ink-mute);
+  stroke-width: 2;
+  fill: none;
+}
+.ex-svg .edge-label {
+  fill: var(--ink-dim);
+}
+.ex-svg .node-active {
+  stroke: var(--yellow);
+  stroke-width: 3;
+}
+.ex-svg .node-accept {
+  fill: var(--green-soft);
+  stroke: var(--green);
+}

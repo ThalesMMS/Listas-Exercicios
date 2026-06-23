@@ -1,0 +1,136 @@
+/* theme.css — Variáveis de tema (claro/escuro), base e botão de tema.
+ * As mesmas variáveis alimentam o DOM, o SVG (var(--x)) e o canvas (refreshTheme). */
+
+:root {
+  --bg: #0b111c;
+  --bg-elev: #0f1623;
+  --bg-card: #131c2b;
+  --bg-soft: #1a2435;
+  --border: #243049;
+  --border-soft: #1c2638;
+  --ink: #e7edf7;
+  --ink-dim: #9fb0cc;
+  --ink-mute: #64748b;
+  --accent: #4ea1ff;
+  --accent-dim: #2b6fc4;
+  --green: #3ddc84;
+  --yellow: #ffd166;
+  --orange: #ff9f43;
+  --red: #ff6b6b;
+  --purple: #b794f6;
+  --cyan: #33d6d0;
+  --pink: #ff7eb6;
+  /* canvas (lidas por CartesianPlane.refreshTheme) */
+  --canvas-bg: #0f1623;
+  --canvas-grid: rgba(120, 140, 170, 0.14);
+  --canvas-grid-strong: rgba(120, 140, 170, 0.28);
+  --canvas-axis: #7d8aa5;
+  --canvas-axis-text: #9fb0cc;
+  --accent-soft: rgba(78, 161, 255, 0.18);
+  --green-soft: rgba(61, 220, 132, 0.18);
+  --red-soft: rgba(255, 107, 107, 0.16);
+  --yellow-soft: rgba(255, 209, 102, 0.16);
+  --purple-soft: rgba(183, 148, 246, 0.18);
+  --code-bg: #0c1420;
+  --body-grad: radial-gradient(1200px 700px at 70% -10%, #16223a 0%, var(--bg) 55%);
+  --card-grad: linear-gradient(180deg, var(--bg-card), #101826);
+  --radius: 12px;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+html[data-theme="light"] {
+  --bg: #f4f7fb;
+  --bg-elev: #ffffff;
+  --bg-card: #ffffff;
+  --bg-soft: #eef2f8;
+  --border: #d7deea;
+  --border-soft: #e4e9f1;
+  --ink: #14213a;
+  --ink-dim: #45526b;
+  --ink-mute: #6b7689;
+  --accent: #1f6feb;
+  --accent-dim: #1f6feb;
+  --green: #18794e;
+  --yellow: #b45309;
+  --orange: #c2410c;
+  --red: #d92d3a;
+  --purple: #7c3aed;
+  --cyan: #0e7490;
+  --pink: #bf3989;
+  --canvas-bg: #ffffff;
+  --canvas-grid: rgba(35, 55, 90, 0.1);
+  --canvas-grid-strong: rgba(35, 55, 90, 0.24);
+  --canvas-axis: #5b6781;
+  --canvas-axis-text: #45526b;
+  --accent-soft: rgba(31, 111, 235, 0.13);
+  --green-soft: rgba(24, 121, 78, 0.13);
+  --red-soft: rgba(217, 45, 58, 0.11);
+  --yellow-soft: rgba(180, 83, 9, 0.12);
+  --purple-soft: rgba(124, 58, 237, 0.12);
+  --code-bg: #eef2f8;
+  --body-grad: radial-gradient(1200px 700px at 70% -10%, #e6edf8 0%, var(--bg) 55%);
+  --card-grad: linear-gradient(180deg, #ffffff, #eef3fb);
+  --shadow: 0 8px 28px rgba(30, 50, 90, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: var(--body-grad) fixed;
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+.ex-wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 22px 90px;
+}
+code,
+kbd {
+  font-family: var(--mono);
+  background: var(--bg-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-size: 0.88em;
+}
+
+/* Botão flutuante de tema */
+.ex-theme-toggle {
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  z-index: 50;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 9px 15px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: border-color 0.12s ease, transform 0.12s ease;
+}
+.ex-theme-toggle:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
