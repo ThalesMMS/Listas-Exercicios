@@ -19,6 +19,7 @@ window.EX_MANIFEST = {
     "js/core/stage.js",
     "js/core/stepper.js",
     "js/core/theme.js",
+    "../shared/related-guides.js",
     "js/core/layout.js",
 
     // --- componentes: plano (canvas) ---

@@ -437,7 +437,6 @@ kbd {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 12px;
 }
 .q-btn {
   font-family: var(--sans);
@@ -474,7 +473,7 @@ kbd {
 }
 
 .q-progress {
-  margin-top: 10px;
+  margin: 10px 0 12px;
   height: 5px;
   background: var(--bg-soft);
   border-radius: 999px;
@@ -504,6 +503,17 @@ kbd {
 .q-step-body {
   font-size: 14.5px;
   color: var(--ink);
+}
+.q-related-guides {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.q-related-guide {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
 }
 .q-step-body p {
   margin: 0 0 10px;

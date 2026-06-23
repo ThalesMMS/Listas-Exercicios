@@ -66,7 +66,6 @@
       var stage = el("div", "ex-stage");
       var visCol = el("div", "ex-visual-col");
       var visHost = el("div", "ex-stage-visual");
-      visCol.appendChild(visHost);
 
       var controls = el("div", "ex-controls");
       var bReset = el("button", "ex-btn", "⏮");
@@ -86,6 +85,7 @@
       var bar = el("div", "ex-progress-bar");
       progress.appendChild(bar);
       visCol.appendChild(progress);
+      visCol.appendChild(visHost);
 
       var explain = el("aside", "ex-explain");
       var stepTitle = el("div", "ex-step-title", "");

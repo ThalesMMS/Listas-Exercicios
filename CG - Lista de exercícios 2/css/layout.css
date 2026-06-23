@@ -312,7 +312,6 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 12px;
 }
 .ex-btn {
   font-family: var(--sans);
@@ -347,7 +346,7 @@
   color: var(--ink-mute);
 }
 .ex-progress {
-  margin-top: 10px;
+  margin: 10px 0 12px;
   height: 5px;
   background: var(--bg-soft);
   border-radius: 999px;
@@ -377,6 +376,17 @@
 .ex-step-body {
   font-size: 14.5px;
   color: var(--ink);
+}
+.ex-related-guides {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.ex-related-guide {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
 }
 .ex-missing {
   text-align: center;

@@ -13,6 +13,10 @@
     return m ? decodeURIComponent(m[1]) : null;
   }
 
+  function storageKey() {
+    try { return "ex-step:" + window.location.href; } catch (e) { return null; }
+  }
+
   var QuestionPage = {
     mount: function (root) {
       var id = queryId();
@@ -66,7 +70,6 @@
       var stage = el("div", "ex-stage");
       var visCol = el("div", "ex-visual-col");
       var visHost = el("div", "ex-stage-visual");
-      visCol.appendChild(visHost);
 
       var controls = el("div", "ex-controls");
       var bReset = el("button", "ex-btn", "⏮");
@@ -86,6 +89,7 @@
       var bar = el("div", "ex-progress-bar");
       progress.appendChild(bar);
       visCol.appendChild(progress);
+      visCol.appendChild(visHost);
 
       var explain = el("aside", "ex-explain");
       var stepTitle = el("div", "ex-step-title", "");
@@ -107,6 +111,7 @@
         bar.style.width = (total > 1 ? (i / (total - 1)) * 100 : 100) + "%";
         bPrev.disabled = stepper.atStart();
         bNext.disabled = stepper.atEnd();
+        try { sessionStorage.setItem(storageKey(), String(i)); } catch (e) {}
       };
       stepper.onPlayState = function (playing) {
         bPlay.innerHTML = playing ? "⏸ Pausar" : "▶ Reproduzir";
@@ -124,6 +129,13 @@
         stage.classList.toggle("no-visual", !hasVisual);
         theStage.resize();
         stepper.setSteps(steps);
+        var key = storageKey();
+        var saved = null;
+        try { saved = key ? sessionStorage.getItem(key) : null; } catch (e) {}
+        if (saved != null) {
+          var si = parseInt(saved, 10);
+          if (!isNaN(si) && si >= 0 && si < steps.length) stepper.goto(si);
+        }
         tabButtons.forEach(function (b, j) {
           b.classList.toggle("active", j === idx);
         });

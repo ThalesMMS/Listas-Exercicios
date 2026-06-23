@@ -20,6 +20,18 @@
     return m ? Number(m[1]) : null;
   }
 
+  function renderRelatedGuides(host, q) {
+    var api = window.RelatedGuides;
+    var links = api && api.forQuestion ? api.forQuestion(q) : [];
+    host.innerHTML = "";
+    host.style.display = links.length ? "" : "none";
+    links.forEach(function (item) {
+      var link = el("a", "q-btn q-related-guide", "Ver mais: " + escapeText(item.title));
+      link.href = item.href;
+      host.appendChild(link);
+    });
+  }
+
   var QuestionPage = {
     mount: function (rootEl) {
       var id = getQueryId();
@@ -77,7 +89,6 @@
       var canvasWrap = el("div", "q-canvas-wrap");
       var canvas = el("canvas", "q-canvas");
       canvas.id = "plane";
-      canvasWrap.appendChild(canvas);
 
       var controls = el("div", "q-controls");
       var btnReset = el("button", "q-btn", "⏮");
@@ -100,12 +111,16 @@
       var progressBar = el("div", "q-progress-bar");
       progress.appendChild(progressBar);
       canvasWrap.appendChild(progress);
+      canvasWrap.appendChild(canvas);
 
       var explain = el("aside", "q-explain");
       var stepTitle = el("div", "q-step-title", "");
       var stepBody = el("div", "q-step-body", "");
+      var relatedGuides = el("div", "q-related-guides", "");
       explain.appendChild(stepTitle);
       explain.appendChild(stepBody);
+      explain.appendChild(relatedGuides);
+      renderRelatedGuides(relatedGuides, q);
 
       stage.appendChild(canvasWrap);
       stage.appendChild(explain);

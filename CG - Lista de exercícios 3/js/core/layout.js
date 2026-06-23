@@ -13,6 +13,18 @@
     return m ? decodeURIComponent(m[1]) : null;
   }
 
+  function renderRelatedGuides(host, q) {
+    var api = window.RelatedGuides;
+    var links = api && api.forQuestion ? api.forQuestion(q) : [];
+    host.innerHTML = "";
+    host.style.display = links.length ? "" : "none";
+    links.forEach(function (item) {
+      var link = el("a", "ex-btn ex-related-guide", "Ver mais: " + U.escapeHtml(item.title));
+      link.href = item.href;
+      host.appendChild(link);
+    });
+  }
+
   var QuestionPage = {
     mount: function (root) {
       var id = queryId();
@@ -66,7 +78,6 @@
       var stage = el("div", "ex-stage");
       var visCol = el("div", "ex-visual-col");
       var visHost = el("div", "ex-stage-visual");
-      visCol.appendChild(visHost);
 
       var controls = el("div", "ex-controls");
       var bReset = el("button", "ex-btn", "⏮");
@@ -86,12 +97,16 @@
       var bar = el("div", "ex-progress-bar");
       progress.appendChild(bar);
       visCol.appendChild(progress);
+      visCol.appendChild(visHost);
 
       var explain = el("aside", "ex-explain");
       var stepTitle = el("div", "ex-step-title", "");
       var stepBody = el("div", "ex-step-body", "");
+      var relatedGuides = el("div", "ex-related-guides", "");
       explain.appendChild(stepTitle);
       explain.appendChild(stepBody);
+      explain.appendChild(relatedGuides);
+      renderRelatedGuides(relatedGuides, q);
 
       stage.appendChild(visCol);
       stage.appendChild(explain);
