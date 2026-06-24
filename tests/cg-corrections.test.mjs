@@ -30,6 +30,13 @@ function assertIncludes(haystack, needle, label) {
   assert.ok(haystack.includes(needle), `${label} should include ${needle}`);
 }
 
+function cssRule(css, selector) {
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = css.match(new RegExp(`${escaped}\\s*\\{([^}]*)\\}`));
+  assert.ok(match, `CSS rule ${selector} should exist`);
+  return match[1];
+}
+
 function plabel(p) {
   return ALG.plabel(p);
 }
@@ -139,6 +146,9 @@ assertIncludes(q11, "monômios são linearmente independentes", "Lista 2 Q11 rig
 const q15Lista2 = read("CG - Lista de exercícios 2/js/questions/lista2/q15.js");
 assertIncludes(q15Lista2, "menor controle preciso", "Lista 2 Q15 Blobby tradeoff");
 assertIncludes(q15Lista2, "materiais heterogêneos", "Lista 2 Q15 voxel tradeoff");
+
+const lista2Layout = read("CG - Lista de exercícios 2/css/layout.css");
+assert.match(cssRule(lista2Layout, ".ex-canvas"), /width:\s*100%/, "Lista 2 canvas should fit the visual column");
 
 const q04Lista3 = read("CG - Lista de exercícios 3/js/questions/q04.js");
 assertIncludes(q04Lista3, "R = 2(N·L)N − L", "Lista 3 Q4 reflection convention");
