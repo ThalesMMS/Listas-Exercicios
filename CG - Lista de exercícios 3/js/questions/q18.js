@@ -265,7 +265,7 @@
     title: "Morphing: pentágono → heptágono",
     type: "computacional",
     tags: ["morphing", "interpolação", "animação"],
-    hubDesc: "Reamostragem para 7 pontos e interpolação linear — por vértices e por arestas.",
+    hubDesc: "Refinamento para 7 pontos e interpolação linear — por vértices e por arestas.",
     statement:
       "Mostre os cálculos de <strong>morphing por vértices e por arestas</strong> de um " +
       "<strong>pentágono para um heptágono</strong>.",

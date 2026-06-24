@@ -95,14 +95,16 @@
       }),
       C.tableStep({
         title: "Quantos temporários? (Lista C, Q3)",
-        body: "O número de temporários é o <b>pico</b> simultâneo, não a soma — e os ramos de um " +
-          "<code>if</code> não coexistem. Para potenciaDeDois (x%2==0 ? pot(x/2) : x==1):",
+        body: "Esta tabela segue o gabarito da Lista C, Q3: conta nomes/slots temporários distintos " +
+          "emitidos por uma tradução ingênua, sem reutilização de slots. Não é análise de vivacidade: " +
+          "no IR da condição, <code>t1</code> já morreu quando <code>ifFalse</code> testa " +
+          "<code>t2</code>. Os ramos de um <code>if</code> continuam alternativos, então não são somados.",
         headers: ["subexpressão", "temporários", "por quê"],
         rows: [
-          ["x % 2 == 0", "2", "um para x%2, outro para a comparação"],
+          ["x % 2 == 0", "2", "dois nomes emitidos: t1 para x%2 e t2 para a comparação; isso não exige que ambos estejam vivos no branch"],
           ["potenciaDeDois(x/2)", "1", "um para o argumento x/2"],
           ["x == 1", "0", "comparação direta"],
-          ["total da função", "2", "pico, não soma (then/else não coexistem)"],
+          ["total da função", "2", "maior contagem entre os itens do gabarito; then/else não somam"],
         ],
       }),
       C.domStep(
@@ -110,7 +112,8 @@
         "A máquina de pilha gera código correto para qualquer expressão aninhada.",
         "<div class='ex-callout tip'><div class='ex-callout-title'>Em uma frase</div>" +
           "Avalie no acumulador, <b>empilhe</b> o que precisa esperar; a profundidade da pilha segue o " +
-          "aninhamento e o nº de temporários é o <b>pico</b> de valores vivos ao mesmo tempo.</div>"
+          "aninhamento. Para a Q3, a ressalva é outra: o gabarito conta nomes temporários emitidos por " +
+          "tradução ingênua sem reutilização, não o pico de valores vivos.</div>"
       )
     );
     return steps;
@@ -123,10 +126,10 @@
     section: "Geração de Código",
     title: "Geração de código (máquina de pilha)",
     type: "computacional",
-    hubDesc: "cgen com acumulador + pilha animados (5+(4−3)); ler o assembly; pico de temporários.",
+    hubDesc: "cgen com acumulador + pilha animados (5+(4−3)); ler o assembly; contagem ingênua de temporários.",
     statement:
       "Entenda a geração de código por máquina de pilha: o padrão cgen com acumulador e pilha animado " +
-      "passo a passo, como ler o assembly gerado e como contar os temporários necessários.",
+      "passo a passo, como ler o assembly gerado e a ressalva sobre a contagem ingênua de temporários.",
     parts: [{ label: "Guia", build: build }],
   });
 })();

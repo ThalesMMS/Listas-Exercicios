@@ -72,12 +72,15 @@ for (const s of ["class B inherits A", "class C inherits A", "A melhor disciplin
 
 // Lista C Q3 — the function and a definition of "temporário".
 assert.ok(C.includes("def potenciaDeDois(x)"), "#10 C-Q3: full function shown");
-assert.ok(/valor intermediario/.test(C) && /pico/.test(C), "#10 C-Q3: 'temporário' defined (intermediate value, peak)");
+assert.ok(/nome\/slot intermediario/.test(C) && /sem reutilizacao de slots/.test(C), "#10 C-Q3: 'temporário' defined as a naive slot/name count");
 // Q3 must state that the count is strategy-dependent and show the three-address IR
 // that grounds it (resolving the x%2==0 vs x==1 inconsistency).
 assert.ok(/depende da estrategia de geracao de codigo/.test(C), "C-Q3: count framed as strategy-dependent");
 assert.ok(/codigo de tres enderecos/.test(C) && /registrador-resultado/.test(C), "C-Q3: shows the three-address IR / code-gen strategy");
 assert.ok(C.includes("t2 = (t1 == 0)") && C.includes("r  = (x == 1)"), "C-Q3: IR makes the 2-vs-0 counts explicit");
+assert.ok(C.includes("t1</code> nao precisa estar vivo no branch"), "C-Q3: branch test no longer claims t1 and t2 are live together");
+assert.ok(C.includes("1, 1, 0, 1"), "C-Q3: standard liveness/reuse alternative is acknowledged");
+assert.ok(!C.includes("vivos juntos no teste do branch"), "C-Q3: stale liveness claim removed");
 
 // Lista C Q4 — unambiguous inheritance instead of "B < C < A".
 assert.ok(C.includes("A herda de C; C herda de B"), "#10 C-Q4: explicit inheritance chain");

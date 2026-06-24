@@ -1,6 +1,6 @@
-# GUI didática — Computação Gráfica (Questões 20–37)
+# GUI didática — Computação Gráfica (Questões 1–37)
 
-Interface gráfica **interativa** que mostra, passo a passo, a resolução das questões 20 a 37
+Interface gráfica **interativa** que mostra, passo a passo, a resolução das questões 1 a 37
 do estudo dirigido de Computação Gráfica (Prova 01): rasterização de circunferências, recorte
 (Cohen-Sutherland, Liang-Barsky, Sutherland-Hodgman) e preenchimento de áreas.
 
