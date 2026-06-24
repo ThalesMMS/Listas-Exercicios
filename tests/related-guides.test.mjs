@@ -38,6 +38,11 @@ assertHas(
   { subject: "Computação Gráfica — Lista 3", section: "III) Sombreamento", title: "Sombreamento Phong × Gouraud", tags: ["sombreamento", "phong", "gouraud"] },
   "Sombreamento Flat, Gouraud e Phong",
 );
+assertHas(
+  api,
+  { subject: "Computação Gráfica — Lista 3", section: "V) Animação e Cinemática", title: "Cadeias articuladas", tags: ["animação", "juntas", "articulado"] },
+  "Bones: esqueleto e skinning",
+);
 assert.equal(
   api.forQuestion({ subject: "Visualização 3D e Projeções", title: "O que é projeção?" }).length,
   0,

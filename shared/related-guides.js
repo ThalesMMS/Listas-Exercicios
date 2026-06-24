@@ -89,6 +89,9 @@
     guide(CG_BASE, "g23-cinematica", "Cinemática direta e inversa", [
       "cinemática", "cinematica", "direta × inversa", "inversa",
     ]),
+    guide(CG_BASE, "g24-bones", "Bones: esqueleto e skinning", [
+      "bones", "bone", "esqueleto", "juntas", "articulado", "rigging", "skinning",
+    ]),
 
     guide(COMP_BASE, "c01-lexica", "Análise léxica (maximal munch)", [
       "lexico", "lexica", "flex", "longest-match", "trace",
