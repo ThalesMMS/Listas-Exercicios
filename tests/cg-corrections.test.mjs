@@ -148,6 +148,12 @@ assertNotIncludes(q07Lista3, '"Sombras", "Duras", "Suaves / penumbra"', "Lista 3
 assertIncludes(q07Lista3, "extensão angular da fonte", "Lista 3 Q7 shadow softness caveat");
 assertIncludes(q07Lista3, "dureza depende da extensão da fonte", "Lista 3 Q7 legend ties shadow hardness to source extent");
 
+const q10Lista3 = read("CG - Lista de exercícios 3/js/questions/q10.js");
+assertIncludes(q10Lista3, "I_T = Σ_{i=1}^{N} [ f_att,i · (I_es,i + k_d · I_d,i) ] + k_em · I_em + I_A", "Lista 3 Q10 professor formula");
+assertIncludes(q10Lista3, "coeficiente de atenuação", "Lista 3 Q10 explains attenuation coefficient");
+assertIncludes(q10Lista3, "objeto emissor", "Lista 3 Q10 explains emissive object term");
+assertIncludes(q10Lista3, "reflexão ambiente", "Lista 3 Q10 explains ambient term");
+
 // The direct/global panels must DRAW the same shadow (issue #13): hardness depends
 // on the source, not the technique. Render the scene and compare the two ellipses.
 {
