@@ -1,0 +1,18 @@
+{
+  "name": "cg-listas-exercicios",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portal de listas de exercícios empacotado como app iOS via Capacitor.",
+  "scripts": {
+    "build:ios-web": "node scripts/build-ios-web.mjs",
+    "ios:sync": "npm run build:ios-web && npx cap sync ios",
+    "ios:open": "npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/core": "^7.4.4",
+    "@capacitor/ios": "^7.4.4"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.4"
+  }
+}

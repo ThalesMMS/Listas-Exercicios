@@ -1,0 +1,9 @@
+{
+  "appId": "br.com.thalesmms.cglistas",
+  "appName": "Listas de Exercicios",
+  "webDir": "dist-ios-web",
+  "ios": {
+    "contentInset": "automatic",
+    "scrollEnabled": true
+  }
+}

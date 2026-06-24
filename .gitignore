@@ -1,2 +1,6 @@
 .DS_Store
 .vscode/settings.json
+node_modules/
+.npm-cache/
+dist-ios-web/
+/.taskforge/
