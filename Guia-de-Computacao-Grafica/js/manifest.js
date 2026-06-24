@@ -78,6 +78,7 @@ window.EX_MANIFEST = {
     // Animação
     "js/guias/g21-keyframing.js",
     "js/guias/g22-morphing.js",
+    "js/guias/g22-morphing-exercicios.js",
     "js/guias/g23-cinematica.js",
     "js/guias/g24-bones.js",
   ],
