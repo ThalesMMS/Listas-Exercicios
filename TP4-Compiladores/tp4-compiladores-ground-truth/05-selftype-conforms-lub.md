@@ -57,8 +57,9 @@ e.g. with Animal -> Dog, Animal -> Cat:  lub(Dog, Cat) = Animal
    test — never eagerly.
 
 > **Why keep SELF_TYPE symbolic instead of substituting cur_class immediately?**
-> Because a method returning SELF_TYPE must yield the *caller's* dynamic type, which differs per
-> call site. Resolving early would lose that. You only concretize when you must answer a yes/no
+> Because a method returning SELF_TYPE must preserve the caller's **static receiver type**, which
+> differs per call site. Dynamic dispatch still decides which implementation runs at runtime.
+> Resolving early would lose static precision. You only concretize when you must answer a yes/no
 > conformance question or compute a join.
 
 ## Helpers in semant.cc

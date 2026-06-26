@@ -13,16 +13,17 @@ Every error: prints `filename:line: <message>` and increments `semant_errors`.
 
 ## Two classes of error
 
-### FATAL (graph-breaking) → abort after phase 1, `exit(1)`
+### FATAL → abort after phase 1, `exit(1)`
 - Redefinition of basic class / SELF_TYPE
 - Class previously defined (duplicate)
 - Parent undefined
 - Parent is Int/Bool/String/SELF_TYPE (illegal inheritance)
 - Inheritance cycle
-- Main not defined
+- Main not defined (fatal because there is no entry point, not because parent-chain walks are unsafe)
 
 → message: `"Compilation halted due to static semantic errors."`
-Rationale: subsequent parent-chain walks would loop / read garbage.
+Rationale: graph-breaking errors would make subsequent parent-chain walks loop / read garbage.
+Missing `Main` is a separate fatal entry-point error.
 
 ### RECOVERABLE → substitute a type, keep checking
 Everything else. The node gets `Object` (or a known declared type), so one run surfaces
@@ -68,6 +69,7 @@ identifier → `Object`; failed dispatch → `Object`.
 - `Expression type ... does not conform to declared static dispatch type T.`
 - `Predicate of 'if' does not have type Bool.`
 - `Loop condition does not have type Bool.`
+- `Identifier self cannot be bound in a case branch.`
 - `Identifier x declared with type SELF_TYPE in case branch.`
 - `Class T of case branch is undefined.`
 - `Duplicate branch T in case statement.`

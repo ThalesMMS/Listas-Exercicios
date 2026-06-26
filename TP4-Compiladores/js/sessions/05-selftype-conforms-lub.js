@@ -40,7 +40,7 @@
         {
           title: "Por que não substituir SELF_TYPE cedo",
           body:
-            "<p><code>SELF_TYPE</code> representa o tipo dinâmico do receptor. Se você o substitui cedo pela classe atual, perde a precisão em chamadas encadeadas.</p>" +
+            "<p><code>SELF_TYPE</code> é um tipo estático especial, ancorado na classe corrente e preservado pelo tipo estático do receptor. Se você o substitui cedo pela classe atual, perde a precisão em chamadas encadeadas; a implementação executada continua sendo escolhida por despacho dinâmico.</p>" +
             U.code("class Counter {\n  inc(n:Int) : SELF_TYPE { self };\n};\n\n(new Counter).inc(1).inc(2)  -- continua sendo Counter") +
             "<p>O retorno declarado é <code>SELF_TYPE</code>, mas o tipo da chamada vira o tipo do receptor. Isso preserva a fluência de métodos.</p>",
           visual: { type: "svg", draw: function (svg) { D.selfType(svg, "call1"); } }

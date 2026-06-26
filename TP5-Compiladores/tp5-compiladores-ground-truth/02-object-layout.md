@@ -68,7 +68,7 @@ Singletons declared globally: `BoolConst falsebool(FALSE), truebool(TRUE);`.
 
 So you can dispatch on a literal: `"hi".length()`, `(5).copy()`, `true.type_name()` all need the
 String/Int/Bool dispatch table reachable through the object header. (The skeleton omitted this;
-the student added the `.word Str_dispTab` etc.)
+the student added the `.word String_dispTab` etc.)
 
 ## Special globals — `code_global_data()` (~313)
 

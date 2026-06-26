@@ -181,9 +181,9 @@ jalr $t1                 # chamada indireta`, "dispatch dinâmico") +
                   var nodes = {
                     A: { x: 395, y: 65, label: "A", lines: ["tag 3"], hot: true },
                     B: { x: 260, y: 170, label: "B", lines: ["tag 4"], hot: true },
-                    C: { x: 530, y: 170, label: "C", lines: ["tag 5"], hot: true },
-                    D: { x: 170, y: 270, label: "D", lines: ["tag 6"] },
-                    E: { x: 350, y: 270, label: "E", lines: ["tag 7"] },
+                    D: { x: 170, y: 270, label: "D", lines: ["tag 5"] },
+                    E: { x: 350, y: 270, label: "E", lines: ["tag 6"] },
+                    C: { x: 530, y: 170, label: "C", lines: ["tag 7"], hot: true },
                   };
                   T.classTree(svg, nodes, [["A", "B"], ["A", "C"], ["B", "D"], ["B", "E"]]);
                   T.pill(svg, 585, 245, "branch A aceita tags 3..7", { w: 190, fill: "var(--yellow-soft)", stroke: "var(--yellow)" });

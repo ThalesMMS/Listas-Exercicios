@@ -83,11 +83,11 @@
         {
           title: "Checagem de Main.main",
           body:
-            "<p>No final da construção das tabelas de features, o analisador já sabe quais métodos existem em <code>Main</code>. Então aplica a regra do ponto de entrada:</p>" +
+            "<p>No final da construção das tabelas de features, o analisador já sabe quais métodos foram declarados em <code>Main</code>. A regra do ponto de entrada exige um <code>main</code> localmente em <code>Main</code>; não basta herdá-lo por lookup.</p>" +
             U.code("class Main {\n  main() : Object { ... };\n};") +
             U.table(["Erro", "Condição"], [
-              ["<code>No 'main' method in class Main.</code>", "classe Main existe, mas método <code>main</code> não."],
-              ["<code>'main' method in class Main should have no arguments.</code>", "<code>main</code> existe, mas tem parâmetros formais."],
+              ["<code>No 'main' method in class Main.</code>", "classe Main existe, mas <code>methods_of[Main]</code> não contém <code>main</code> declarado localmente."],
+              ["<code>'main' method in class Main should have no arguments.</code>", "<code>main</code> local existe, mas tem parâmetros formais."],
             ]),
           visual: {
             type: "dom",

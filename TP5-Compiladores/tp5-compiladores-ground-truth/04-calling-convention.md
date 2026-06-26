@@ -29,13 +29,13 @@ sw $ra 4($sp)            // store at offset 1  (RA)
 addiu $fp $sp 4          // $fp points just below the saved regs
 move $s0 $a0             // SELF <- receiver (passed in ACC)
 ```
-After this, from `$fp`: **3 = old $fp, 2 = old SELF, 1 = old RA**, and arguments are *above*
-that. For N formals: `arg_k` is at word offset **`(N - k - 1) + 3`** (so `arg_0` → `N+2`,
+After this, from `$fp`: **0 = old RA, 1 = old SELF, 2 = old $fp**, and arguments are *above*
+that starting at offset 3. For N formals: `arg_k` is at word offset **`(N - k - 1) + 3`** (so `arg_0` → `N+2`,
 `arg_{N-1}` → `3`). This exact formula is in `code_class_methods` (~921).
 
 ## Locals (let / case bindings)
 
-Allocated **below** the saved registers, at `$fp` offsets `0, -1, -2, ...` (word units).
+Allocated **below** the saved registers, at `$fp` offsets `-1, -2, ...` (word units).
 `count_max_locals` (~808) statically computes the **maximum simultaneous local depth** so the
 prologue reserves all the space at once with `addiu $sp $sp -4*n_locals`:
 - siblings (if/case branches, block stmts, binary operands) **reuse** slots → take the `max`.

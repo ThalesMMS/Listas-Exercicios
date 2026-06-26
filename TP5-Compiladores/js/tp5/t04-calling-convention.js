@@ -53,7 +53,7 @@ callee:
               body:
                 `<p>O ponto mais cobrado é a localização dos formais e locais. No projeto, para <code>N</code> formais, o formal <code>k</code> é endereçado por:</p>` +
                 T.formula(`arg_k offset = (N - k - 1) + 3`) +
-                `<p>Com dois formais <code>(a,b)</code>, isso dá <code>a → 4($fp)</code> e <code>b → 3($fp)</code>. Locais de <code>let</code>/<code>case</code> ficam na região abaixo do frame e são reservados antecipadamente por <code>count_max_locals</code>.</p>`,
+                `<p>Com dois formais <code>(a,b)</code>, isso dá <code>a → 4($fp)</code> e <code>b → 3($fp)</code>. Com o prólogo abaixo, os salvos ficam em <code>$ra=0($fp)</code>, <code>$s0=1($fp)</code> e <code>$fp antigo=2($fp)</code>; portanto locais de <code>let</code>/<code>case</code> começam em <code>-1, -2, ...</code> e são reservados antecipadamente por <code>count_max_locals</code>.</p>`,
               visual: {
                 type: "svg",
                 view: [760, 360],
@@ -63,7 +63,7 @@ callee:
                     { off: "+3", label: "arg_1 = b", hot: true },
                     { off: "save", label: "old $fp / old $s0 / old $ra", warn: true },
                     { off: "$fp", label: "base estável do frame", fp: true, color: "var(--orange)" },
-                    { off: "0,-1...", label: "slots de let / case locals", hot: true },
+                    { off: "-1,-2...", label: "slots de let / case locals", hot: true },
                   ], { title: "exemplo: método f(a,b)" });
                   svg.text(380, 318, "A fórmula dos formais é a parte que você deve aplicar em exercícios.", { size: 13, weight: 800, color: "var(--yellow)" });
                 },
@@ -186,8 +186,12 @@ ok:
 lw   $t2 0($s0)        # tag dinâmica de self
 sll  $t2 $t2 3        # 2 palavras por classe = 8 bytes
 addu $t1 $t1 $t2
+sw   $t1 0($sp)        # preserva entrada da objTab
+addiu $sp $sp -4
 lw   $a0 0($t1)        # protObj
 jal  Object.copy
+addiu $sp $sp 4
+lw   $t1 0($sp)        # recupera entrada da objTab
 lw   $t1 4($t1)        # init
 jalr $t1`, "ideia de new SELF_TYPE") +
                 `<p>O deslocamento é <code>2 * tag</code> em palavras, ou <code>tag << 3</code> em bytes.</p>`,

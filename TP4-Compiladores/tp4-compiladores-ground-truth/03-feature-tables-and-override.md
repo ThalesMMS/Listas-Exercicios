@@ -48,8 +48,10 @@ different signature is an error, not an overload.
 
 ### Main.main() check (end of the function)
 If `Main` exists:
-- no `main` method → *"No 'main' method in class Main."*
-- `main` has ≥1 formal → *"'main' method in class Main should have no arguments."*
+- no **locally declared** `main` method in `methods_of[Main]` → *"No 'main' method in class Main."*
+- local `main` has ≥1 formal → *"'main' method in class Main should have no arguments."*
+
+Inherited `main` is not enough: the entry point must be declared in class `Main` itself.
 
 ## Why two passes?
 

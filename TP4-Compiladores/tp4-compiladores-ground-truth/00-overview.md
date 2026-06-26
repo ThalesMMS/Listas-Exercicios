@@ -41,8 +41,10 @@ implemented one node at a time.
 ## Error-recovery rule (know this for the exam)
 
 - **Graph-breaking errors** (undefined/illegal parent, inheritance cycle, redefining a
-  basic class, missing `Main`) → **fatal**: abort right after `ClassTable` is built,
+  basic class) → **fatal**: abort right after `ClassTable` is built,
   because parent-chain walks (`lookup_method`, `conforms`, `lub`) would loop or read garbage.
+- **Missing `Main`** is also fatal, but for a different reason: the program has no entry point.
+  It does not by itself make `parent_of` unsafe.
 - **All other errors** are **recoverable**: the offending node is given type `Object`
   (or another plausible type) and checking continues, so the user sees *every* remaining
   error in one run. This is why `valid_decl` returns `Object` on an undefined type, etc.
@@ -53,9 +55,11 @@ implemented one node at a time.
 |------|------|-------------|
 | `semant.cc` | **All your logic** — ClassTable + every `type_check` | YES (this is the assignment) |
 | `semant.h` | Declarations: `ClassTable`, `MethodSig`, `TypeEnv`/`ObjectEnv` typedef | YES |
-| `cool-tree.handcode.h` | `_EXTRAS` macros: declares `type_check(TypeEnv*)` + getters | YES (additions only) |
+| `cool-tree.handcode.h` | `_EXTRAS` macros for AST-node additions | YES (additions only) |
 | `cool-tree.h` | AST node definitions (fields are `protected`) | look only |
 | `good.cl` / `bad.cl` | your legal / illegal test programs | YES |
+
+`type_check(TypeEnv*)` declarations and getters belong in the `_EXTRAS` macros.
 
 ## How to run
 

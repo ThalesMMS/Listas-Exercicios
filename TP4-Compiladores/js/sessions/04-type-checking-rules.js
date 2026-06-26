@@ -107,6 +107,7 @@
           body:
             "<p>O <code>case</code> tipa a expressão analisada e depois cada ramo separadamente. O identificador do ramo só existe dentro do corpo daquele ramo.</p>" +
             U.table(["Checagem", "Regra"], [
+              ["identificador do ramo", "não pode ser <code>self</code>; nesse caso, emita erro e não vincule <code>self</code> no escopo."],
               ["tipo declarado do ramo", "não pode ser <code>SELF_TYPE</code> e precisa existir."],
               ["tipos de ramos", "não podem repetir o mesmo tipo."],
               ["escopo", "entra escopo, vincula <code>x:T</code>, checa corpo, sai escopo."],

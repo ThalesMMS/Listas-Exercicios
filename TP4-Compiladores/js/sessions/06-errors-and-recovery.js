@@ -25,18 +25,18 @@
           visual: { type: "svg", draw: function (svg) { D.errorFlow(svg, "msg"); } }
         },
         {
-          title: "Erros fatais: quebram a hierarquia global",
+          title: "Erros fatais: hierarquia e ponto de entrada",
           body:
-            "<p>Erros fatais são aqueles que tornam inseguro usar <code>parent_of</code> e caminhar pelo grafo.</p>" +
+            "<p>Alguns erros fatais tornam inseguro usar <code>parent_of</code> e caminhar pelo grafo; outro erro fatal é não haver ponto de entrada.</p>" +
             U.chips([
               { text: "redefinir classe básica", kind: "danger" },
               { text: "classe duplicada", kind: "danger" },
               { text: "pai indefinido", kind: "danger" },
               { text: "herdar Int/Bool/String/SELF_TYPE", kind: "danger" },
               { text: "ciclo de herança", kind: "danger" },
-              { text: "Main ausente", kind: "danger" }
+              { text: "Main ausente: sem ponto de entrada", kind: "danger" }
             ]) +
-            U.callout("danger", "Por que abortar", "<p><code>lookup_method</code>, <code>lookup_attr_type</code>, <code>is_subtype</code> e <code>lub</code> dependem de uma cadeia de pais finita e válida.</p>"),
+            U.callout("danger", "Por que abortar", "<p><code>lookup_method</code>, <code>lookup_attr_type</code>, <code>is_subtype</code> e <code>lub</code> dependem de uma cadeia de pais finita e válida. A ausência de <code>Main</code> é fatal por não haver ponto de entrada, não por corromper a cadeia de pais.</p>"),
           visual: { type: "svg", draw: function (svg) { D.fatalRecovery(svg, "fatal"); } }
         },
         {
@@ -68,7 +68,7 @@
             U.table(["Nó/tema", "Erros típicos"], [
               ["identificadores e assign", "identificador não declarado; atribuição a <code>self</code>; RHS não conforma ao tipo declarado."],
               ["dispatch", "método indefinido; classe de dispatch indefinida; aridade errada; argumento não conforma."],
-              ["controle", "predicado de <code>if</code>/<code>while</code> não Bool; branch de case com tipo duplicado/indefinido/SELF_TYPE."],
+              ["controle", "predicado de <code>if</code>/<code>while</code> não Bool; branch de case com <code>self</code> como identificador, tipo duplicado/indefinido/SELF_TYPE."],
               ["let", "ligar <code>self</code>; tipo indefinido; inicializador não conforma."],
               ["operadores", "argumentos não Int; <code>not</code> não Bool; comparação ilegal com tipo básico."],
               ["new", "classe indefinida em <code>new T</code>."],

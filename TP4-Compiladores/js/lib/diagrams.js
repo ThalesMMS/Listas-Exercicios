@@ -64,8 +64,8 @@
     svg.arrow(420, 122, 540, 178, { color: "var(--green)" });
     svg.rect(70, 178, 285, 130, { fill: fill(active, "fatal", "var(--red-soft)"), stroke: "var(--red)", rx: 12 });
     svg.text(212, 200, "FATAL", { color: "var(--red)", weight: 800, size: 15 });
-    svg.text(212, 219, "quebra o grafo", { color: "var(--ink-dim)", size: 11 });
-    svg.text(212, 252, "parent indefinido\nherança ilegal\nciclo\nMain ausente", { color: "var(--ink)", size: 12, lineHeight: 17 });
+    svg.text(212, 219, "estrutura global", { color: "var(--ink-dim)", size: 11 });
+    svg.text(212, 252, "parent indefinido\nherança ilegal\nciclo\nsem ponto de entrada", { color: "var(--ink)", size: 12, lineHeight: 17 });
     svg.rect(405, 178, 285, 130, { fill: fill(active, "recover", "var(--green-soft)"), stroke: "var(--green)", rx: 12 });
     svg.text(548, 200, "RECUPERÁVEL", { color: "var(--green)", weight: 800, size: 15 });
     svg.text(548, 219, "erro local", { color: "var(--ink-dim)", size: 11 });

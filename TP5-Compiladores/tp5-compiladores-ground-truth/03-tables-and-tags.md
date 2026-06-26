@@ -62,8 +62,10 @@ For each class, one word per method slot = `<definingClass>.<method>`. The slot 
 ## tag_descendants_inclusive(Symbol) (~594)
 
 Returns the tags of a class and all its descendants (DFS over `children`). Used by `case` to test
-"is the runtime tag one of the acceptable types for this branch?" (The README notes the contiguous-
-range optimization—`low <= tag <= high`—was left as explicit list-matching for simplicity.)
+"is the runtime tag one of the acceptable types for this branch?" The preorder property is naturally
+a half-open range `[tag, tag + subtreeSize)`; equivalently, an inclusive range can be written as
+`low <= tag <= high`, where `high` is the last descendant tag. The README notes this contiguous-
+range optimization was left as explicit list-matching for simplicity.
 
 ## CgenNode & the inheritance tree (~462–502)
 

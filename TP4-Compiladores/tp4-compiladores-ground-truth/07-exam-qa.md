@@ -19,8 +19,9 @@ Override checking needs *all* classes' features collected first (a class may ove
 from a parent defined later in input). Pass 1 collects; pass 2 cross-references.
 
 **Q: How is `self` typed? Why keep SELF_TYPE symbolic?**
-`self : SELF_TYPE`. Kept symbolic so a SELF_TYPE-returning method yields the *caller's* dynamic
-type per call site; resolved to `cur_class` only when answering a conformance/lub question.
+`self : SELF_TYPE`. Kept symbolic so a SELF_TYPE-returning method preserves the caller's static
+receiver type per call site; runtime implementation selection is still dynamic dispatch. Resolve
+to `cur_class` only when answering a conformance/lub question.
 
 **Q: State the override rule.**
 A subclass may redefine a method only with an **identical** signature (same arity, same formal

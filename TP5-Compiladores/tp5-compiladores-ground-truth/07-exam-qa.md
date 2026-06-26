@@ -78,9 +78,9 @@ end:
 ## "Implement / modify" prompts
 
 - **Add a new operator's code()** — follow `emit_arith`: eval/push/eval, copy, unbox, op, rebox.
-- **Add a peephole / range-based case match** — replace the per-tag `beq` chain with a
-  `blti/bgti` range test using the contiguous tag interval (README notes this optimization was
-  skipped).
+- **Add a peephole / range-based case match** — replace the per-tag `beq` chain with a range
+  test using `blt`/`bgt` or loaded limit comparisons over the contiguous tag interval (README
+  notes this optimization was skipped).
 - **Explain how method offsets stay stable under override** — `compute_layout_for` overwrites the
   inherited slot in place, preserving its index.
 - **Why is SELF callee-saved?** It must survive nested dispatches that overwrite `$a0`; the

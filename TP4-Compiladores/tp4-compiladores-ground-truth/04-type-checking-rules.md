@@ -75,6 +75,7 @@ Shared helper `type_check_dispatch_common` (~687):
 ### `typcase_class` — `case e of x:T => e' ... esac` (~785)
 - check `e` (its value is only used for the runtime tag).
 - per branch:
+  - branch identifier is `self` → error; do **not** bind `self` in the branch scope.
   - declared `SELF_TYPE` → *"Identifier x declared with type SELF_TYPE in case branch."*
   - declared type undefined → *"Class T of case branch is undefined."*
   - **duplicate branch type** → *"Duplicate branch T in case statement."*

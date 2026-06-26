@@ -38,7 +38,7 @@
         {
           title: "SELF_TYPE em uma frase",
           body:
-            "<p><code>SELF_TYPE</code> significa “o tipo do receptor atual”, não “a classe textual onde o método foi escrito”. Por isso ele fica simbólico e só é concretizado quando uma comparação ou lookup exige um nome de classe.</p>" +
+            "<p><code>SELF_TYPE</code> é um tipo estático especial do receptor, ancorado na classe corrente, não a classe textual onde o método foi escrito. Ele fica simbólico e só é concretizado quando uma comparação ou lookup exige um nome de classe; a implementação em runtime ainda é escolhida por despacho dinâmico.</p>" +
             U.table(["Pergunta", "Resposta curta"], [
               ["<code>self</code> tem qual tipo?", "<code>SELF_TYPE</code>."],
               ["<code>new SELF_TYPE</code> retorna o quê?", "<code>SELF_TYPE</code>."],

@@ -61,7 +61,9 @@
             U.table(["Arquivo", "Papel no TP4"], [
               ["<code>semant.cc</code>", "Implementação principal: <code>ClassTable</code>, checagens de grafo, tabelas de features e todos os <code>type_check</code>."],
               ["<code>semant.h</code>", "Declarações auxiliares: <code>ClassTable</code>, <code>MethodSig</code>, <code>ObjectEnv</code>, tipos de ambiente."],
-              ["<code>cool-tree.h</code>", "Declarações extras adicionadas aos nós AST, como <code>type_check(TypeEnv*)</code> e getters."],
+              ["<code>cool-tree.handcode.h</code>", "Macros <code>_EXTRAS</code> com declarações extras dos nós AST, como " +
+                "<code>type_check(TypeEnv*)</code> e getters."],
+              ["<code>cool-tree.h</code>", "Definições dos nós AST e campos protegidos; útil para consulta."],
               ["<code>good.cl</code> / <code>bad.cl</code>", "Casos positivos e negativos para demonstrar cobertura semântica."],
               ["<code>README</code>", "Justificativa de design, estrutura do código e estratégia de testes."],
             ]) +
