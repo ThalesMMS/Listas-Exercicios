@@ -62,10 +62,14 @@
     svg.box(280, 70, 200, 52, "erro semântico", "qual é a natureza?", { fill: "var(--bg-soft)", stroke: "var(--border)" });
     svg.arrow(340, 122, 220, 178, { color: "var(--red)" });
     svg.arrow(420, 122, 540, 178, { color: "var(--green)" });
-    svg.box(70, 178, 285, 130, "FATAL", "quebra o grafo", { fill: fill(active, "fatal", "var(--red-soft)"), stroke: "var(--red)", titleColor: "var(--red)" });
-    svg.text(212, 236, "parent indefinido\nherança ilegal\nciclo\nMain ausente", { color: "var(--ink)", size: 12, lineHeight: 17 });
-    svg.box(405, 178, 285, 130, "RECUPERÁVEL", "erro local", { fill: fill(active, "recover", "var(--green-soft)"), stroke: "var(--green)", titleColor: "var(--green)" });
-    svg.text(548, 236, "identificador não declarado\noperador com tipo errado\ndispatch inválido\nreturn incompatível", { color: "var(--ink)", size: 12, lineHeight: 17 });
+    svg.rect(70, 178, 285, 130, { fill: fill(active, "fatal", "var(--red-soft)"), stroke: "var(--red)", rx: 12 });
+    svg.text(212, 200, "FATAL", { color: "var(--red)", weight: 800, size: 15 });
+    svg.text(212, 219, "quebra o grafo", { color: "var(--ink-dim)", size: 11 });
+    svg.text(212, 252, "parent indefinido\nherança ilegal\nciclo\nMain ausente", { color: "var(--ink)", size: 12, lineHeight: 17 });
+    svg.rect(405, 178, 285, 130, { fill: fill(active, "recover", "var(--green-soft)"), stroke: "var(--green)", rx: 12 });
+    svg.text(548, 200, "RECUPERÁVEL", { color: "var(--green)", weight: 800, size: 15 });
+    svg.text(548, 219, "erro local", { color: "var(--ink-dim)", size: 11 });
+    svg.text(548, 252, "identificador não declarado\noperador com tipo errado\ndispatch inválido\nreturn incompatível", { color: "var(--ink)", size: 12, lineHeight: 17 });
     svg.arrow(212, 308, 212, 356, { color: "var(--red)" });
     svg.arrow(548, 308, 548, 356, { color: "var(--green)" });
     svg.box(88, 360, 248, 42, "halt após fase 1", "evita loops em parent_of", { fill: "var(--red-soft)", stroke: "var(--red)", titleColor: "var(--red)", subColor: "var(--ink-dim)" });
@@ -74,19 +78,24 @@
 
   function classTable(svg, active) {
     svg.view(760, 430); title(svg, "ClassTable: banco de dados global da semântica");
-    svg.box(285, 42, 190, 62, "ClassTable", "consultas de tipo", { fill: "var(--accent-soft)", stroke: "var(--accent)", titleColor: "var(--accent)" });
+    svg.box(290, 56, 180, 64, "ClassTable", "consultas de tipo", { fill: "var(--accent-soft)", stroke: "var(--accent)", titleColor: "var(--accent)" });
+    // Cinco tabelas numa única fileira: as setas saem do mesmo ponto e descem em
+    // leque, sem nenhuma seta atravessar outra caixa.
     var items = [
-      { k: "classes", x: 58, y: 145, t: "class_by_name", s: "classe → AST" },
-      { k: "parents", x: 302, y: 145, t: "parent_of", s: "classe → pai" },
-      { k: "methods", x: 546, y: 145, t: "methods_of", s: "classe → métodos" },
-      { k: "attrs", x: 180, y: 285, t: "attrs_of", s: "classe → atributos" },
-      { k: "queries", x: 424, y: 285, t: "queries", s: "conforms, lub, lookup" }
+      { k: "classes", cx: 78, t: "class_by_name", s: "classe → AST" },
+      { k: "parents", cx: 231, t: "parent_of", s: "classe → pai" },
+      { k: "methods", cx: 384, t: "methods_of", s: "classe → métodos" },
+      { k: "attrs", cx: 537, t: "attrs_of", s: "classe → atributos" },
+      { k: "queries", cx: 690, t: "queries", s: "conforms, lub, lookup" }
     ];
+    var bw = 134, top = 226, bh = 92;
     items.forEach(function (b) {
-      svg.arrow(380, 104, b.x + 78, b.y, { color: active === b.k ? "var(--accent)" : "var(--ink-mute)", dashed: active !== b.k });
-      svg.box(b.x, b.y, 156, 80, b.t, b.s, { fill: fill(active, b.k), stroke: color(active, b.k), mono: true, size: 13 });
+      svg.box(b.cx - bw / 2, top, bw, bh, b.t, b.s, { fill: fill(active, b.k), stroke: color(active, b.k), mono: true, size: 12, subSize: 10 });
     });
-    note(svg, 380, 398, "O type checker não recalcula a hierarquia: ele consulta a ClassTable.");
+    items.forEach(function (b) {
+      svg.arrow(380, 122, b.cx, top - 3, { color: active === b.k ? "var(--accent)" : "var(--ink-mute)", dashed: active !== b.k });
+    });
+    note(svg, 380, 388, "O type checker não recalcula a hierarquia: ele consulta a ClassTable.");
   }
 
   function typeEnv(svg, active) {
@@ -123,9 +132,12 @@
 
   function inheritanceTree(svg, active) {
     svg.view(760, 430); title(svg, "Hierarquia Cool: árvore de herança");
+    // Classes básicas à esquerda, hierarquia do usuário à direita: assim a aresta
+    // Object→Animal não cruza por trás das caixas das classes básicas.
     var nodes = {
-      Object: [380, 68], IO: [210, 160], Int: [330, 160], Bool: [450, 160], String: [570, 160],
-      Animal: [260, 270], Dog: [380, 270], Cat: [500, 270], Poodle: [380, 360]
+      Object: [380, 60],
+      IO: [96, 152], Int: [212, 152], Bool: [328, 152], String: [444, 152],
+      Animal: [628, 152], Dog: [560, 258], Cat: [700, 258], Poodle: [560, 352]
     };
     function n(name, fillColor, strokeColor) {
       var p = nodes[name];

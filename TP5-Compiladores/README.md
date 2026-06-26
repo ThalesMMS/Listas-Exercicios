@@ -17,6 +17,7 @@ Depois abra `http://localhost:8123`.
 ## Estrutura
 
 ```text
+Aplicação prática da teoria de construção de um Gerador de Código para a linguagem COOL.pdf   (PDF-fonte: enunciado/teoria do TP5)
 index.html                 Hub da sessão
 question.html              Página genérica de subsessão (?q=<id>)
 css/
@@ -27,7 +28,8 @@ css/
 js/
   manifest.js              Ordem de carregamento dos scripts
   loader.js                Loader sem fetch, compatível com file://
-  core/                    Registro, layout, stepper, stage, tema
+  lib/util.js              Utilitários compartilhados
+  core/                    Boot, registro, layout, stepper, stage, tema
   surfaces/                SVG, DOM e canvas-plane
   components/              Componentes visuais reutilizáveis
   templates/               Slides/walkthrough
@@ -41,6 +43,7 @@ js/
     t05-expression-codegen.js Expressões
     t06-runtime-gc.js      Runtime checks e GC
     t07-exam-qa.js         Revisão e drills
+tp5-compiladores-ground-truth/   notas-fonte (ground truth), uma .md por subsessão (00-07)
 ```
 
 ## Navegação

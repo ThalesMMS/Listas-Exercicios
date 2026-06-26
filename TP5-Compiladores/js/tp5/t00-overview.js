@@ -107,14 +107,15 @@
                     var text = i >= 6;
                     var stroke = data ? "var(--purple)" : text ? "var(--green)" : "var(--accent)";
                     var fill = data ? "var(--purple-soft)" : text ? "var(--green-soft)" : "var(--accent-soft)";
-                    svg.rect(70, y, 52, 24, { fill: fill, stroke: stroke, strokeWidth: 1.3, rx: 8 });
-                    svg.text(96, y + 13, r[0], { mono: true, size: 12, weight: 800, color: "var(--ink)" });
-                    svg.text(280, y + 13, r[1], { anchor: "start", mono: true, size: 12.5, color: "var(--ink)" });
-                    svg.text(560, y + 13, r[2], { anchor: "start", size: 12, color: "var(--ink-dim)" });
+                    svg.rect(24, y, 52, 24, { fill: fill, stroke: stroke, strokeWidth: 1.3, rx: 8 });
+                    svg.text(50, y + 13, r[0], { mono: true, size: 12, weight: 800, color: "var(--ink)" });
+                    svg.text(96, y + 13, r[1], { anchor: "start", mono: true, size: 12.5, color: "var(--ink)" });
+                    svg.text(372, y + 13, r[2], { anchor: "start", size: 12, color: "var(--ink-dim)" });
                   });
-                  T.pill(svg, 650, 108, "pré-análise", { stroke: "var(--accent)", fill: "var(--accent-soft)" });
-                  T.pill(svg, 650, 198, ".data", { stroke: "var(--purple)", fill: "var(--purple-soft)", w: 92 });
-                  T.pill(svg, 650, 294, ".text", { stroke: "var(--green)", fill: "var(--green-soft)", w: 92 });
+                  // Rótulos de grupo à direita, à frente da coluna de descrições (sem sobrepor).
+                  T.pill(svg, 648, 73, "pré-análise", { stroke: "var(--accent)", fill: "var(--accent-soft)" });
+                  T.pill(svg, 648, 163, ".data", { stroke: "var(--purple)", fill: "var(--purple-soft)", w: 92 });
+                  T.pill(svg, 648, 268, ".text", { stroke: "var(--green)", fill: "var(--green-soft)", w: 92 });
                 },
               },
             },

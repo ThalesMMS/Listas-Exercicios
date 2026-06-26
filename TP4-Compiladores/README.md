@@ -20,6 +20,7 @@ Abra `index.html` no navegador. A sessão funciona via `file://`, sem build, sem
 ## Estrutura
 
 ```text
+Aplicação prática da teoria de construção de um Analisador Semântico.pdf   (PDF-fonte: enunciado/teoria do TP4)
 index.html
 section.html
 css/
@@ -51,6 +52,7 @@ js/
     05-selftype-conforms-lub.js
     06-errors-and-recovery.js
     07-exam-qa.js
+tp4-compiladores-ground-truth/   notas-fonte (ground truth), uma .md por subsessão (00-07)
 ```
 
 ## Conteúdo
