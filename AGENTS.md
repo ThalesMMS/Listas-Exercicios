@@ -1,6 +1,7 @@
 # Agent Instructions
 
 When creating code:
+
 Static page. HTML, CSS, JavaScript, and SVGs/images allowed.
 -   Data files (JSON, Markdown) and local web fonts allowed.
 -   Strict rule: No external dependencies or external API calls.
