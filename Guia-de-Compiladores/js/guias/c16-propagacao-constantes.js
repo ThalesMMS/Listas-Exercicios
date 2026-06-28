@@ -46,7 +46,7 @@
           edges: [
             { from: "h", to: "b" },
             { from: "b", to: "o" },
-            { from: "b", to: "h", curve: 150, color: "var(--red)", label: "back-edge" },
+            { from: "b", to: "h", fromSide: "right", toSide: "right", curve: -115, color: "var(--red)", label: "back-edge" },
           ],
         });
       },

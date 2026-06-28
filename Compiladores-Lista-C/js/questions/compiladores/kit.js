@@ -230,9 +230,9 @@
     var labels = spec.cells || [];
     var x0 = spec.x || 88;
     var y = spec.y || 130;
-    var cw = spec.cw || 54;
+    var cw = spec.cw || 64;
     var ch = spec.ch || 38;
-    svg.view(spec.w || 760, spec.h || 260);
+    svg.view(spec.w || 760, spec.h || 300);
     var free = {};
     (spec.free || []).forEach(function (i) { free[i] = true; });
     svg.text(x0 - 45, y + ch / 2, "root", { anchor: "end", size: 13, mono: true, color: "var(--ink-dim)" });
@@ -249,17 +249,35 @@
         color: free[i] ? "var(--red)" : "var(--ink)",
       });
     }
-    (spec.pointers || []).forEach(function (p) {
-      var from = p.from, to = p.to;
-      if (typeof from !== "number" || typeof to !== "number") return;
-      var side = p.side || (from < to ? "top" : "bottom");
-      var sx = x0 + from * cw + cw / 2;
-      var tx = x0 + to * cw + cw / 2;
-      var yy = side === "top" ? y : y + ch;
-      var bend = (side === "top" ? -1 : 1) * Math.max(28, Math.abs(to - from) * 14);
+    var ptrs = (spec.pointers || []).filter(function (p) {
+      return typeof p.from === "number" && typeof p.to === "number";
+    });
+    var items = ptrs.map(function (p) {
+      var side = p.side || (p.from < p.to ? "top" : "bottom");
+      return { p: p, side: side, lo: Math.min(p.from, p.to), hi: Math.max(p.from, p.to), lane: 0 };
+    });
+    // Faixas (lanes) por lado: setas que se sobrepõem em x ganham alturas diferentes,
+    // com os arcos mais largos por fora — evita o emaranhado de setas coladas.
+    ["top", "bottom"].forEach(function (sideName) {
+      var grp = items.filter(function (it) { return it.side === sideName; });
+      grp.sort(function (a, b) { return (a.hi - a.lo) - (b.hi - b.lo) || a.lo - b.lo; });
+      var lanes = [];
+      grp.forEach(function (it) {
+        for (var k = 0; ; k++) {
+          var clash = (lanes[k] || []).some(function (q) { return it.lo < q.hi && q.lo < it.hi; });
+          if (!clash) { (lanes[k] = lanes[k] || []).push(it); it.lane = k; break; }
+        }
+      });
+    });
+    items.forEach(function (it) {
+      var p = it.p;
+      var sx = x0 + p.from * cw + cw / 2;
+      var tx = x0 + p.to * cw + cw / 2;
+      var yy = it.side === "top" ? y : y + ch;
+      var bend = (it.side === "top" ? -1 : 1) * (32 + it.lane * 24 + Math.abs(p.to - p.from) * 8);
       curvedArrow(svg, sx, yy, tx, yy, bend, p.color || (p.free ? "var(--red)" : "var(--ink)"));
     });
-    if (spec.note) svg.text(x0 + labels.length * cw / 2, y + ch + 74, spec.note, { size: 13, color: "var(--ink-dim)" });
+    if (spec.note) svg.text(x0 + labels.length * cw / 2, y + ch + 100, spec.note, { size: 13, color: "var(--ink-dim)" });
   }
 
   EX.Compilers.esc = esc;

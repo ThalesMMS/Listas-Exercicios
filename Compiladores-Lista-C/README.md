@@ -1,22 +1,22 @@
 # Compiladores - Lista C (interativa)
 
-Resolucao comentada das 14 questoes da Lista C de Compiladores, baseada no
-`Explainer-Template` como copia independente.
+Resolução comentada das 14 questões da Lista C de Compiladores, baseada no
+`Explainer-Template` como cópia independente.
 
 ## Como abrir
 
 Abra `index.html` no navegador. A lista funciona via `file://`, sem build e sem
-dependencias.
+dependências.
 
 - Hub: `index.html`
-- Questao: `question.html?q=<id>`
+- Questão: `question.html?q=<id>`
 - PDF original: `Compiladores-Lista-C.pdf`
 
 ## Temas
 
-| Tema | Questoes |
+| Tema | Questões |
 | --- | --- |
-| Geracao de Codigo | Q1-Q4 |
-| Otimizacao | Q5-Q8 |
-| Alocacao de Registradores | Q9-Q11 |
-| Gerenciamento de Memoria | Q12-Q14 |
+| Geração de Código | Q1-Q4 |
+| Otimização | Q5-Q8 |
+| Alocação de Registradores | Q9-Q11 |
+| Gerenciamento de Memória | Q12-Q14 |

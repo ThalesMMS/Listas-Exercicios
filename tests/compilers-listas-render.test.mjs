@@ -58,6 +58,157 @@ const A = read("Compiladores-Lista-A/js/questions/compiladores/lista-a.js");
 const B = read("Compiladores-Lista-B/js/questions/compiladores/lista-b.js");
 const C = read("Compiladores-Lista-C/js/questions/compiladores/lista-c.js");
 
+// Lista C — user-facing Portuguese text should not fall back to ASCII-only
+// spellings. Keep ids/tags/code identifiers out of this denylist; these are
+// fragments from visible titles, statements, bodies, rows, labels and notes.
+const cUnaccentedVisibleFragments = [
+  "Geracao de Codigo",
+  "Reconhecendo a expressao",
+  "codigo MIPS-like",
+  "arvore da expressao",
+  "Escolha a expressao",
+  "O padrao de avaliacao",
+  "O codigo empilha",
+  "Reconstrucao",
+  "A expressao correta e",
+  "Variaveis no registro de ativacao",
+  "Separar parametros",
+  "Temporarios necessarios",
+  "traducao ingenua, sem reutilizacao",
+  "A funcao",
+  "A pergunta nao e",
+  "mecanica: quantos nomes temporarios",
+  "Nesta questao",
+  "temporario</b> e",
+  "codigo de tres",
+  "estrategia de geracao de codigo",
+  "entao vamos fixa-la",
+  "os ramos sao alternativas",
+  "Estrategia adotada",
+  "Variaveis ficam",
+  "constantes sao",
+  "condicao do <code>if</code>",
+  "Contagem por subexpressao",
+  "Nao e pico",
+  "analise de vivacidade",
+  "Tambem nao somamos",
+  "sao dois nomes temporarios",
+  "nao precisa",
+  "ramos nao somam",
+  "essa e uma contagem",
+  "vivacidade padrao",
+  "a sequencia seria",
+  "ordem de heranca",
+  "relacao de heranca",
+  "posicoes",
+  "vem primeiro",
+  "notacao",
+  "Otimizacoes validas",
+  "bloco basico",
+  "expressoes comuns",
+  "codigo morto",
+  "simplificacao",
+  "sao referenciados",
+  "otimizacoes propostas sao validas",
+  "opcoes",
+  "nao</span>",
+  "apos simplificacoes",
+  "juncao apos",
+  "Apos propagacao",
+  "inalcancavel",
+  "alcancavel, mas nao-constante",
+  "ponto importante e a juncao",
+  "so e redefinido",
+  "arbitrarios",
+  "sem informacao",
+  "nao sao sinonimos",
+  "ate a juncao",
+  "Juncao variavel",
+  "mantem",
+  "entrada, nao redefinida",
+  "nao e 1",
+  "lacos",
+  "Um laco",
+  "informacao de volta",
+  "ja analisado",
+  "analise nao muda",
+  "perderem precisao",
+  "Ja <code>Y</code>",
+  "Analise de vivacidade",
+  "para tras",
+  "variaveis estao vivas",
+  "variaveis entre",
+  "variaveis mortas na saida",
+  "esta viva",
+  "senao",
+  "e usada",
+  "As variaveis vivas sao",
+  "Alocacao de Registradores",
+  "Coloracao minima",
+  "coloracao e valida",
+  "menor numero",
+  "vertices",
+  "coloracao minima valida",
+  "O RIG e bipartido",
+  "nao podem",
+  "Entao uma coloracao",
+  "tres cores",
+  "Sequencia de eliminacao",
+  "cada no removido",
+  "sequencias de eliminacao sao validas",
+  "Grafo de interferencia",
+  "os nos que ainda sao faceis",
+  "A regra e",
+  "so remova no",
+  "So e valido remover",
+  "comentario",
+  "removiveis",
+  "apos remover",
+  "nao pode ser simplificado",
+  "todos os nos tem grau",
+  "no a derramar",
+  "Os quatro nos",
+  "outros tres",
+  "entao todos tem",
+  "Nenhum no tem",
+  "nao remove ninguem",
+  "heuristica",
+  "decisao",
+  "frequencia",
+  "esta fora do laco",
+  "nao derramado",
+  "Gerenciamento de Memoria",
+  "alcancaveis",
+  "celulas",
+  "ja livres",
+  "comeca pelas raizes",
+  "da para alcancar",
+  "raiz alcanca",
+  "nao e alcancavel",
+  "nao marcados",
+  "nao foi marcado",
+  "nao compacta",
+  "tambem parte das raizes",
+  "espaco novo",
+  "Ordem de copia",
+  "varredura de copia",
+  "espaco antigo",
+  "referencias apos atribuicoes",
+  "referencias, liberar",
+  "nao sao coletados",
+  "Duas atualizacoes",
+  "tambem deixa",
+  "de saida tambem",
+  "zera e e",
+  "tambem zera",
+  "ultima celula",
+];
+const C_VISIBLE_FOR_ACCENTS = C.split("\n")
+  .filter((line) => !/^\s*(id|tags):/.test(line))
+  .join("\n");
+for (const fragment of cUnaccentedVisibleFragments)
+  assert.ok(!C_VISIBLE_FOR_ACCENTS.includes(fragment), `C accent sweep: stale ASCII fragment "${fragment}"`);
+
 // Lista A Q7 — the four grammars are shown (not only in the guide).
 for (const g of ["X -> aY | Z", "R -> o | S", "S -> g | og", "K -> c | lambda", "L -> c", "L -> b"])
   assert.ok(A.includes(g), `#10 A-Q7: grammar fragment "${g}" present`);
@@ -75,15 +226,28 @@ for (const s of ["class B inherits A", "class C inherits A", "A melhor disciplin
   "c.baz().foo()", "x : Int <- 20", "SEU CODIGO"])
   assert.ok(B.includes(s), `#10 B-Q8: program fragment "${s}" present`);
 
+// Lista C Q2 — activation records must be taught, not just answered.
+assert.ok(/registro de ativação \(ou frame\)/.test(C), "C-Q2: defines activation record/frame");
+assert.ok(/um frame por chamada ativa/.test(C), "C-Q2: states frames are created per active call");
+assert.ok(C.includes("Quando <code>f</code> chama <code>g(y)</code>") && C.includes("t</code> recebe o valor atual de <code>y</code>"), "C-Q2: explains g(y) argument binding");
+assert.ok(C.includes("Se a chamada for <code>g(z)</code>") && C.includes("t</code> recebe o valor atual de <code>z</code>"), "C-Q2: explains g(z) argument binding");
+assert.ok(C.includes("nome/rótulo da função") && C.includes("não é variável armazenada no frame de f"), "C-Q2: explains why g is not a frame variable");
+assert.ok(C.includes("Eliminando as alternativas"), "C-Q2: walks through the choices");
+
 // Lista C Q3 — the function and a definition of "temporário".
 assert.ok(C.includes("def potenciaDeDois(x)"), "#10 C-Q3: full function shown");
-assert.ok(/nome\/slot intermediario/.test(C) && /sem reutilizacao de slots/.test(C), "#10 C-Q3: 'temporário' defined as a naive slot/name count");
+assert.ok(/nome\/slot intermediário/.test(C) && /entre regiões, o espaço reservado pode ser reaproveitado/.test(C), "#10 C-Q3: 'temporário' defined and scoped to evaluation regions");
+assert.ok(C.includes("Geração de código é a fase que transforma uma expressão em instruções menores"), "C-Q3: introduces code generation for beginners");
+assert.ok(C.includes("temporário não é uma variável escrita pelo programador"), "C-Q3: distinguishes compiler temporaries from source variables");
+assert.ok(C.includes("Neste exercício, conte nomes novos"), "C-Q3: gives the counting rule before solving");
+assert.ok(C.includes("Não conte constantes imediatas") && C.includes("não conte o registrador-resultado"), "C-Q3: lists what not to count");
+assert.ok(C.includes("Primeiro resolvemos a condição") && C.includes("Depois resolvemos os ramos"), "C-Q3: presents a step-by-step solving order");
 // Q3 must state that the count is strategy-dependent and show the three-address IR
 // that grounds it (resolving the x%2==0 vs x==1 inconsistency).
-assert.ok(/depende da estrategia de geracao de codigo/.test(C), "C-Q3: count framed as strategy-dependent");
-assert.ok(/codigo de tres enderecos/.test(C) && /registrador-resultado/.test(C), "C-Q3: shows the three-address IR / code-gen strategy");
+assert.ok(/depende da estratégia de geração de código/.test(C), "C-Q3: count framed as strategy-dependent");
+assert.ok(/código de três endereços/.test(C) && /registrador-resultado/.test(C), "C-Q3: shows the three-address IR / code-gen strategy");
 assert.ok(C.includes("t2 = (t1 == 0)") && C.includes("r  = (x == 1)"), "C-Q3: IR makes the 2-vs-0 counts explicit");
-assert.ok(C.includes("t1</code> nao precisa estar vivo no branch"), "C-Q3: branch test no longer claims t1 and t2 are live together");
+assert.ok(C.includes("t1</code> não precisa estar vivo no branch"), "C-Q3: branch test no longer claims t1 and t2 are live together");
 assert.ok(C.includes("1, 1, 0, 1"), "C-Q3: standard liveness/reuse alternative is acknowledged");
 assert.ok(!C.includes("vivos juntos no teste do branch"), "C-Q3: stale liveness claim removed");
 

@@ -322,7 +322,7 @@ const norm = (s) =>
   const c16 = read("Guia-de-Compiladores/js/guias/c16-propagacao-constantes.js");
   // entry state declared, ⊥/⊤ distinguished, the join shown, ⊤-notation (not "top").
   assert.ok(/entram como <code>⊤<\/code>/.test(q6), "#8: Q6 declares X/Y enter as ⊤");
-  assert.ok(/não são sinonimos|nao sao sinonimos/.test(q6), "#8: Q6 states ⊥ and ⊤ are not synonyms");
+  assert.ok(/não são sinônimos/.test(q6), "#8: Q6 states ⊥ and ⊤ are not synonyms");
   assert.ok(q6.includes("1 ⊔ ⊤ = ⊤"), "#8: Q6 shows the join 1 ⊔ ⊤ = ⊤");
   assert.ok(q6.includes("4, ⊤, 5"), "#8: Q6 answer uses ⊤ notation");
   assert.ok(!/, top,|top<\/code>/.test(q6), "#8: lista C uses ⊤ (not ASCII 'top') for the lattice top");
@@ -355,7 +355,7 @@ const norm = (s) =>
   const q11 = read("Compiladores-Lista-C/js/questions/compiladores/lista-c.js");
   const c18 = read("Guia-de-Compiladores/js/guias/c18-rig-coloracao.js");
   for (const [u, v] of edges) assert.ok(q11.includes(`["${u}", "${v}"]`), `#9: Q11 RIG has K4 edge ${u}-${v}`);
-  assert.ok(/regra deste exercicio/i.test(q11), "#9: Q11 labels the cost formula as the exercise's rule");
+  assert.ok(/regra deste exercício/i.test(q11), "#9: Q11 labels the cost formula as the exercise's rule");
   assert.ok(/grau &lt; k/.test(q11) && /simplificad/.test(q11), "#9: Q11 notes a degree<k node would be simplified, not spilled");
   assert.ok(!/\["D", "1", "0",/.test(q11), "#9: Q11 spill node no longer has degree 0");
   assert.ok(/deste exercício/.test(c18), "#9: c18 labels the cost formula as the exercise's rule");

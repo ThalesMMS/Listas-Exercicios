@@ -146,8 +146,9 @@ out:
                   T.box(svg, 285, 45, 160, 70, "pred", ["Bool"], { fill: "var(--accent-soft)", stroke: "var(--accent)", mono: true });
                   T.box(svg, 285, 180, 160, 70, "body", ["descarta resultado"], { fill: "var(--green-soft)", stroke: "var(--green)", mono: true });
                   svg.arrow(365, 115, 365, 180, { color: "var(--green)", head: 10 });
-                  svg.curve(445, 215, 445, 75, 90, { stroke: "var(--ink-mute)", strokeWidth: 2 });
-                  svg.arrow(445, 75, 445, 75, { color: "var(--ink-mute)", head: 8 });
+                  // back-edge (b top): body -> pred pela lateral esquerda, fora das caixas
+                  svg.curve(285, 215, 285, 80, 78, { stroke: "var(--ink-mute)", strokeWidth: 2 });
+                  svg.arrow(270, 93, 285, 80, { color: "var(--ink-mute)", head: 9 });
                   svg.arrow(445, 80, 590, 80, { color: "var(--red)", head: 10 });
                   T.box(svg, 600, 45, 105, 70, "out", ["$a0 = 0"], { fill: "var(--red-soft)", stroke: "var(--red)", mono: true });
                 },
@@ -164,7 +165,7 @@ out:
                 `<p>Não há estrutura especial além da ordem.</p>`,
               visual: {
                 type: "svg",
-                view: [780, 260],
+                view: [840, 260],
                 draw: function (svg) {
                   T.pipeline(svg, [
                     { title: "e1", lines: ["$a0=v1"] },

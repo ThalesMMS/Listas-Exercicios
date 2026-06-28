@@ -29,12 +29,23 @@
     svg.view(760, 430); title(svg, "As duas fases do semant() no TP4");
     svg.box(280, 58, 200, 50, "program_class::semant()", "ponto de entrada", { fill: fill(active, "entry"), stroke: color(active, "entry") });
     svg.arrow(380, 108, 380, 136, { color: "var(--ink-mute)" });
-    svg.box(85, 140, 255, 192, "Fase 1 — construir e validar", "ClassTable(classes)", { fill: fill(active, "phase1"), stroke: color(active, "phase1"), titleColor: "var(--accent)" });
+
+    // Phase backgrounds (no text yet) so inner boxes can sit on top of them.
+    svg.rect(85, 140, 255, 192, { fill: fill(active, "phase1"), stroke: color(active, "phase1"), rx: 12 });
+    svg.rect(420, 140, 255, 192, { fill: fill(active, "phase2"), stroke: color(active, "phase2"), rx: 12 });
+
+    // Inner boxes inside each phase.
     var p1 = ["install_basic_classes", "install_user_classes", "check_inheritance_graph", "build_feature_tables"];
-    p1.forEach(function (t, i) { svg.box(110, 178 + i * 34, 205, 25, t, "", { fill: i === 2 && active === "graph" ? "var(--yellow-soft)" : "var(--bg-card)", stroke: "var(--border)", size: 11, mono: true }); });
-    svg.box(420, 140, 255, 192, "Fase 2 — checar tipos", "walk topológico das classes", { fill: fill(active, "phase2"), stroke: color(active, "phase2"), titleColor: "var(--green)" });
+    p1.forEach(function (t, i) { svg.box(110, 180 + i * 30, 205, 25, t, "", { fill: i === 2 && active === "graph" ? "var(--yellow-soft)" : "var(--bg-card)", stroke: "var(--border)", size: 11, mono: true }); });
     var p2 = ["enterscope()", "atributos herdados + próprios", "feature->type_check(&env)", "expr->set_type(T)"];
-    p2.forEach(function (t, i) { svg.box(445, 178 + i * 34, 205, 25, t, "", { fill: i === 2 && active === "type" ? "var(--green-soft)" : "var(--bg-card)", stroke: "var(--border)", size: 11, mono: true }); });
+    p2.forEach(function (t, i) { svg.box(445, 180 + i * 30, 205, 25, t, "", { fill: i === 2 && active === "type" ? "var(--green-soft)" : "var(--bg-card)", stroke: "var(--border)", size: 11, mono: true }); });
+
+    // Phase labels on top of everything in the header area of each phase.
+    svg.text(212, 158, "Fase 1 — construir e validar", { color: "var(--accent)", size: 14, weight: 700 });
+    svg.text(212, 173, "ClassTable(classes)", { color: "var(--ink-dim)", size: 11 });
+    svg.text(547, 158, "Fase 2 — checar tipos", { color: "var(--green)", size: 14, weight: 700 });
+    svg.text(547, 173, "walk topológico das classes", { color: "var(--ink-dim)", size: 11 });
+
     svg.arrow(340, 236, 420, 236, { color: active === "gate" ? "var(--yellow)" : "var(--ink-mute)", dashed: active === "gate" });
     svg.badge(380, 236, "grafo OK", { fill: active === "gate" ? "var(--yellow)" : "var(--bg-soft)", stroke: "var(--yellow)", color: active === "gate" ? "var(--bg)" : "var(--yellow)", w: 78 });
     note(svg, 380, 374, "Erros de grafo abortam; erros locais usam recuperação e continuam.");
@@ -121,13 +132,18 @@
       { k: "let", t: "let", s: "x : Int" },
       { k: "case", t: "case branch", s: "id : BranchType" }
     ];
+    // Pilha na diagonal com o escopo mais interno (case) no topo. A classe C tem
+    // altura maior porque o subtítulo ocupa duas linhas.
+    var tops = [286, 228, 170, 112];
     layers.forEach(function (l, i) {
-      var x = 210 + i * 62, y = 285 - i * 54;
-      svg.box(x, y, 340, 48, l.t, l.s, { fill: fill(active, l.k), stroke: color(active, l.k), titleColor: active === l.k ? "var(--accent)" : "var(--ink)", subSize: 10, subMono: true });
+      var x = 150 + i * 42, y = tops[i], h = l.k === "class" ? 72 : 50;
+      svg.box(x, y, 340, h, l.t, l.s, { fill: fill(active, l.k), stroke: color(active, l.k), titleColor: active === l.k ? "var(--accent)" : "var(--ink)", subSize: 10, subMono: true });
     });
-    svg.arrow(590, 270, 590, 112, { color: "var(--yellow)", dashed: true });
-    svg.text(622, 190, "lookup procura\ndo topo para baixo", { color: "var(--yellow)", size: 12, anchor: "start", lineHeight: 16 });
-    svg.text(380, 374, "enterscope() empilha; exitscope() remove; bindings internos sombreiam externos.", { color: "var(--ink-dim)", size: 12 });
+    // Seta desce pela lateral direita da escada, do topo (case) para a base (classe C):
+    // o lookup procura do escopo mais interno para o mais externo.
+    svg.arrow(640, 140, 512, 338, { color: "var(--yellow)", dashed: true });
+    svg.text(620, 238, "lookup procura\ndo topo para baixo", { color: "var(--yellow)", size: 12, anchor: "start", lineHeight: 16 });
+    svg.text(380, 392, "enterscope() empilha; exitscope() remove; bindings internos sombreiam externos.", { color: "var(--ink-dim)", size: 12 });
   }
 
   function inheritanceTree(svg, active) {
@@ -166,10 +182,16 @@
 
   function featurePasses(svg, active) {
     svg.view(760, 430); title(svg, "build_feature_tables(): duas passagens");
-    svg.box(62, 95, 270, 250, "Passo 1 — coleta local", "preenche methods_of e attrs_of", { fill: fill(active, "pass1"), stroke: color(active, "pass1"), titleColor: "var(--accent)" });
-    ["método duplicado na classe", "formal self / duplicado", "formal SELF_TYPE", "tipo de formal/retorno indefinido", "atributo self / duplicado local"].forEach(function (t, i) { svg.box(88, 145 + i * 36, 218, 24, t, "", { fill: "var(--bg-card)", stroke: "var(--border)", size: 10 }); });
-    svg.box(428, 95, 270, 250, "Passo 2 — herança", "compara com ancestrais", { fill: fill(active, "pass2"), stroke: color(active, "pass2"), titleColor: "var(--green)" });
-    ["atributo herdado não pode redefinir", "override exige assinatura idêntica", "sem overloading por nome", "Main.main existe", "Main.main sem argumentos"].forEach(function (t, i) { svg.box(454, 145 + i * 36, 218, 24, t, "", { fill: "var(--bg-card)", stroke: "var(--border)", size: 10 }); });
+    // Containers desenhados como rect com título/subtítulo no topo: svg.box centraliza
+    // o título no meio da caixa, onde as caixas internas o tampariam.
+    svg.rect(62, 95, 270, 250, { fill: fill(active, "pass1"), stroke: color(active, "pass1"), rx: 12 });
+    svg.text(197, 117, "Passo 1 — coleta local", { color: "var(--accent)", size: 14, weight: 700 });
+    svg.text(197, 135, "preenche methods_of e attrs_of", { color: "var(--ink-dim)", size: 10 });
+    ["método duplicado na classe", "formal self / duplicado", "formal SELF_TYPE", "tipo de formal/retorno indefinido", "atributo self / duplicado local"].forEach(function (t, i) { svg.box(88, 152 + i * 37, 218, 26, t, "", { fill: "var(--bg-card)", stroke: "var(--border)", size: 10 }); });
+    svg.rect(428, 95, 270, 250, { fill: fill(active, "pass2"), stroke: color(active, "pass2"), rx: 12 });
+    svg.text(563, 117, "Passo 2 — herança", { color: "var(--green)", size: 14, weight: 700 });
+    svg.text(563, 135, "compara com ancestrais", { color: "var(--ink-dim)", size: 10 });
+    ["atributo herdado não pode redefinir", "override exige assinatura idêntica", "sem overloading por nome", "Main.main existe", "Main.main sem argumentos"].forEach(function (t, i) { svg.box(454, 152 + i * 37, 218, 26, t, "", { fill: "var(--bg-card)", stroke: "var(--border)", size: 10 }); });
     svg.arrow(332, 220, 428, 220, { color: "var(--yellow)" });
     svg.badge(380, 220, "depois", { fill: "var(--yellow)", stroke: "var(--yellow)", color: "var(--bg)", w: 68 });
   }

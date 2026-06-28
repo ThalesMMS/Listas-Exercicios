@@ -1,6 +1,6 @@
 /*
  * lista-c.js - Compiladores, Lista C.
- * Resolucao comentada de geracao de codigo, otimizacao, registradores e memoria.
+ * Resolução comentada de geração de código, otimização, registradores e memória.
  */
 (function () {
   "use strict";
@@ -21,7 +21,7 @@
       tags: spec.tags || [],
       hubDesc: spec.hubDesc,
       statement: spec.statement,
-      parts: [{ label: "Resolucao", build: spec.build }],
+      parts: [{ label: "Resolução", build: spec.build }],
     });
   }
 
@@ -43,25 +43,25 @@
   register({
     id: "c-q01-assembly-expressao",
     num: "1",
-    section: "Geracao de Codigo",
-    title: "Reconhecendo a expressao pelo assembly",
+    section: "Geração de Código",
+    title: "Reconhecendo a expressão pelo assembly",
     tags: ["assembly", "pilha"],
-    hubDesc: "Ler pushes/pops no codigo MIPS-like para reconstruir a arvore da expressao.",
+    hubDesc: "Ler pushes/pops no código MIPS-like para reconstruir a árvore da expressão.",
     statement:
-      "Escolha a expressao gerada pelo assembly MIPS-like que empilha 5, empilha 4, " +
+      "Escolha a expressão gerada pelo assembly MIPS-like que empilha 5, empilha 4, " +
       "carrega 3, calcula <code>sub</code> e depois combina o resultado com <code>add</code>.",
     build: function () {
       return [
         C.codeStep({
-          title: "O padrao de avaliacao",
+          title: "O padrão de avaliação",
           body:
-            "<p>O codigo empilha operandos intermediarios. Primeiro empilha <code>5</code>, depois <code>4</code>, carrega <code>3</code> e executa <code>sub</code>.</p>",
+            "<p>O código empilha operandos intermediários. Primeiro empilha <code>5</code>, depois <code>4</code>, carrega <code>3</code> e executa <code>sub</code>.</p>",
           code:
             "li $a0 5\nsw $a0 0($sp)\naddiu $sp $sp -4\nli $a0 4\nsw $a0 0($sp)\naddiu $sp $sp -4\nli $a0 3\nlw $t1 4($sp)\nsub $a0 $t1 $a0\naddiu $sp $sp 4\nlw $t1 4($sp)\nadd $a0 $t1 $a0\naddiu $sp $sp 4",
           active: [7, 8, 9, 11, 12],
         }),
         C.tableStep({
-          title: "Reconstrucao",
+          title: "Reconstrução",
           body:
             "<p><code>sub $a0 $t1 $a0</code> calcula valor empilhado menos acumulador: <code>4 - 3</code>. Depois o <code>add</code> soma o <code>5</code> empilhado antes.</p>",
           headers: ["trecho", "resultado"],
@@ -73,7 +73,7 @@
         }),
         C.choiceStep({
           title: "Resposta",
-          body: "<p>A expressao correta e a alternativa <b>a</b>.</p>",
+          body: "<p>A expressão correta é a alternativa <b>a</b>.</p>",
           choices: [
             { id: "a", html: "<code>5 + (4 - 3)</code>" },
             { id: "b", html: "<code>5 - (4 + 3)</code>" },
@@ -89,28 +89,57 @@
   register({
     id: "c-q02-registro-ativacao",
     num: "2",
-    section: "Geracao de Codigo",
-    title: "Variaveis no registro de ativacao de f",
+    section: "Geração de Código",
+    title: "Variáveis no registro de ativação de f",
     tags: ["activation-record", "stack-frame"],
-    hubDesc: "Separar parametros de f, parametros de g e nome de funcao.",
+    hubDesc: "Separar parâmetros de f, parâmetros de g e nome de função.",
     statement:
       "Para <code>def f(x,y,z) = if x then g(y) else g(z)</code> e " +
-      "<code>def g(t) = t + 1</code>, quais variaveis aparecem no registro de ativacao " +
+      "<code>def g(t) = t + 1</code>, quais variáveis aparecem no registro de ativação " +
       "de uma chamada a <code>f()</code>?",
     build: function () {
       return [
         C.codeStep({
-          title: "Funcoes",
+          title: "O conceito antes da alternativa",
           body:
-            "<p>O frame de <code>f</code> precisa guardar seus parametros e informacoes de controle da chamada. O parametro <code>t</code> pertence ao frame de <code>g</code>.</p>",
+            "<p>Um <b>registro de ativação (ou frame)</b> é o bloco de memória criado para uma chamada de função em execução.</p>" +
+            "<p>Há um frame por chamada ativa. Ele guarda parâmetros, variáveis locais, temporários e dados de controle, como retorno e link dinâmico.</p>" +
+            "<p>A pergunta não pede nomes que aparecem no texto do programa; pede quais nomes precisam de lugar no frame da chamada a <code>f</code>.</p>",
           code:
             "def f(x,y,z) =\n  if x\n  then g(y)\n  else g(z)\n\ndef g(t) =\n  t + 1",
           active: [1, 2, 3, 4],
         }),
+        C.tableStep({
+          title: "Separando chamada de f e chamada de g",
+          body:
+            "<p>Ao chamar <code>f</code>, entram os parâmetros formais de <code>f</code>: <code>x</code>, <code>y</code> e <code>z</code>.</p>" +
+            "<p>Quando <code>f</code> chama <code>g(y)</code>, a chamada de <code>g</code> cria outro registro de ativação.</p>" +
+            "<p>Nesse registro, o parâmetro de <code>g</code> se chama <code>t</code>, e <code>t</code> recebe o valor atual de <code>y</code>.</p>" +
+            "<p>Se a chamada for <code>g(z)</code>, <code>t</code> recebe o valor atual de <code>z</code>.</p>",
+          headers: ["momento", "frame em questão", "nomes guardados"],
+          rows: [
+            [{ html: "entrada em <code>f()</code>" }, { html: "frame de <code>f</code>" }, { html: "<code>x</code>, <code>y</code>, <code>z</code> + controle da chamada" }],
+            [{ html: "<code>then g(y)</code>" }, { html: "frame de <code>f</code> continua; novo frame de g" }, { html: "em <code>g</code>: <code>t</code> recebe <code>y</code>" }],
+            [{ html: "<code>else g(z)</code>" }, { html: "frame de <code>f</code> continua; novo frame de g" }, { html: "em <code>g</code>: <code>t</code> recebe <code>z</code>" }],
+          ],
+        }),
+        C.tableStep({
+          title: "Eliminando as alternativas",
+          body:
+            "<p>Agora avaliamos cada opção pelo dono do nome: frame da chamada de <code>f</code>, frame de <code>g</code> ou código global.</p>",
+          headers: ["opção", "entra no frame de f?", "motivo"],
+          rows: [
+            [{ html: "<code>x</code>" }, "sim", { html: "parâmetro formal de <code>f</code>" }],
+            [{ html: "<code>t</code>" }, "não", { html: "parâmetro formal de <code>g</code>; só existe no novo frame de g" }],
+            [{ html: "<code>g</code>" }, "não", { html: "nome/rótulo da função; não é variável armazenada no frame de f" }],
+            [{ html: "<code>z</code>" }, "sim", { html: "parâmetro formal de <code>f</code>" }],
+          ],
+        }),
         C.choiceStep({
           title: "Resposta",
           body:
-            "<p>Entre as opcoes, <code>x</code> e <code>z</code> sao variaveis de <code>f</code>. <code>t</code> e de <code>g</code>; <code>g</code> e o nome da funcao.</p>",
+            "<p>Entre as opções dadas, aparecem no frame de <code>f</code> as variáveis <code>x</code> e <code>z</code>.</p>" +
+            "<p><code>y</code> também pertence a <code>f</code>, mas não foi oferecida como alternativa.</p>",
           choices: [
             { id: "a", html: "<code>x</code>" },
             { id: "b", html: "<code>t</code>" },
@@ -126,24 +155,20 @@
   register({
     id: "c-q03-temporarios",
     num: "3",
-    section: "Geracao de Codigo",
-    title: "Temporarios necessarios em subexpressoes",
+    section: "Geração de Código",
+    title: "Temporários necessários em subexpressões",
     tags: ["temporarios", "codigo"],
-    hubDesc: "Contar temporarios distintos da traducao ingenua, sem reutilizacao de slots.",
+    hubDesc: "Aprender a contar temporários por região de avaliação na tradução ingênua.",
     statement:
-      "Para <code>potenciaDeDois</code>, conte temporarios para <code>x % 2 == 0</code>, chamada recursiva, <code>x == 1</code> e total.",
+      "Para <code>potenciaDeDois</code>, conte temporários para <code>x % 2 == 0</code>, chamada recursiva, <code>x == 1</code> e total.",
     build: function () {
       return [
         C.codeStep({
-          title: "A funcao",
+          title: "Antes da conta: o que é geração de código",
           body:
-            "<p>A pergunta nao e “quantos registradores ficam vivos ao mesmo tempo?”. Aqui ela e mais " +
-            "mecanica: quantos nomes temporarios a traducao ingenua emite.</p>" +
-            "<p>Nesta questao, <b>temporario</b> e um nome/slot intermediario do codigo de tres " +
-            "enderecos. A contagem depende da estrategia de geracao de codigo, entao vamos fixa-la " +
-            "antes de contar.</p>" +
-            "<p>Para manter o gabarito, nao reutilizamos slots e nao somamos ramos do <code>if</code>: " +
-            "os ramos sao alternativas.</p>",
+            "<p>Geração de código é a fase que transforma uma expressão em instruções menores, parecidas com passos de máquina.</p>" +
+            "<p>Um temporário não é uma variável escrita pelo programador. É um nome/slot intermediário usado para guardar um resultado parcial.</p>" +
+            "<p>A contagem depende da estratégia de geração de código. Por isso, primeiro fixamos a convenção da lista.</p>",
           code:
             "def potenciaDeDois(x) =\n" +
             "  if x % 2 == 0\n" +
@@ -151,49 +176,81 @@
             "  else x == 1",
           active: [2, 3, 4],
         }),
-        C.codeStep({
-          title: "Estrategia adotada e o codigo de tres enderecos",
+        C.tableStep({
+          title: "O que conta como temporário",
           body:
-            "<p>Agora fixamos a regra de contagem. Variaveis ficam em registradores; constantes sao " +
-            "imediatos, entao nao criam temporario.</p>" +
-            "<p>Cada resultado intermediario novo ganha um nome novo. A condicao do <code>if</code> " +
-            "vira um temporario para o branch testar.</p>" +
-            "<p>O valor de cada ramo vai direto para o registrador-resultado <code>r</code>, que nao " +
-            "conta como temporario. Isso explica por que <code>x % 2 == 0</code> conta diferente de " +
-            "<code>x == 1</code>.</p>",
+            "<p>Neste exercício, conte nomes novos usados para guardar resultados intermediários, como <code>t1</code>, <code>t2</code> e <code>t3</code>.</p>" +
+            "<p>Não conte constantes imediatas, variáveis já existentes e não conte o registrador-resultado <code>r</code>.</p>" +
+            "<p>Dentro de cada região, contamos nomes temporários distintos; entre regiões, o espaço reservado pode ser reaproveitado.</p>",
+          headers: ["caso", "conta?", "motivo"],
+          rows: [
+            [{ html: "<code>t1 = x % 2</code>" }, "sim", "guarda um resultado intermediário"],
+            [{ html: "<code>x</code>, <code>1</code>, <code>2</code>" }, "não", "variável do programa ou constante imediata"],
+            [{ html: "<code>r = ...</code>" }, "não", "é o destino final da expressão, não um temporário"],
+            ["total do if", "maior região", "condição, then e else não precisam manter temporários ao mesmo tempo"],
+          ],
+        }),
+        C.codeStep({
+          title: "Tradução didática em código de três endereços",
+          body:
+            "<p>O código abaixo não é uma linguagem real do curso. Ele só deixa visível onde a tradução ingênua cria temporários.</p>" +
+            "<p>As linhas com <code>t...</code> são temporários. O <code>r</code> é o registrador-resultado, isto é, o destino final.</p>",
           code:
-            "t1 = x % 2            ; condicao: subexpressao\n" +
+            "t1 = x % 2            ; condição: subexpressão\n" +
             "t2 = (t1 == 0)        ; booleano materializado p/ o branch\n" +
             "ifFalse t2 goto Lelse\n" +
             "t3 = x / 2            ; then: argumento da chamada\n" +
             "r  = call pot(t3)     ; retorno vai ao registrador-resultado\n" +
             "goto Lend\n" +
             "Lelse:\n" +
-            "r  = (x == 1)         ; else: direto no destino r (sem temporario)\n" +
+            "r  = (x == 1)         ; else: direto no destino r (sem temporário)\n" +
             "Lend: return r",
           active: [1, 2, 4, 8],
         }),
         C.tableStep({
-          title: "Contagem por subexpressao (sob essa estrategia)",
+          title: "Primeiro resolvemos a condição",
           body:
-            "<p>Leia a tabela como uma contagem de nomes emitidos pelo IR acima.</p>" +
-            "<p>Nao e pico de valores vivos: numa analise de vivacidade, <code>t1</code> morre depois " +
-            "de materializar <code>t2</code>. Tambem nao somamos then e else, porque nao executam juntos.</p>",
-          headers: ["subexpressao", "temporarios", "por que (pelo IR acima)"],
+            "<p>Primeiro resolvemos a condição <code>x % 2 == 0</code>, porque o <code>if</code> precisa dela para escolher o ramo.</p>" +
+            "<p>O resto <code>x % 2</code> precisa ser lembrado para a comparação. Depois a comparação gera o booleano testado pelo branch.</p>" +
+            "<p>Depois que <code>t2</code> existe, <code>t1</code> não precisa estar vivo no branch.</p>",
+          headers: ["passo", "código didático", "temporários novos"],
           rows: [
-            [{ html: "<code>x % 2 == 0</code>" }, "2", { html: "<code>t1=x%2</code> e <code>t2=(t1==0)</code> sao dois nomes temporarios distintos emitidos; <code>t1</code> nao precisa estar vivo no branch" }],
-            [{ html: "<code>potenciaDeDois(x/2)</code>" }, "1", { html: "<code>t3=x/2</code> (o argumento); o retorno vai para <code>r</code>" }],
-            [{ html: "<code>x == 1</code>" }, "0", { html: "valor de ramo escrito direto em <code>r</code> (<code>x</code> em reg., <code>1</code> imediato)" }],
-            ["total", "2", { html: "maior contagem entre os itens do gabarito; ramos nao somam" }],
+            [{ html: "calcular o resto" }, { html: "<code>t1 = x % 2</code>" }, "+1"],
+            [{ html: "comparar com zero" }, { html: "<code>t2 = (t1 == 0)</code>" }, "+1"],
+            [{ html: "testar o branch" }, { html: "<code>ifFalse t2 goto Lelse</code>" }, "+0"],
+            [{ html: "total da condição" }, { html: "<code>x % 2 == 0</code>" }, "2"],
+          ],
+        }),
+        C.tableStep({
+          title: "Depois resolvemos os ramos",
+          body:
+            "<p>Depois resolvemos os ramos. Eles são alternativas: em uma execução entra no then ou no else, não nos dois.</p>" +
+            "<p>No then, a chamada precisa do argumento <code>x / 2</code>. No else, o resultado de <code>x == 1</code> vai direto para <code>r</code>.</p>",
+          headers: ["região", "código didático", "temporários"],
+          rows: [
+            [{ html: "then: preparar argumento" }, { html: "<code>t3 = x / 2</code>" }, "1"],
+            [{ html: "then: chamar função" }, { html: "<code>r = call pot(t3)</code>" }, "0 novo"],
+            [{ html: "else: comparar" }, { html: "<code>r = (x == 1)</code>" }, "0"],
+          ],
+        }),
+        C.tableStep({
+          title: "Juntando a resposta",
+          body:
+            "<p>O total do gabarito é o maior número necessário em uma região: condição precisa de 2, chamada precisa de 1 e else precisa de 0.</p>" +
+            "<p>Por isso o total é 2, não <code>2 + 1 + 0</code>. Somar tudo contaria regiões que não mantêm temporários ao mesmo tempo.</p>",
+          headers: ["item pedido", "temporários", "leitura"],
+          rows: [
+            [{ html: "<code>x % 2 == 0</code>" }, "2", { html: "<code>t1</code> para o resto e <code>t2</code> para o booleano" }],
+            [{ html: "<code>potenciaDeDois(x/2)</code>" }, "1", { html: "<code>t3</code> para o argumento <code>x / 2</code>" }],
+            [{ html: "<code>x == 1</code>" }, "0", { html: "resultado escrito direto em <code>r</code>" }],
+            ["total", "2", "maior necessidade entre as regiões"],
           ],
         }),
         C.choiceStep({
           title: "Resposta",
           body:
-            "<p>Sob a estrategia acima: <code>2, 1, 0, 2</code>.</p>" +
-            "<p>A pegadinha: essa e uma contagem <b>convencional</b>. Com vivacidade padrao e " +
-            "reutilizacao de registradores, a condicao poderia ter pico 1, e a sequencia seria " +
-            "<code>1, 1, 0, 1</code>. O gabarito conta nomes emitidos, sem reutilizacao.</p>",
+            "<p>Sob a convenção da lista, a sequência é <code>2, 1, 0, 2</code>.</p>" +
+            "<p>Se a pergunta fosse pico de valores vivos com reutilização agressiva, poderia aparecer <code>1, 1, 0, 1</code>. Esta questão não usa essa convenção.</p>",
           choices: [
             { id: "a", html: "<code>1, 2, 2, 3</code>" },
             { id: "b", html: "<code>1, 1, 1, 1</code>" },
@@ -209,19 +266,19 @@
   register({
     id: "c-q04-layout-heranca",
     num: "4",
-    section: "Geracao de Codigo",
-    title: "Layout de objeto e ordem de heranca",
+    section: "Geração de Código",
+    title: "Layout de objeto e ordem de herança",
     tags: ["layout", "heranca"],
-    hubDesc: "Inferir a ordem de heranca pela ordem dos atributos no objeto.",
+    hubDesc: "Inferir a ordem de herança pela ordem dos atributos no objeto.",
     statement:
       "Dado o layout observado <code>ID, size, disp, x, y, z, u, v</code>, em que campos " +
-      "herdados aparecem antes dos campos definidos pela subclasse, escolha a relacao de heranca correta.",
+      "herdados aparecem antes dos campos definidos pela subclasse, escolha a relação de herança correta.",
     build: function () {
       return [
         {
           title: "Atributos herdados aparecem antes",
           body:
-            "<p>Em layouts de objetos, campos herdados ocupam as primeiras posicoes; campos da subclasse sao anexados depois.</p>",
+            "<p>Em layouts de objetos, campos herdados ocupam as primeiras posições; campos da subclasse são anexados depois.</p>",
           visual: {
             type: "svg",
             draw: function (svg) {
@@ -243,9 +300,9 @@
         C.choiceStep({
           title: "Resposta",
           body:
-            "<p>Os campos herdados vem primeiro: <code>x,y</code> antes de <code>z</code>, e <code>z</code> " +
+            "<p>Os campos herdados vêm primeiro: <code>x,y</code> antes de <code>z</code>, e <code>z</code> " +
             "antes de <code>u,v</code>. Logo <b>C herda de B</b> (acrescenta <code>z</code>) e <b>A herda " +
-            "de C</b> (acrescenta <code>u,v</code>). Em notacao de subtipo: <code>A &le; C &le; B</code>.</p>",
+            "de C</b> (acrescenta <code>u,v</code>). Em notação de subtipo: <code>A &le; C &le; B</code>.</p>",
           choices: [
             { id: "a", html: "A herda de B; B herda de C" },
             { id: "b", html: "C herda de B; B herda de A" },
@@ -261,34 +318,34 @@
   register({
     id: "c-q05-otimizacoes-bloco-basico",
     num: "5",
-    section: "Otimizacao",
-    title: "Otimizacoes validas em bloco basico",
+    section: "Otimização",
+    title: "Otimizações válidas em bloco básico",
     tags: ["otimizacao", "codigo-morto", "constantes"],
-    hubDesc: "Avaliar propagacao, expressoes comuns, codigo morto e simplificacao final.",
+    hubDesc: "Avaliar propagação, expressões comuns, código morto e simplificação final.",
     statement:
-      "No bloco basico <code>a := 1; b := 3; c := a + x; d := a * 3; e := b * 3; " +
+      "No bloco básico <code>a := 1; b := 3; c := a + x; d := a * 3; e := b * 3; " +
       "f := a + b; g := e - f</code>, sabendo que somente <code>g</code> e <code>x</code> " +
-      "sao referenciados fora, quais otimizacoes propostas sao validas?",
+      "são referenciados fora, quais otimizações propostas são válidas?",
     build: function () {
       return [
         C.codeStep({
-          title: "Bloco basico",
+          title: "Bloco básico",
           body:
-            "<p>Somente <code>g</code> e <code>x</code> sao referenciados fora do bloco. Logo, temporarios sem uso externo podem morrer.</p>",
+            "<p>Somente <code>g</code> e <code>x</code> são referenciados fora do bloco. Logo, temporários sem uso externo podem morrer.</p>",
           code:
             "a := 1\nb := 3\nc := a + x\nd := a * 3\ne := b * 3\nf := a + b\ng := e - f",
           active: [3, 7],
         }),
         C.tableStep({
-          title: "Analisando as opcoes",
+          title: "Analisando as opções",
           body:
-            "<p>Depois de propagacao de constantes, <code>e = 9</code>, <code>f = 4</code> e <code>g = 5</code>.</p>",
-          headers: ["opcao", "valida?", "motivo"],
+            "<p>Depois de propagação de constantes, <code>e = 9</code>, <code>f = 4</code> e <code>g = 5</code>.</p>",
+          headers: ["opção", "válida?", "motivo"],
           rows: [
-            ["a", { html: "<span class='no'>nao</span>" }, { html: "trocar <code>3</code> por <code>b</code> nao e propagacao de copia" }],
-            ["b", { html: "<span class='no'>nao</span>" }, { html: "<code>a*3</code> e <code>b*3</code> nao sao a mesma expressao" }],
-            ["c", { html: "<span class='ok'>sim</span>" }, { html: "<code>c</code> nao e usado e sua expressao nao tem efeito colateral" }],
-            ["d", { html: "<span class='ok'>sim</span>" }, { html: "apos simplificacoes validas, o bloco pode virar <code>g := 5</code>" }],
+            ["a", { html: "<span class='no'>não</span>" }, { html: "trocar <code>3</code> por <code>b</code> não é propagação de cópia" }],
+            ["b", { html: "<span class='no'>não</span>" }, { html: "<code>a*3</code> e <code>b*3</code> não são a mesma expressão" }],
+            ["c", { html: "<span class='ok'>sim</span>" }, { html: "<code>c</code> não é usado e sua expressão não tem efeito colateral" }],
+            ["d", { html: "<span class='ok'>sim</span>" }, { html: "após simplificações válidas, o bloco pode virar <code>g := 5</code>" }],
           ],
         }),
       ];
@@ -298,14 +355,14 @@
   register({
     id: "c-q06-propagacao-constantes",
     num: "6",
-    section: "Otimizacao",
-    title: "Propagacao de constantes com juncao simples",
+    section: "Otimização",
+    title: "Propagação de constantes com junção simples",
     tags: ["constantes", "fluxo"],
-    hubDesc: "Encontrar X, Y e Z no ponto de juncao apos dois caminhos.",
+    hubDesc: "Encontrar X, Y e Z no ponto de junção após dois caminhos.",
     statement:
-      "Apos propagacao de constantes, quais valores de X, Y e Z chegam ao ponto destacado? Reticulado: " +
-      "<code>⊥</code> = ainda sem valor / inalcancavel; uma constante; <code>⊤</code> = " +
-      "alcancavel, mas nao-constante.",
+      "Após propagação de constantes, quais valores de X, Y e Z chegam ao ponto destacado? Reticulado: " +
+      "<code>⊥</code> = ainda sem valor / inalcançável; uma constante; <code>⊤</code> = " +
+      "alcançável, mas não constante.",
     build: function () {
       var nodes = [
         { id: "entry", x: 300, y: 20, w: 150, h: 70, lines: ["Z := 5", "C > 0"] },
@@ -317,9 +374,9 @@
         {
           title: "Fluxo de controle",
           body:
-            "<p>O ponto importante e a juncao: dois caminhos chegam ao mesmo bloco.</p>" +
+            "<p>O ponto importante é a junção: dois caminhos chegam ao mesmo bloco.</p>" +
             "<p>No bloco de entrada, <code>Z := 5</code>. Nos dois caminhos <code>X</code> termina como " +
-            "4 e <code>Z</code> como 5. Mas <code>Y</code> so e redefinido no caminho da esquerda.</p>",
+            "4 e <code>Z</code> como 5. Mas <code>Y</code> só é redefinido no caminho da esquerda.</p>",
           visual: { type: "svg", draw: function (svg) {
             C.flow(svg, { w: 720, h: 390, nodes: nodes, edges: [
               { from: "entry", to: "left" },
@@ -330,39 +387,39 @@
           } },
         },
         C.tableStep({
-          title: "Estado de entrada (condicoes de contorno)",
+          title: "Estado de entrada (condições de contorno)",
           body:
             "<p>Antes de juntar os caminhos, precisamos saber o que entra no bloco.</p>" +
             "<p><code>X</code> e <code>Y</code> entram como <code>⊤</code>, porque chegam como valores " +
-            "arbitrarios. <code>Z</code> ainda nao tinha valor (<code>⊥</code>), mas " +
+            "arbitrários. <code>Z</code> ainda não tinha valor (<code>⊥</code>), mas " +
             "<code>Z := 5</code> o fixa.</p>" +
-            "<p><code>⊥</code> quer dizer sem informacao; <code>⊤</code> quer dizer alcancavel, mas " +
-            "nao-constante. Eles <b>nao sao sinonimos</b>.</p>",
-          headers: ["variavel", "entrada", "papel ate a juncao"],
+            "<p><code>⊥</code> quer dizer sem informação; <code>⊤</code> quer dizer alcançável, mas " +
+            "não constante. Eles <b>não são sinônimos</b>.</p>",
+          headers: ["variável", "entrada", "papel até a junção"],
           rows: [
             ["X", "⊤", "redefinida (4) nos dois caminhos"],
-            ["Y", "⊤", "redefinida so na esquerda (1)"],
+            ["Y", "⊤", "redefinida só na esquerda (1)"],
             ["Z", "⊥ → 5", "fixada no bloco de entrada"],
           ],
         }),
         C.tableStep({
-          title: "Juncao variavel a variavel",
+          title: "Junção variável a variável",
           body:
-            "<p>Na juncao, combine a informacao que vem da esquerda com a que vem da direita.</p>" +
-            "<p>Valores iguais mantem a constante. Valores diferentes, ou algum <code>⊤</code>, sobem " +
+            "<p>Na junção, combine a informação que vem da esquerda com a que vem da direita.</p>" +
+            "<p>Valores iguais mantêm a constante. Valores diferentes, ou algum <code>⊤</code>, sobem " +
             "para <code>⊤</code>.</p>",
-          headers: ["variavel", "caminho esquerdo", "caminho direito", "juncao"],
+          headers: ["variável", "caminho esquerdo", "caminho direito", "junção"],
           rows: [
             ["X", "4", "4", "4 ⊔ 4 = 4"],
-            ["Y", "1", "⊤ (entrada, nao redefinida)", "1 ⊔ ⊤ = ⊤"],
+            ["Y", "1", "⊤ (entrada, não redefinida)", "1 ⊔ ⊤ = ⊤"],
             ["Z", "5", "5", "5 ⊔ 5 = 5"],
           ],
         }),
         C.choiceStep({
           title: "Resposta",
           body:
-            "<p>No encontro: <code>X=4</code>, <code>Y=⊤</code> e <code>Z=5</code>. <code>Y</code> nao e 1 " +
-            "porque entra como <code>⊤</code> e a direita nao a redefine; se <code>Y</code> entrasse como " +
+            "<p>No encontro: <code>X=4</code>, <code>Y=⊤</code> e <code>Z=5</code>. <code>Y</code> não é 1 " +
+            "porque entra como <code>⊤</code> e a direita não a redefine; se <code>Y</code> entrasse como " +
             "<code>⊥</code> (local ainda sem valor), seria <code>1 ⊔ ⊥ = 1</code>.</p>",
           choices: [
             { id: "a", html: "<code>4, ⊤, ⊤</code>" },
@@ -379,12 +436,12 @@
   register({
     id: "c-q07-propagacao-lacos",
     num: "7",
-    section: "Otimizacao",
-    title: "Propagacao de constantes com lacos",
+    section: "Otimização",
+    title: "Propagação de constantes com laços",
     tags: ["constantes", "laco", "ponto-fixo"],
     hubDesc: "Entender como back-edges fazem constantes virarem ⊤ em ponto fixo.",
     statement:
-      "No fluxo com lacos que inicia em <code>Z := 5</code>, passa por ramos com " +
+      "No fluxo com laços que inicia em <code>Z := 5</code>, passa por ramos com " +
       "<code>Z := X + 6</code>, <code>X := 4</code>, <code>Y := 1</code> e chega ao " +
       "ponto indicado em <code>Y := 1; X := Z + 3</code>, quais valores de X, Y e Z chegam ali?",
     build: function () {
@@ -399,10 +456,10 @@
         {
           title: "O efeito do ciclo",
           body:
-            "<p>Um laco manda informacao de volta para um ponto ja analisado. Por isso uma constante " +
+            "<p>Um laço manda informação de volta para um ponto já analisado. Por isso uma constante " +
             "inicial pode se misturar com valores recalculados depois.</p>" +
-            "<p>Quando repetir a analise nao muda mais nada, chegamos ao <b>ponto fixo</b>. Aqui, essa " +
-            "mistura faz alguns valores perderem precisao e virarem <code>⊤</code>.</p>",
+            "<p>Quando repetir a análise não muda mais nada, chegamos ao <b>ponto fixo</b>. Aqui, essa " +
+            "mistura faz alguns valores perderem precisão e virarem <code>⊤</code>.</p>",
           visual: { type: "svg", draw: function (svg) {
             C.flow(svg, { w: 720, h: 430, nodes: nodes, edges: [
               { from: "top", to: "lz" },
@@ -419,7 +476,7 @@
           title: "Resposta",
           body:
             "<p>No ponto indicado, ainda sabemos <code>X=4</code>.</p>" +
-            "<p>Ja <code>Y</code> e <code>Z</code> recebem informacao conflitante pelos ciclos. No ponto " +
+            "<p>Já <code>Y</code> e <code>Z</code> recebem informação conflitante pelos ciclos. No ponto " +
             "fixo, ficam <code>⊤</code>.</p>",
           choices: [
             { id: "a", html: "<code>⊤, 1, ⊤</code>" },
@@ -436,12 +493,12 @@
   register({
     id: "c-q08-vivacidade",
     num: "8",
-    section: "Otimizacao",
-    title: "Analise de vivacidade no ponto indicado",
+    section: "Otimização",
+    title: "Análise de vivacidade no ponto indicado",
     tags: ["vivacidade", "dataflow"],
-    hubDesc: "Propagar usos para tras para decidir quais variaveis estao vivas antes do teste X > 0.",
+    hubDesc: "Propagar usos para trás para decidir quais variáveis estão vivas antes do teste X > 0.",
     statement:
-      "Depois da analise de vivacidade, quais variaveis entre W, X, Y e Z estao vivas no ponto indicado?",
+      "Depois da análise de vivacidade, quais variáveis entre W, X, Y e Z estão vivas no ponto indicado?",
     build: function () {
       return [
         {
@@ -449,8 +506,8 @@
           body:
             "<p>Vivacidade pergunta: “o valor atual ainda pode ser usado no futuro?”. Se sim, ele precisa " +
             "continuar guardado.</p>" +
-            "<p>O ponto indicado (<code>?</code>) e antes do teste <code>X &gt; 0</code>. Assuma todas as " +
-            "variaveis mortas na saida. Uma variavel esta viva se algum caminho a le antes de redefini-la.</p>",
+            "<p>O ponto indicado (<code>?</code>) é antes do teste <code>X &gt; 0</code>. Assuma todas as " +
+            "variáveis mortas na saída. Uma variável está viva se algum caminho a lê antes de redefini-la.</p>",
           visual: { type: "svg", draw: function (svg) {
             C.flow(svg, { w: 720, h: 380, nodes: [
               { id: "p", x: 270, y: 20, w: 190, h: 50, lines: ["?  if X > 0"], active: true },
@@ -459,7 +516,7 @@
               { id: "m", x: 250, y: 290, w: 210, h: 50, lines: ["U := Z"] },
             ], edges: [
               { from: "p", to: "t", label: "X > 0" },
-              { from: "p", to: "e", label: "senao" },
+              { from: "p", to: "e", label: "senão" },
               { from: "t", to: "m" },
               { from: "e", to: "m" },
             ] });
@@ -468,19 +525,19 @@
         C.tableStep({
           title: "Usos futuros a partir do ponto",
           body:
-            "<p>Lendo o CFG acima, uma variavel esta viva se seu valor atual pode ser lido antes de ser " +
+            "<p>Lendo o CFG acima, uma variável está viva se seu valor atual pode ser lido antes de ser " +
             "redefinido em algum caminho.</p>",
-          headers: ["variavel", "viva?", "motivo"],
+          headers: ["variável", "viva?", "motivo"],
           rows: [
             ["W", { html: "<span class='ok'>sim</span>" }, { html: "pode ser usada em <code>Z := W + 4</code>" }],
-            ["X", { html: "<span class='ok'>sim</span>" }, { html: "e usada imediatamente no teste <code>X > 0</code>" }],
-            ["Y", { html: "<span class='ok'>sim</span>" }, { html: "e usada em <code>Y := Y + 1</code>" }],
-            ["Z", { html: "<span class='no'>nao</span>" }, { html: "nos ramos, <code>Z</code> e redefinida antes de ser lida" }],
+            ["X", { html: "<span class='ok'>sim</span>" }, { html: "é usada imediatamente no teste <code>X > 0</code>" }],
+            ["Y", { html: "<span class='ok'>sim</span>" }, { html: "é usada em <code>Y := Y + 1</code>" }],
+            ["Z", { html: "<span class='no'>não</span>" }, { html: "nos ramos, <code>Z</code> é redefinida antes de ser lida" }],
           ],
         }),
         C.choiceStep({
           title: "Resposta",
-          body: "<p>As variaveis vivas sao <code>W</code>, <code>X</code> e <code>Y</code>.</p>",
+          body: "<p>As variáveis vivas são <code>W</code>, <code>X</code> e <code>Y</code>.</p>",
           choices: [
             { id: "a", html: "<code>W</code>" },
             { id: "b", html: "<code>X</code>" },
@@ -496,25 +553,25 @@
   register({
     id: "c-q09-rig-coloracao",
     num: "9",
-    section: "Alocacao de Registradores",
-    title: "Coloracao minima de um RIG",
+    section: "Alocação de Registradores",
+    title: "Coloração mínima de um RIG",
     tags: ["rig", "coloracao"],
-    hubDesc: "Verificar se uma coloracao e valida e se usa o menor numero de cores.",
+    hubDesc: "Verificar se uma coloração é válida e se usa o menor número de cores.",
     statement:
-      "Para o RIG com vertices <code>a</code>..<code>f</code> e arestas " +
+      "Para o RIG com vértices <code>a</code>..<code>f</code> e arestas " +
       "<code>(a,f)</code>, <code>(f,e)</code>, <code>(e,d)</code>, <code>(d,c)</code>, " +
       "<code>(c,b)</code>, <code>(b,a)</code> e <code>(a,d)</code>, qual grafo apresenta " +
-      "uma coloracao minima valida?",
+      "uma coloração mínima válida?",
     build: function () {
       var edges = [["a", "f"], ["f", "e"], ["e", "d"], ["d", "c"], ["c", "b"], ["b", "a"], ["a", "d"]];
       return [
         {
-          title: "O RIG e bipartido",
+          title: "O RIG é bipartido",
           body:
-            "<p>No RIG, uma aresta significa “nao podem usar o mesmo registrador”. Entao uma coloracao " +
+            "<p>No RIG, uma aresta significa “não podem usar o mesmo registrador”. Então uma coloração " +
             "valida nunca coloca a mesma cor nas duas pontas de uma aresta.</p>" +
             "<p>Este grafo pode ser colorido com duas cores: <code>{a,c,e}</code> de uma cor e " +
-            "<code>{b,d,f}</code> de outra. A aresta extra <code>a-d</code> continua valida.</p>",
+            "<code>{b,d,f}</code> de outra. A aresta extra <code>a-d</code> continua válida.</p>",
           visual: { type: "svg", draw: function (svg) {
             C.rig(svg, { w: 560, h: 360, nodes: rigNodes(), edges: edges, colors: {
               a: "var(--red)", c: "var(--red)", e: "var(--red)",
@@ -524,12 +581,12 @@
         },
         C.choiceStep({
           title: "Resposta",
-          body: "<p>A alternativa <b>d</b> e a coloracao valida com apenas duas cores.</p>",
+          body: "<p>A alternativa <b>d</b> é a coloração válida com apenas duas cores.</p>",
           choices: [
-            { id: "a", html: "tem vertices adjacentes com mesma cor" },
+            { id: "a", html: "tem vértices adjacentes com mesma cor" },
             { id: "b", html: "tem <code>a</code> e <code>d</code> com mesma cor" },
-            { id: "c", html: "valida, mas usa tres cores" },
-            { id: "d", html: "valida e minima, com duas cores" },
+            { id: "c", html: "válida, mas usa três cores" },
+            { id: "d", html: "válida e mínima, com duas cores" },
           ],
           correct: ["d"],
         }),
@@ -540,38 +597,38 @@
   register({
     id: "c-q10-eliminacao-rig",
     num: "10",
-    section: "Alocacao de Registradores",
-    title: "Sequencia de eliminacao para k = 3",
+    section: "Alocação de Registradores",
+    title: "Sequência de eliminação para k = 3",
     tags: ["rig", "simplify", "coloracao"],
-    hubDesc: "Checar se cada no removido tem grau menor que k no grafo restante.",
+    hubDesc: "Checar se cada nó removido tem grau menor que k no grafo restante.",
     statement:
-      "Para o RIG com vertices <code>a</code>..<code>f</code>, arestas " +
+      "Para o RIG com vértices <code>a</code>..<code>f</code>, arestas " +
       "<code>(a,f)</code>, <code>(a,b)</code>, <code>(a,c)</code>, <code>(f,b)</code>, " +
       "<code>(f,e)</code>, <code>(f,d)</code>, <code>(b,c)</code>, <code>(e,c)</code>, " +
-      "<code>(d,c)</code> e <code>k = 3</code>, quais sequencias de eliminacao sao validas?",
+      "<code>(d,c)</code> e <code>k = 3</code>, quais sequências de eliminação são válidas?",
     build: function () {
       return [
         {
-          title: "Grafo de interferencia",
+          title: "Grafo de interferência",
           body:
-            "<p>Simplify remove os nos que ainda sao faceis de colorir depois.</p>" +
-            "<p>A regra e: so remova no com grau <code>&lt; k</code>. Aqui <code>k=3</code>, entao " +
+            "<p>Simplify remove os nós que ainda são fáceis de colorir depois.</p>" +
+            "<p>A regra é: só remova nó com grau <code>&lt; k</code>. Aqui <code>k=3</code>, então " +
             "grau 0, 1 ou 2 pode sair.</p>",
           visual: { type: "svg", draw: function (svg) {
             C.rig(svg, { w: 560, h: 360, nodes: rigNodes(), edges: rigEdgesQ10() });
           } },
         },
         C.tableStep({
-          title: "Sequencias",
+          title: "Sequências",
           body:
-            "<p>So e valido remover um no de grau <code>&lt; 3</code> no grafo restante. Veja a sequencia de " +
-            "cada opcao e onde as invalidas falham.</p>",
-          headers: ["opcao", "sequencia", "valida?", "comentario"],
+            "<p>Só é válido remover um nó de grau <code>&lt; 3</code> no grafo restante. Veja a sequência de " +
+            "cada opção e onde as inválidas falham.</p>",
+          headers: ["opção", "sequência", "válida?", "comentário"],
           rows: [
-            ["a", { html: "<code>d, e, c, b, a, f</code>" }, { html: "<span class='ok'>sim</span>" }, "d e e tem grau 2; depois c, b, a e f ficam removiveis"],
-            ["b", { html: "<code>e, f, d, c, b, a</code>" }, { html: "<span class='no'>nao</span>" }, { html: "apos remover e, <code>f</code> ainda tem grau 3" }],
-            ["c", { html: "<code>d, c, e, b, a, f</code>" }, { html: "<span class='no'>nao</span>" }, { html: "apos remover d, <code>c</code> ainda tem grau 3" }],
-            ["d", { html: "<code>d, e, b, c, a, f</code>" }, { html: "<span class='no'>nao</span>" }, { html: "apos remover d e e, <code>b</code> ainda tem grau 3" }],
+            ["a", { html: "<code>d, e, c, b, a, f</code>" }, { html: "<span class='ok'>sim</span>" }, "d e e têm grau 2; depois c, b, a e f ficam removíveis"],
+            ["b", { html: "<code>e, f, d, c, b, a</code>" }, { html: "<span class='no'>não</span>" }, { html: "após remover e, <code>f</code> ainda tem grau 3" }],
+            ["c", { html: "<code>d, c, e, b, a, f</code>" }, { html: "<span class='no'>não</span>" }, { html: "após remover d, <code>c</code> ainda tem grau 3" }],
+            ["d", { html: "<code>d, e, b, c, a, f</code>" }, { html: "<span class='no'>não</span>" }, { html: "após remover d e e, <code>b</code> ainda tem grau 3" }],
           ],
         }),
       ];
@@ -581,23 +638,23 @@
   register({
     id: "c-q11-spill-custo",
     num: "11",
-    section: "Alocacao de Registradores",
+    section: "Alocação de Registradores",
     title: "Escolhendo spill de menor custo",
     tags: ["spill", "rig"],
-    hubDesc: "Aplicar a formula ocorrencias - conflitos + bonus de loop.",
+    hubDesc: "Aplicar a fórmula ocorrências - conflitos + bônus de laço.",
     statement:
-      "Com k = 3 registradores, o RIG dado nao pode ser simplificado (todos os nos tem grau >= 3). " +
-      "Aplique a regra de custo do exercicio para escolher o no a derramar.",
+      "Com k = 3 registradores, o RIG dado não pode ser simplificado (todos os nós têm grau >= 3). " +
+      "Aplique a regra de custo do exercício para escolher o nó a derramar.",
     build: function () {
       return [
         {
           title: "RIG travado: um K4 com k = 3",
           body:
             "<p>Antes de escolher spill, tente simplificar. Aqui isso trava.</p>" +
-            "<p>Os quatro nos formam um <b>K4</b>: cada um interfere com os outros tres, entao todos tem " +
-            "<b>grau 3 = k</b>. Nenhum no tem grau &lt; k; portanto <b>simplify nao remove ninguem</b>.</p>" +
-            "<p>Quando trava, escolhemos um valor para <b>spill</b>: guardar em memoria em vez de manter " +
-            "em registrador. <code>D</code> esta fora do laco.</p>",
+            "<p>Os quatro nós formam um <b>K4</b>: cada um interfere com os outros três, então todos têm " +
+            "<b>grau 3 = k</b>. Nenhum nó tem grau &lt; k; portanto <b>simplify não remove ninguém</b>.</p>" +
+            "<p>Quando trava, escolhemos um valor para <b>spill</b>: guardar em memória em vez de manter " +
+            "em registrador. <code>D</code> está fora do laço.</p>",
           visual: { type: "svg", draw: function (svg) {
             svg.view(540, 280);
             var nodes = {
@@ -614,13 +671,13 @@
           } },
         },
         C.tableStep({
-          title: "Custos (regra deste exercicio)",
+          title: "Custos (regra deste exercício)",
           body:
-            "<p>A formula <code>usos - conflitos + (5 se em laco)</code> e a <b>regra deste exercicio</b>, " +
-            "nao uma heuristica universal de alocadores reais. Como todos tem o mesmo grau (3), a decisao " +
-            "vem da <b>frequencia</b>: <code>C</code> e <code>D</code> tem usos e grau iguais, mas " +
-            "<code>D</code> esta fora do laco e fica mais barato.</p>",
-          headers: ["no", "usos", "conflitos (grau)", "bonus laco", "custo"],
+            "<p>A fórmula <code>usos - conflitos + (5 se em laço)</code> é a <b>regra deste exercício</b>, " +
+            "não uma heurística universal de alocadores reais. Como todos têm o mesmo grau (3), a decisão " +
+            "vem da <b>frequência</b>: <code>C</code> e <code>D</code> têm usos e grau iguais, mas " +
+            "<code>D</code> está fora do laço e fica mais barato.</p>",
+          headers: ["nó", "usos", "conflitos (grau)", "bônus laço", "custo"],
           rows: [
             ["A", "6", "3", "+5", "8"],
             ["B", "5", "3", "+5", "7"],
@@ -631,9 +688,9 @@
         C.choiceStep({
           title: "Resposta",
           body:
-            "<p>Entre os nos <b>genuinamente travados</b> (grau &ge; k), o de menor custo e <code>D</code>. " +
-            "Um no de grau &lt; k nunca chegaria a esta decisao &mdash; seria <b>simplificado</b> e " +
-            "recolorido depois, nao derramado.</p>",
+            "<p>Entre os nós <b>genuinamente travados</b> (grau &ge; k), o de menor custo é <code>D</code>. " +
+            "Um nó de grau &lt; k nunca chegaria a esta decisão &mdash; seria <b>simplificado</b> e " +
+            "recolorido depois, não derramado.</p>",
           choices: [
             { id: "a", html: "<code>A</code>" },
             { id: "b", html: "<code>B</code>" },
@@ -649,14 +706,14 @@
   register({
     id: "c-q12-mark-sweep",
     num: "12",
-    section: "Gerenciamento de Memoria",
+    section: "Gerenciamento de Memória",
     title: "Coleta marcar-e-varrer",
     tags: ["gc", "mark-sweep"],
-    hubDesc: "Marcar objetos alcancaveis pela raiz e colocar os demais na lista livre.",
+    hubDesc: "Marcar objetos alcançáveis pela raiz e colocar os demais na lista livre.",
     statement:
       "Qual heap final resulta de aplicar marcar-e-varrer ao heap com <code>root -> A</code>, " +
       "<code>A -> B</code>, <code>A -> E</code>, ciclo <code>B &lt;-&gt; C</code>, " +
-      "ciclo <code>D &lt;-&gt; F</code> e celulas <code>G/H</code> ja livres?",
+      "ciclo <code>D &lt;-&gt; F</code> e células <code>G/H</code> já livres?",
     build: function () {
       var livePtrs = [
         { from: 0, to: 1, side: "bottom" },
@@ -668,22 +725,22 @@
         {
           title: "Marca a partir da raiz",
           body:
-            "<p>Mark-sweep comeca pelas raizes: tudo que da para alcancar delas fica vivo.</p>" +
-            "<p>A raiz alcanca <code>A</code>. De <code>A</code> chegamos a <code>B</code> e " +
-            "<code>E</code>; de <code>B</code> chegamos a <code>C</code>. O par <code>D/F</code> nao e " +
-            "alcancavel, mesmo formando ciclo.</p>",
+            "<p>Mark-sweep começa pelas raízes: tudo que dá para alcançar delas fica vivo.</p>" +
+            "<p>A raiz alcança <code>A</code>. De <code>A</code> chegamos a <code>B</code> e " +
+            "<code>E</code>; de <code>B</code> chegamos a <code>C</code>. O par <code>D/F</code> não é " +
+            "alcançável, mesmo formando ciclo.</p>",
           visual: { type: "svg", draw: function (svg) {
-            C.heap(svg, { cells: ["A", "B", "C", "D", "E", "F", "G", "H"], root: 0, free: [6, 7], pointers: livePtrs.concat([{ from: 3, to: 5, side: "top" }, { from: 5, to: 3, side: "bottom" }]), note: "antes: G/H ja estao livres; D/F ainda ocupam celulas" });
+            C.heap(svg, { cells: ["A", "B", "C", "D", "E", "F", "G", "H"], root: 0, free: [6, 7], pointers: livePtrs.concat([{ from: 3, to: 5, side: "top" }, { from: 5, to: 3, side: "bottom" }]), note: "antes: G/H já estão livres; D/F ainda ocupam células" });
           } },
         },
         {
-          title: "Varre e libera nao marcados",
+          title: "Varre e libera não marcados",
           body:
-            "<p>Depois de marcar, a varredura passa pelo heap inteiro. O que nao foi marcado vira livre.</p>" +
-            "<p>Mark-sweep nao compacta: preserva A, B, C e E nas mesmas posicoes e coloca D, F, G e H " +
+            "<p>Depois de marcar, a varredura passa pelo heap inteiro. O que não foi marcado vira livre.</p>" +
+            "<p>Mark-sweep não compacta: preserva A, B, C e E nas mesmas posições e coloca D, F, G e H " +
             "na lista livre. Isso corresponde a alternativa <b>a</b>.</p>",
           visual: { type: "svg", draw: function (svg) {
-            C.heap(svg, { cells: ["A", "B", "C", "D", "E", "F", "G", "H"], root: 0, free: [3, 5, 6, 7], pointers: livePtrs.concat([{ from: 3, to: 5, side: "top", free: true }, { from: 5, to: 6, side: "bottom", free: true }, { from: 6, to: 7, side: "bottom", free: true }]), note: "final: objetos nao marcados viram free" });
+            C.heap(svg, { cells: ["A", "B", "C", "D", "E", "F", "G", "H"], root: 0, free: [3, 5, 6, 7], pointers: livePtrs.concat([{ from: 3, to: 5, side: "top", free: true }, { from: 5, to: 6, side: "bottom", free: true }, { from: 6, to: 7, side: "bottom", free: true }]), note: "final: objetos não marcados viram free" });
           } },
         },
       ];
@@ -693,24 +750,24 @@
   register({
     id: "c-q13-stop-copy",
     num: "13",
-    section: "Gerenciamento de Memoria",
+    section: "Gerenciamento de Memória",
     title: "Coleta parar-e-copiar",
     tags: ["gc", "copying"],
-    hubDesc: "Copiar apenas objetos alcancaveis para o new space, seguindo a ordem do algoritmo.",
+    hubDesc: "Copiar apenas objetos alcançáveis para o new space, seguindo a ordem do algoritmo.",
     statement:
       "Qual heap final resulta de aplicar parar-e-copiar ao heap com <code>root -> A</code>, " +
       "<code>A -> B</code>, <code>A -> E</code>, ciclo <code>B &lt;-&gt; C</code> e " +
-      "ciclo inalcancavel <code>D &lt;-&gt; F</code>?",
+      "ciclo inalcançável <code>D &lt;-&gt; F</code>?",
     build: function () {
       return [
         {
-          title: "Objetos alcancaveis",
+          title: "Objetos alcançáveis",
           body:
-            "<p>Stop-copy tambem parte das raizes, mas em vez de marcar no lugar, copia os vivos para " +
-            "um espaco novo.</p>" +
+            "<p>Stop-copy também parte das raízes, mas em vez de marcar no lugar, copia os vivos para " +
+            "um espaço novo.</p>" +
             "<p>Da raiz, copiamos <code>A</code>. Ao escanear <code>A</code>, descobrimos <code>B</code> " +
             "e <code>E</code>; ao escanear <code>B</code>, descobrimos <code>C</code>. O ciclo " +
-            "<code>D/F</code> nao e alcancavel.</p>",
+            "<code>D/F</code> não é alcançável.</p>",
           visual: { type: "svg", draw: function (svg) {
             C.heap(svg, { cells: ["A", "B", "C", "D", "E", "F", "new"], root: 0, free: [6], pointers: [
               { from: 0, to: 1, side: "bottom" },
@@ -723,9 +780,9 @@
           } },
         },
         {
-          title: "Ordem de copia",
+          title: "Ordem de cópia",
           body:
-            "<p>Com a varredura de copia, a ordem fica <code>A, B, E, C</code>. O restante do espaco antigo vira livre. Alternativa <b>b</b>.</p>",
+            "<p>Com a varredura de cópia, a ordem fica <code>A, B, E, C</code>. O restante do espaço antigo vira livre. Alternativa <b>b</b>.</p>",
           visual: { type: "svg", draw: function (svg) {
             C.heap(svg, { cells: ["new", "A", "B", "E", "C", "free"], root: 1, free: [0, 5], pointers: [
               { from: 1, to: 2, side: "bottom" },
@@ -742,23 +799,23 @@
   register({
     id: "c-q14-reference-counting",
     num: "14",
-    section: "Gerenciamento de Memoria",
-    title: "Contagem de referencias apos atribuicoes",
+    section: "Gerenciamento de Memória",
+    title: "Contagem de referências após atribuições",
     tags: ["gc", "reference-counting"],
-    hubDesc: "Atualizar referencias, liberar cascatas e observar que ciclos nao sao coletados por contagem simples.",
+    hubDesc: "Atualizar referências, liberar cascatas e observar que ciclos não são coletados por contagem simples.",
     statement:
       "Atualize a heap inicial com <code>root -> A</code>, <code>A -> B</code>, " +
       "<code>A -> E</code>, <code>B -> C</code>, <code>C -> B</code>, " +
-      "<code>D -> E</code>, <code>D -> F</code> e <code>F -> D</code> apos " +
-      "<code>C.ptrParaB = D</code> e <code>A.ptrParaB = NULL</code>, usando contagem de referencias.",
+      "<code>D -> E</code>, <code>D -> F</code> e <code>F -> D</code> após " +
+      "<code>C.ptrParaB = D</code> e <code>A.ptrParaB = NULL</code>, usando contagem de referências.",
     build: function () {
       return [
         {
-          title: "Duas atualizacoes",
+          title: "Duas atualizações",
           body:
-            "<p>Na contagem de referencias, olhe para as setas que chegam em cada objeto.</p>" +
+            "<p>Na contagem de referências, olhe para as setas que chegam em cada objeto.</p>" +
             "<p>Primeiro <code>C</code> deixa de apontar para <code>B</code> e passa a apontar para " +
-            "<code>D</code>. Depois <code>A</code> tambem deixa de apontar para <code>B</code>.</p>",
+            "<code>D</code>. Depois <code>A</code> também deixa de apontar para <code>B</code>.</p>",
           visual: { type: "svg", draw: function (svg) {
             C.heap(svg, { cells: ["A", "B", "C", "D", "E", "F", "free"], root: 0, free: [6], pointers: [
               { from: 0, to: 1, side: "bottom" },
@@ -774,22 +831,22 @@
           title: "Efeito nas contagens",
           body:
             "<p>Regra: perdeu seta, decrementa; chegou a zero, libera. Ao liberar um objeto, suas setas " +
-            "de saida tambem somem, o que pode liberar outros objetos em cascata.</p>" +
-            "<p><code>B</code> perde as referencias de <code>C</code> e de <code>A</code>, zera e e " +
-            "liberado. Ao liberar <code>B</code>, sua referencia para <code>C</code> cai; " +
-            "<code>C</code> tambem zera.</p>",
+            "de saída também somem, o que pode liberar outros objetos em cascata.</p>" +
+            "<p><code>B</code> perde as referências de <code>C</code> e de <code>A</code>, zera e é " +
+            "liberado. Ao liberar <code>B</code>, sua referência para <code>C</code> cai; " +
+            "<code>C</code> também zera.</p>",
           headers: ["objeto", "resultado"],
           rows: [
             ["B", { html: "fica <code>free</code>" }],
             ["C", { html: "fica <code>free</code> em cascata" }],
-            ["D/F", "permanecem porque formam ciclo de referencias"],
-            ["A/E", "permanecem alcancaveis pela raiz"],
+            ["D/F", "permanecem porque formam ciclo de referências"],
+            ["A/E", "permanecem alcançáveis pela raiz"],
           ],
         }),
         {
           title: "Heap final",
           body:
-            "<p>A resposta e a alternativa <b>c</b>: <code>B</code> e <code>C</code> livres, <code>D/E/F</code> preservados e a ultima celula livre.</p>",
+            "<p>A resposta é a alternativa <b>c</b>: <code>B</code> e <code>C</code> livres, <code>D/E/F</code> preservados e a última célula livre.</p>",
           visual: { type: "svg", draw: function (svg) {
             C.heap(svg, { cells: ["A", "free", "free", "D", "E", "F", "free"], root: 0, free: [1, 2, 6], pointers: [
               { from: 0, to: 4, side: "bottom" },

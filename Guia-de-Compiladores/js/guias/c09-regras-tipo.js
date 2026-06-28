@@ -41,6 +41,26 @@
     };
   }
 
+  // Solidez (soundness): uma regra é boa quando o tipo que ela conclui é o tipo
+  // que a execução realmente produz; senão, "mente" e o programa quebra.
+  function soundnessVisual() {
+    return {
+      type: "svg",
+      draw: function (svg) {
+        svg.view(720, 320);
+        C.box(svg, 275, 26, 180, 58, ["regra conclui", "e : T"], { fill: "var(--accent-soft)", stroke: "var(--accent)" });
+        svg.arrow(322, 86, 205, 168, { color: "var(--green)", strokeWidth: 2.5, head: 10 });
+        svg.arrow(408, 86, 522, 168, { color: "var(--red)", strokeWidth: 2.5, head: 10 });
+        svg.text(206, 124, "sólida", { color: "var(--green)", weight: 700, size: 13 });
+        svg.text(520, 124, "não sólida", { color: "var(--red)", weight: 700, size: 13 });
+        C.box(svg, 50, 172, 255, 76, ["execução produz", "valor de tipo T"], { fill: "var(--green-soft)", stroke: "var(--green)" });
+        C.box(svg, 415, 172, 255, 76, ["tipo real ≠ T", "quebra em runtime"], { fill: "var(--red-soft)", stroke: "var(--red)" });
+        svg.text(177, 268, "✓ regra boa", { color: "var(--green)", weight: 700, size: 13 });
+        svg.text(542, 268, "✗ regra ruim", { color: "var(--red)", weight: 700, size: 13 });
+      },
+    };
+  }
+
   function build() {
     return [
       C.domStep(
@@ -77,13 +97,14 @@
           "É exatamente isso que o type checker faz, recursivamente.</p>",
         visual: proofVisual(3),
       },
-      C.domStep(
-        "Regras 'boas' (corretas)",
-        "Uma regra é <b>boa</b> se for <em>sólida</em>: sempre que ela conclui <code>e : T</code>, a " +
+      {
+        title: "Regras 'boas' (corretas)",
+        body:
+          "<p>Uma regra é <b>boa</b> se for <em>sólida</em>: sempre que ela conclui <code>e : T</code>, a " +
           "execução de <code>e</code> realmente produz um valor de tipo <code>T</code>. Senão, o " +
-          "compilador “mente” sobre o tipo e o programa pode quebrar em runtime.",
-        ""
-      ),
+          "compilador “mente” sobre o tipo e o programa pode quebrar em runtime.</p>",
+        visual: soundnessVisual(),
+      },
       C.tableStep({
         title: "Avaliando quatro regras",
         body: "Confira se o tipo concluído bate com o que a operação realmente devolve:",

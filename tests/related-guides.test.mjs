@@ -61,7 +61,7 @@ assertHas(
 );
 assertHas(
   api,
-  { subject: "Compiladores - Lista C", section: "Gerenciamento de Memoria", title: "Contagem de referencias apos atribuicoes", tags: ["gc", "reference-counting"] },
+  { subject: "Compiladores - Lista C", section: "Gerenciamento de Memória", title: "Contagem de referências após atribuições", tags: ["gc", "reference-counting"] },
   "Contagem de referências",
 );
 assertHas(
