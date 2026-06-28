@@ -215,7 +215,10 @@
     tags: ["fatoracao", "recursao-a-esquerda"],
     hubDesc: "Transformar gramatica para aproximar o formato aceito por analisadores preditivos.",
     statement:
-      "Faca a fatoracao a esquerda da primeira gramatica e elimine a recursao a esquerda da segunda.",
+      "Faca a fatoracao a esquerda da primeira gramatica " +
+      "<code>S -> S + S | S + P | P; P -> P * P | P * I | I; I -> -I | (S) | D; " +
+      "D -> 0 | 1N; N -> 0 | 1 | N N | lambda</code> e elimine a recursao a esquerda da segunda " +
+      "<code>S -> S a S | U; U -> U u U | T; T -> T n | t | f | (S)</code>.",
     build: function () {
       return [
         C.domStep(
@@ -426,7 +429,11 @@
     title: "Diagnostico LL(1) por conflitos",
     tags: ["ll1", "first", "follow"],
     hubDesc: "Verificar quatro gramaticas pequenas procurando intersecoes FIRST/FIRST e FIRST/FOLLOW.",
-    statement: "Para cada uma das quatro gramaticas, identifique e demonstre se ela e LL(1).",
+    statement:
+      "Para as quatro gramaticas <code>X -> aY | Z; Y -> a | c; Z -> bY</code>, " +
+      "<code>P -> dR; R -> o | S; S -> g | og</code>, " +
+      "<code>J -> aKL; K -> c | lambda; L -> c</code> e " +
+      "<code>J -> aKL; K -> c | lambda; L -> b</code>, identifique e demonstre se cada uma e LL(1).",
     build: function () {
       return [
         C.domStep(

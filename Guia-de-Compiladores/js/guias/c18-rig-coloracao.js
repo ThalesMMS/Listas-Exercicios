@@ -65,11 +65,12 @@
       {
         title: "Registradores são poucos; temporários são muitos",
         body:
-          "<p>O programa usa muitos temporários, mas a CPU tem poucos registradores. Dois temporários " +
-          "<b>vivos ao mesmo tempo</b> não podem usar o mesmo registrador — isso é uma " +
-          "<b>interferência</b>, uma <b>aresta</b> no <b>grafo de interferência (RIG)</b>.</p>" +
-          "<p>Alocar registradores = <b>colorir</b> o RIG com k cores (k = nº de registradores), sem " +
-          "duas pontas de uma aresta com a mesma cor.</p>",
+          "<p>O programa pode ter muitos temporários, mas a CPU tem poucos registradores. Se dois " +
+          "temporários precisam estar vivos ao mesmo tempo, eles não podem dividir o mesmo registrador.</p>" +
+          "<p>No grafo, isso vira uma <b>aresta</b>. Aresta significa: “estes dois precisam de cores " +
+          "diferentes”. Esse grafo é o <b>RIG</b>, o grafo de interferência.</p>" +
+          "<p>Alocar registradores = <b>colorir</b> o RIG com k cores, sem duas pontas de uma aresta " +
+          "com a mesma cor.</p>",
         visual: rigVisual({}),
       },
       {
@@ -83,8 +84,8 @@
       },
       C.domStep(
         "Heurística de simplificação (Kempe/Chaitin)",
-        "Para k registradores, há um truque guloso: um nó com <b>grau &lt; k</b> sempre poderá ser " +
-          "colorido <em>depois</em> (sobra cor para ele). Então:",
+        "A ideia do <b>simplify</b> é adiar os nós fáceis. Com k registradores, um nó com " +
+          "<b>grau &lt; k</b> tem menos vizinhos do que cores; quando voltar depois, alguma cor sobrará.",
         "<div class='ex-callout tip'><div class='ex-callout-title'>Simplify</div>" +
           "<ol>" +
           "<li>remova repetidamente um nó de <b>grau &lt; k</b> e empilhe-o;</li>" +

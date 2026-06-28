@@ -6,6 +6,8 @@ Static page. HTML, CSS, JavaScript, and SVGs/images allowed.
 -   Data files (JSON, Markdown) and local web fonts allowed.
 -   Strict rule: No external dependencies or external API calls.
 
+If you are on branch main, do not create new branches.
+
 When answering questions in the chat:
 
 - Write the response as plain Markdown that the IDE chat can render.

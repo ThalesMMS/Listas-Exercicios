@@ -59,17 +59,31 @@ window.EX_MANIFEST = {
     "js/guias/c10-lub.js",
     "js/guias/c11-tipos-dispatch.js",
     "js/guias/c12-self-type.js",
+    "js/guias/c21-tabela-simbolos.js",
+    // Semântica Operacional
+    "js/guias/c22-semantica-linguagens.js",
+    "js/guias/c23-semantica-operacional.js",
+    "js/guias/c24-semantica-cool.js",
     // Geração de Código
     "js/guias/c13-geracao-codigo.js",
     "js/guias/c14-registros-ativacao.js",
+    "js/guias/c25-runtime-organization.js",
+    "js/guias/c26-alinhamento-memoria.js",
+    "js/guias/c27-codigo-intermediario.js",
     // Otimização
+    "js/guias/c32-otimizacao-dataflow.js",
     "js/guias/c15-otimizacao-local.js",
     "js/guias/c16-propagacao-constantes.js",
     "js/guias/c17-vivacidade.js",
+    "js/guias/c28-peephole-optimization.js",
+    "js/guias/c30-cache-loop-interchange.js",
     // Alocação de Registradores
     "js/guias/c18-rig-coloracao.js",
+    "js/guias/c29-spilling-avancado.js",
     // Gerenciamento de Memória
+    "js/guias/c33-gerenciamento-automatico-memoria.js",
     "js/guias/c19-coleta-lixo.js",
     "js/guias/c20-contagem-referencias.js",
+    "js/guias/c31-coleta-conservadora.js",
   ],
 };

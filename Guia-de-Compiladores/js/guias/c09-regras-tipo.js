@@ -85,7 +85,7 @@
         ""
       ),
       C.tableStep({
-        title: "Avaliando quatro regras (Lista B)",
+        title: "Avaliando quatro regras",
         body: "Confira se o tipo concluído bate com o que a operação realmente devolve:",
         headers: ["regra", "conclui", "veredito"],
         rows: [

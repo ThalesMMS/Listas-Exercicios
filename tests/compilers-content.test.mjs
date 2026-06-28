@@ -289,6 +289,7 @@ const norm = (s) =>
   assert.ok(/tipo estatico/.test(listB) && /despacho dinamico/.test(listB), "#7: Q7 names static type and dynamic dispatch");
   assert.ok(!/chama o <code>foo<\/code> de C/.test(c12), "#7: c12 no longer claims c.baz().foo() runs C.foo()");
   assert.ok(/tipo estático/.test(c12) && /despacho dinâmico/.test(c12), "#7: c12 names static type and dynamic dispatch");
+  assert.ok(/aparece do lado esquerdo/.test(c12) && /Para saber se ele cabe/.test(c12) && /qualquer subclasse/.test(c12), "#7: c12 explains SELF_TYPE conformance before the formal rule");
   assert.ok(/D ≤ C/.test(c12) && /D\.foo\(\)/.test(c12), "#7: c12 has a subclass-D example (static preserved, dynamic dispatch)");
   // c11 is the correct model the others are aligned to.
   assert.ok(/classe real retornada/.test(c11), "#7: c11 keeps the correct dynamic-dispatch wording");

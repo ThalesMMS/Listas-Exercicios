@@ -125,7 +125,9 @@
     title: "Tipos de projeção",
     type: "conceitual",
     hubDesc: "Paralela (ortográfica/oblíqua) × perspectiva (1/2/3 pontos de fuga).",
-    statement: "Quais são os tipos de projeção?",
+    statement:
+      "Quais são os tipos de projeção, distinguindo projeção paralela e perspectiva, " +
+      "e os subtipos ortográfica, oblíqua, cavaleira/cabinet e perspectiva com pontos de fuga?",
     parts: [{ label: "Resolução", build: build }],
   });
 })();

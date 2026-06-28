@@ -1,0 +1,94 @@
+Fundamentos da Verificação de Tipos via Regras de Inferência Lógica
+
+Resumo Executivo
+
+Este documento detalha os conceitos fundamentais da verificação de tipos (type checking) no contexto da linguagem de programação Cool. A análise destaca a transição de formalismos anteriores da computação, como expressões regulares e gramáticas livres de contexto, para o uso de regras de inferência lógica. Essas regras funcionam como declarações de implicação ("se-então"), permitindo que o compilador garanta que, se determinadas hipóteses sobre os tipos de expressões forem verdadeiras, a conclusão sobre o tipo da expressão resultante também será válida. A notação compacta X : T é estabelecida como o padrão para afirmar que uma entidade X possui o tipo T.
+
+Evolução dos Formalismos em Compiladores
+
+A construção de um compilador utiliza diferentes ferramentas formais para cada uma de suas etapas. A verificação de tipos representa uma fase onde a lógica matemática se torna a ferramenta predominante.
+
+Fase do Compilador	Formalismo Utilizado
+Análise Lexical	Expressões Regulares
+Parsing (Análise Sintática)	Gramáticas Livres de Contexto
+Verificação de Tipos	Regras de Inferência Lógica
+
+A Estrutura das Regras de Inferência
+
+As regras de inferência são afirmações lógicas que seguem uma estrutura rigorosa de causa e efeito. No contexto de sistemas de tipos, elas são amplamente aceitas devido à sua capacidade de codificar raciocínios complexos de forma compacta.
+
+Componentes de uma Regra
+
+1. Hipótese: Uma ou mais premissas que devem ser verdadeiras. No type checking, isso geralmente se refere aos tipos de subexpressões.
+2. Implicação: O nexo lógico que conecta a hipótese à conclusão (o equivalente ao "se... então").
+3. Conclusão: O resultado garantido caso as hipóteses sejam satisfeitas.
+
+Lógica Aplicada
+
+* Conjunção Lógica: Utilizada para representar a palavra "e", permitindo agrupar múltiplas hipóteses que devem ser simultaneamente verdadeiras.
+* Implicação: Representa a estrutura "se [hipótese], então [conclusão]".
+
+Notação e Sintaxe Lógica
+
+Para facilitar a leitura e a implementação de sistemas de tipos, utiliza-se uma notação matemática específica que reduz frases em linguagem natural a declarações formais.
+
+* Afirmação de Tipo: A string X : T deve ser lida como "X tem o tipo T". Esta é a asserção lógica fundamental para a verificação.
+* Encadeamento: O sistema de inferência permite deduzir o tipo de uma expressão complexa com base nos tipos de seus componentes individuais.
+
+Aplicação Prática: Exemplo de Adição
+
+O uso de regras de inferência pode ser ilustrado através de uma operação aritmética simples. A lógica para validar uma soma de dois inteiros é estruturada da seguinte forma:
+
+1. Hipótese 1: A expressão E1 tem o tipo int (E1 : int).
+2. Hipótese 2: A expressão E2 tem o tipo int (E2 : int).
+3. Conclusão: A expressão resultante E1 + E2 também terá o tipo int (E1 + E2 : int).
+
+Este exemplo demonstra como o sistema de tipos garante a segurança da operação: a validade da soma (conclusão) é estritamente dependente da validade dos tipos dos operandos (hipóteses).
+
+
+Fundamentos da Verificação de Tipos via Regras de Inferência Lógica
+
+Resumo Executivo
+
+Este documento detalha os conceitos fundamentais da verificação de tipos (type checking) no contexto da linguagem de programação Cool. A análise destaca a transição de formalismos anteriores da computação, como expressões regulares e gramáticas livres de contexto, para o uso de regras de inferência lógica. Essas regras funcionam como declarações de implicação ("se-então"), permitindo que o compilador garanta que, se determinadas hipóteses sobre os tipos de expressões forem verdadeiras, a conclusão sobre o tipo da expressão resultante também será válida. A notação compacta X : T é estabelecida como o padrão para afirmar que uma entidade X possui o tipo T.
+
+Evolução dos Formalismos em Compiladores
+
+A construção de um compilador utiliza diferentes ferramentas formais para cada uma de suas etapas. A verificação de tipos representa uma fase onde a lógica matemática se torna a ferramenta predominante.
+
+Fase do Compilador	Formalismo Utilizado
+Análise Lexical	Expressões Regulares
+Parsing (Análise Sintática)	Gramáticas Livres de Contexto
+Verificação de Tipos	Regras de Inferência Lógica
+
+A Estrutura das Regras de Inferência
+
+As regras de inferência são afirmações lógicas que seguem uma estrutura rigorosa de causa e efeito. No contexto de sistemas de tipos, elas são amplamente aceitas devido à sua capacidade de codificar raciocínios complexos de forma compacta.
+
+Componentes de uma Regra
+
+1. Hipótese: Uma ou mais premissas que devem ser verdadeiras. No type checking, isso geralmente se refere aos tipos de subexpressões.
+2. Implicação: O nexo lógico que conecta a hipótese à conclusão (o equivalente ao "se... então").
+3. Conclusão: O resultado garantido caso as hipóteses sejam satisfeitas.
+
+Lógica Aplicada
+
+* Conjunção Lógica: Utilizada para representar a palavra "e", permitindo agrupar múltiplas hipóteses que devem ser simultaneamente verdadeiras.
+* Implicação: Representa a estrutura "se [hipótese], então [conclusão]".
+
+Notação e Sintaxe Lógica
+
+Para facilitar a leitura e a implementação de sistemas de tipos, utiliza-se uma notação matemática específica que reduz frases em linguagem natural a declarações formais.
+
+* Afirmação de Tipo: A string X : T deve ser lida como "X tem o tipo T". Esta é a asserção lógica fundamental para a verificação.
+* Encadeamento: O sistema de inferência permite deduzir o tipo de uma expressão complexa com base nos tipos de seus componentes individuais.
+
+Aplicação Prática: Exemplo de Adição
+
+O uso de regras de inferência pode ser ilustrado através de uma operação aritmética simples. A lógica para validar uma soma de dois inteiros é estruturada da seguinte forma:
+
+1. Hipótese 1: A expressão E1 tem o tipo int (E1 : int).
+2. Hipótese 2: A expressão E2 tem o tipo int (E2 : int).
+3. Conclusão: A expressão resultante E1 + E2 também terá o tipo int (E1 + E2 : int).
+
+Este exemplo demonstra como o sistema de tipos garante a segurança da operação: a validade da soma (conclusão) é estritamente dependente da validade dos tipos dos operandos (hipóteses).

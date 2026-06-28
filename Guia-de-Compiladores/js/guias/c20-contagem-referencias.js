@@ -23,10 +23,12 @@
       {
         title: "Contar quem aponta para cada objeto",
         body:
-          "<p>Em vez de rastrear das raízes, cada objeto guarda um <b>contador de referências</b>: " +
-          "quantos ponteiros apontam para ele (mostrado como <code>nome:contador</code>). Quando o " +
-          "contador chega a <b>0</b>, ninguém mais o alcança → libera <b>na hora</b>.</p>" +
-          "<p>É <b>incremental</b> (sem pausas longas), mas tem um ponto cego importante.</p>",
+          "<p>A pergunta aqui não é “o que alcanço a partir das raízes?”. É “quantas setas chegam " +
+          "neste objeto?”.</p>" +
+          "<p>Cada objeto guarda esse número num <b>contador de referências</b>, mostrado como " +
+          "<code>nome:contador</code>. Se o contador chega a <b>0</b>, ninguém aponta para ele: " +
+          "libera <b>na hora</b>.</p>" +
+          "<p>Isso é incremental, mas tem um ponto cego importante.</p>",
         visual: rcHeap(
           ["A", "B:1", "C:1", "D:1"],
           [{ from: 0, to: 1 }, { from: 1, to: 2 }, { from: 0, to: 3 }],
@@ -36,7 +38,8 @@
       },
       C.domStep(
         "As operações",
-        "Toda mudança de ponteiro atualiza contadores:",
+        "Toda atribuição de ponteiro mexe em duas pontas: o objeto que perdeu a seta e o objeto que " +
+          "ganhou a seta.",
         "<div class='ex-callout tip'><div class='ex-callout-title'>Regras</div>" +
           "<ul>" +
           "<li>criar um ponteiro para X → <code>X.count += 1</code>;</li>" +

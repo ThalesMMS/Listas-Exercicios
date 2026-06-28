@@ -6,7 +6,7 @@
   var EX = window.EX;
   var C = EX.Compilers;
 
-  // Hierarquia Animal (Lista B, Q6). `active` realça a classe sendo inspecionada.
+  // Hierarquia Animal usada nos exemplos deste guia. `active` realça a classe inspecionada.
   function animalTreeVisual(active) {
     return {
       type: "svg",
@@ -39,9 +39,21 @@
         visual: animalTreeVisual([]),
       },
       C.tableStep({
-        title: "Estático nunca muda (Lista B, Q6)",
-        body: "Após w←new Lion, y←new Dog, z←new Cat (a partir das declarações w:Animal, x:Animal←Pet, " +
-          "y:Animal←Pet, z:Pet←Pet):",
+        title: "Estático nunca muda; dinâmico acompanha o objeto",
+        body:
+          "<p>Considere estas declarações e reatribuições na hierarquia acima " +
+          "(<code>&lt;-</code> é a atribuição em Cool):</p>" +
+          "<pre class='formula'>w : Animal &lt;- new Animal;\n" +
+          "x : Animal &lt;- new Pet;\n" +
+          "y : Animal &lt;- new Pet;\n" +
+          "z : Pet    &lt;- new Pet;\n" +
+          "w &lt;- new Lion;\n" +
+          "y &lt;- new Dog;\n" +
+          "z &lt;- new Cat;</pre>" +
+          "<p>O <b>tipo estático</b> vem da declaração e <b>nunca muda</b>; o <b>tipo dinâmico</b> é a " +
+          "classe do último objeto atribuído. Repare em <code>y</code>: declarado <code>Animal</code>, " +
+          "seu estático continua <code>Animal</code> mesmo após <code>y &lt;- new Dog</code> &mdash; só o " +
+          "dinâmico passa a <code>Dog</code>.</p>",
         headers: ["var", "tipo estático", "tipo dinâmico"],
         rows: [
           ["w", "Animal", "Lion"],

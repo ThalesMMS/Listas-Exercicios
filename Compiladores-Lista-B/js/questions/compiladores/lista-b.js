@@ -61,7 +61,10 @@
     tags: ["cool", "escopo"],
     hubDesc: "Identificar qual declaracao de x cada uso encontra em escopos aninhados.",
     statement:
-      "No codigo COOL dado, marque quais linhas estao ligadas pela regra da declaracao aninhada mais proxima.",
+      "No codigo COOL da <code>class Foo</code>, com parametro <code>f(x : Int)</code>, " +
+      "<code>let x : Int &lt;- 4</code>, <code>let x : Int &lt;- 7</code> e atributo " +
+      "<code>x : Int &lt;- 14</code>, marque quais usos, incluindo a linha 10, estao ligados pela " +
+      "regra da declaracao aninhada mais proxima.",
     build: function () {
       var code =
         "class Foo {\n" +
@@ -219,7 +222,10 @@
     tags: ["lub", "heranca"],
     hubDesc: "Encontrar o ancestral comum mais especifico em uma hierarquia de classes.",
     statement:
-      "Na hierarquia dada, julgue cada <b>afirmacao</b> de <code>lub</code> como verdadeira ou falsa.",
+      "Na hierarquia <code>Object</code> com filhos <code>Bool</code>, <code>Point</code>, " +
+      "<code>Line</code> e <code>Shape</code>; <code>Shape</code> com filhos <code>Quad</code> " +
+      "e <code>Circle</code>; <code>Quad -> Rect -> Square</code>, julgue cada afirmacao de " +
+      "<code>lub</code> como verdadeira ou falsa.",
     build: function () {
       return [
         {
@@ -287,7 +293,12 @@
     tags: ["tipo-estatico", "tipo-dinamico"],
     hubDesc: "Distinguir o tipo declarado da variavel e a classe real do objeto em tempo de execucao.",
     statement:
-      "No fim da execucao, escolha os pares tipo estatico/tipo dinamico corretos para <code>w</code>, <code>x</code>, <code>y</code> e <code>z</code>.",
+      "Na hierarquia <code>Animal</code> com filhos <code>Pet</code> e <code>Lion</code>, " +
+      "<code>Pet</code> com filhos <code>Cat</code> e <code>Dog</code>, acompanhe " +
+      "<code>w : Animal &lt;- new Animal</code>, <code>x : Animal &lt;- new Pet</code>, " +
+      "<code>y : Animal &lt;- new Pet</code>, <code>z : Pet &lt;- new Pet</code> e as atribuicoes finais; " +
+      "no fim, escolha os pares tipo estatico/tipo dinamico corretos para <code>w</code>, " +
+      "<code>x</code>, <code>y</code> e <code>z</code>.",
     build: function () {
       return [
         {
@@ -404,7 +415,10 @@
     tags: ["cool", "self_type", "escopo"],
     hubDesc: "Explicar a saida de um programa COOL e por que um let sombreado nao altera o x externo.",
     statement:
-      "Analise os programas COOL: saida atual, alteracao com SELF_TYPE e possibilidade de imprimir <code>2021x</code>.",
+      "Analise dois programas COOL: no primeiro, <code>class A</code> define <code>baz() : A</code>, " +
+      "<code>bar() : A</code> e <code>foo()</code>, enquanto <code>B</code> e <code>C</code> redefinem " +
+      "<code>foo()</code>; determine a saida atual e a alteracao com <code>SELF_TYPE</code>. No segundo, " +
+      "julgue se o <code>let</code> sombreado permite imprimir <code>2021x</code>.",
     build: function () {
       return [
         C.codeStep({

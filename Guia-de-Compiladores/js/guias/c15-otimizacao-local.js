@@ -64,7 +64,7 @@
         lang: "text",
       }),
       C.tableStep({
-        title: "Quais otimizações são válidas (Lista C, Q5)",
+        title: "Quais otimizações são válidas",
         body: "Cuidado com as inválidas — elas mudam o resultado:",
         headers: ["proposta", "válida?", "por quê"],
         rows: [

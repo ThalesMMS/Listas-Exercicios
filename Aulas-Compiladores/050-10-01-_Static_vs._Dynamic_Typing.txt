@@ -1,0 +1,127 @@
+Tipagem Estática vs. Dinâmica: Fundamentos, Diferenças e a Semântica de Subtipagem
+
+Sumário Executivo
+
+Este documento analisa as distinções fundamentais entre os sistemas de tipagem estática e dinâmica, explorando suas finalidades, limitações e a relação técnica entre tipos em tempo de compilação e tipos em tempo de execução. A análise destaca que, enquanto a tipagem estática visa prevenir erros antes da execução, ela inerentemente restringe alguns programas corretos devido à impossibilidade de prever todos os comportamentos dinâmicos. Em linguagens orientadas a objetos, como a linguagem Cool, essa relação é mediada pelo conceito de subtipagem, onde o tipo estático serve como um preditor que define os limites para os tipos dinâmicos que um objeto pode assumir, garantindo a integridade das operações por meio de regras rigorosas de herança e redefinição de métodos.
+
+1. Tipagem Estática vs. Dinâmica: Definições e Propósitos
+
+A distinção entre sistemas de tipos estáticos e dinâmicos reside primordialmente no momento em que a verificação de tipos ocorre e nas informações disponíveis para essa análise.
+
+Tipagem Estática
+
+* Finalidade: Prevenir erros comuns de programação antes da execução do programa.
+* Momento de Verificação: Realizada durante o tempo de compilação.
+* Mecanismo: A análise baseia-se exclusivamente no texto do programa (código-fonte), sem conhecimento das entradas de dados que ocorrerão durante a execução.
+* Limitação Inerente: Devido à natureza conservadora da análise estática (que não pode prever com precisão absoluta tudo o que acontecerá em tempo de execução), sistemas de tipos estáticos corretos necessariamente desautorizam alguns programas que funcionariam perfeitamente se fossem executados.
+
+Tipagem Dinâmica
+
+* Momento de Verificação: Realizada apenas quando o programa está em execução (tempo de execução).
+* Mecanismo: Verifica se as operações executadas são apropriadas para os dados reais que surgem durante o processamento.
+* Contexto de Uso: Comum em linguagens de script modernas e linguagens de domínio específico.
+
+Evolução dos Sistemas
+
+Existe um debate contínuo entre defensores de ambos os modelos:
+
+* Avanços Dinâmicos: Proliferação de linguagens de script com verificações em tempo de execução.
+* Avanços Estáticos: Desenvolvimento de sistemas de tipos cada vez mais expressivos e complexos para reduzir a quantidade de programas corretos que são rejeitados, embora muitos desses recursos ainda não tenham chegado às linguagens de programação mainstream.
+
+2. A Dualidade das Noções de Tipo
+
+A discussão sobre sistemas de tipos introduz duas concepções distintas do que é um "tipo":
+
+Conceito	Descrição	Estabilidade
+Tipo Estático	O que o verificador de tipos (compilador) conhece sobre o objeto em tempo de compilação.	Invariante durante todo o escopo da variável.
+Tipo Dinâmico	O tipo real do objeto ou valor que a variável efetivamente detém em tempo de execução.	Pode variar devido a atribuições de diferentes objetos ao longo da execução.
+
+3. O Relacionamento entre Tipos e o Teorema de Correção
+
+Para que um verificador de tipos estático seja considerado correto, deve haver uma relação formal entre o tipo estático e o tipo dinâmico.
+
+* Sistemas Simples: Historicamente, em linguagens com sistemas de tipos simples, o teorema de correção buscava provar que, para qualquer expressão E, o tipo estático era igual ao tipo dinâmico.
+* Sistemas com Subtipagem: Em linguagens modernas e orientadas a objetos (como Cool), a relação é mais complexa. O tipo estático não é necessariamente idêntico ao tipo dinâmico, mas atua como um preditor.
+* Regra de Subtipagem: O tipo dinâmico de uma expressão E deve ser um subtipo do tipo estático previsto pelo compilador.
+
+4. Subtipagem na Prática: O Exemplo da Linguagem Cool
+
+A linguagem Cool ilustra como a subtipagem permite flexibilidade mantendo a segurança de tipos.
+
+Exemplo de Hierarquia e Atribuição
+
+Considere uma classe A e uma classe B que herda de A (sendo B um subtipo de A):
+
+1. Declaração: Uma variável x é declarada com o tipo estático A. O compilador tratará x como A em todo o seu escopo.
+2. Atribuição Inicial: x recebe um novo objeto de classe A. O tipo dinâmico é A.
+3. Atribuição Posterior: x recebe um objeto de classe B. O tipo dinâmico agora é B.
+4. Consistência: Isso é permitido porque o tipo dinâmico (B) é um subtipo do tipo estático (A).
+
+Implicações para Atributos e Métodos
+
+Para garantir que o tipo estático seja um preditor confiável, as seguintes regras de herança são aplicadas:
+
+* Disponibilidade de Operações: Todas as operações (atributos e métodos) disponíveis em uma classe pai devem estar obrigatoriamente disponíveis em suas subclasses.
+* Extensão de Classes: As subclasses podem apenas adicionar atributos ou métodos. Elas nunca podem remover elementos da classe de que herdam.
+* Redefinição de Métodos: É permitido redefinir o código de um método em uma subclasse, mas é proibido alterar sua assinatura de tipos. O número de argumentos, seus tipos e o tipo de retorno devem permanecer idênticos à definição original na classe ancestral.
+
+Essa estrutura garante que qualquer operação validada pelo compilador com base no tipo estático será executável com sucesso, independentemente de qual subtipo dinâmico a variável assuma em tempo de execução.
+
+Guia de Estudo: Tipagem Estática vs. Dinâmica e Sistemas de Tipagem
+
+Este guia de estudo explora as diferenças fundamentais entre os sistemas de tipagem estática e dinâmica, bem como a relação entre tipos em tempo de compilação e tempo de execução, com foco particular em linguagens que suportam subtipagem, como a linguagem Cool.
+
+Questionário de Revisão
+
+As perguntas a seguir visam testar a compreensão dos conceitos fundamentais apresentados no material de origem.
+
+Perguntas
+
+1. Qual é o propósito principal de um sistema de tipagem estática e em que momento ele atua?
+2. Por que um sistema de tipagem estática correto pode acabar desautorizando programas que funcionariam perfeitamente?
+3. Como a tipagem dinâmica difere da tipagem estática em relação ao momento de verificação e aos dados utilizados?
+4. Qual é a tendência atual no desenvolvimento de linguagens de script modernas e linguagens de domínio específico (DSLs) em relação à tipagem?
+5. Defina a diferença entre "tipo estático" e "tipo dinâmico".
+6. Qual era a relação teórica idealizada entre tipos estáticos e dinâmicos nos primórdios das linguagens de programação?
+7. Como o conceito de subtipagem altera a relação entre o tipo estático e o tipo dinâmico de uma expressão?
+8. Em um programa na linguagem Cool, o que ocorre com o tipo estático de uma variável durante o seu escopo de execução?
+9. Quais são as restrições impostas às subclasses em relação à modificação de atributos e métodos herdados?
+10. Ao redefinir um método em uma subclasse, quais elementos do método devem obrigatoriamente permanecer inalterados?
+
+Chave de Resposta
+
+1. O propósito da tipagem estática é prevenir erros comuns de programação antes mesmo da execução do programa. Essa verificação ocorre no tempo de compilação, utilizando apenas o texto do programa, sem conhecimento das entradas que serão fornecidas.
+2. Sistemas estáticos não conseguem prever com precisão absoluta tudo o que pode ocorrer durante a execução. Por serem conservadores para garantir a correção, eles acabam proibindo alguns programas que, se executados, rodariam sem erros.
+3. A tipagem dinâmica realiza verificações apenas quando o programa está em execução (runtime). Ela analisa se as operações executadas são apropriadas para os dados reais que surgem naquele momento específico da execução.
+4. Muitas dessas linguagens modernas têm adotado alguma forma de tipagem dinâmica. Em contrapartida, outros pesquisadores têm focado no desenvolvimento de sistemas de tipagem estática cada vez mais complexos e expressivos.
+5. O tipo estático é a noção que o verificador de tipos possui sobre um objeto em tempo de compilação. Já o tipo dinâmico é o tipo real que o objeto ou valor possui no momento em que o programa está sendo executado.
+6. Originalmente, esperava-se que para cada expressão de um programa, o tipo estático previsto pelo compilador fosse exatamente igual ao tipo dinâmico que a expressão assumiria em tempo de execução.
+7. Com a subtipagem, a regra de igualdade é relaxada para uma relação de conformidade. O teorema de solidez passa a exigir que o tipo dinâmico de uma expressão seja um subtipo do tipo estático previsto pelo compilador.
+8. O tipo estático de uma variável é invariante, ou seja, permanece o mesmo durante todo o escopo da variável conforme declarado pelo programador. No entanto, seu tipo dinâmico pode mudar conforme diferentes objetos (incluindo objetos de subclasses) são atribuídos a ela.
+9. As subclasses só podem estender a classe original, adicionando novos atributos ou métodos. Elas nunca podem remover um atributo ou método que foi definido na classe pai (superclasse).
+10. Embora o código interno do método possa ser alterado (redefinido), a assinatura do tipo deve ser mantida. Isso significa que os tipos dos argumentos e o tipo do resultado devem ser idênticos aos declarados na classe original.
+
+Temas para Dissertação
+
+As questões abaixo são sugeridas para uma exploração mais profunda do conteúdo e não possuem respostas fornecidas.
+
+1. O Dilema da Precisão na Tipagem Estática: Analise por que a impossibilidade de raciocinar com precisão total em tempo de compilação força os sistemas estáticos a serem restritivos e como isso alimenta o argumento em favor da tipagem dinâmica.
+2. Evolução dos Sistemas de Tipagem: Discuta as trajetórias divergentes entre o surgimento de linguagens de script dinâmicas e o aumento da complexidade em sistemas de tipagem estática expressivos.
+3. A Variabilidade do Tipo Dinâmico: Explique, com base no exemplo das classes A e B, como a operação de atribuição permite que uma variável com um único tipo estático assuma múltiplas identidades em tempo de execução.
+4. A Teoria da Solidez (Soundness) em Sistemas de Objetos: Disserte sobre a importância de garantir que o tipo dinâmico seja sempre um subtipo do tipo estático para a segurança de execução de um programa.
+5. Arquitetura de Herança e Extensibilidade: Avalie as implicações de design de uma linguagem que permite apenas a adição (e não a remoção) de atributos e métodos em subclasses, e como isso sustenta a integridade do sistema de tipos.
+
+Glossário de Termos-Chave
+
+Termo	Definição
+Atributo	Variável ou dado associado a uma classe ou objeto.
+Invariante	Algo que não muda; no contexto, refere-se ao tipo estático de uma variável que permanece o mesmo em seu escopo.
+Redefinição de Método	A prática de fornecer uma nova implementação para um método em uma subclasse, mantendo a assinatura de tipos original.
+Subtipo	Uma relação onde uma classe (subclasse) herda de outra (superclasse), garantindo que a subclasse possua todos os membros da superclasse.
+Teorema de Solidez	Prova formal que garante que o verificador de tipos prevê corretamente (ou de forma compatível) os tipos que surgirão em tempo de execução.
+Tempo de Compilação	O estágio em que o texto do programa é processado e verificado antes de ser transformado em um executável.
+Tempo de Execução	O período durante o qual o programa está sendo efetivamente processado pelo computador, lidando com entradas reais.
+Tipagem Dinâmica	Sistema onde a verificação de tipos ocorre durante a execução do programa, baseando-se nos valores reais dos dados.
+Tipagem Estática	Sistema onde a verificação de tipos ocorre durante a compilação, baseando-se apenas no código-fonte.
+Tipo Dinâmico	O tipo real que um objeto manifesta no momento da execução do programa.
+Tipo Estático	O tipo declarado de uma expressão ou variável, conforme conhecido pelo compilador.

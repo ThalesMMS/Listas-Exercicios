@@ -49,9 +49,9 @@
     var steps = [
       C.domStep(
         "Gerar código para expressões",
-        "Um gerador simples trata a CPU como uma <b>máquina de pilha</b> com um acumulador " +
-          "(<code>$a0</code>). Avalia-se cada subexpressão deixando o resultado no acumulador e, quando " +
-          "preciso, <b>empilha-se</b> na pilha (<code>$sp</code>) para liberar o acumulador.",
+        "O problema é simples: uma operação binária precisa de dois valores, mas este gerador usa " +
+          "um acumulador principal (<code>$a0</code>). A pilha guarda o primeiro valor enquanto o " +
+          "segundo é calculado.",
         C.codeHtml("cgen(e1 op e2):\n   cgen(e1)            # resultado em $a0\n   push $a0            # guarda na pilha\n   cgen(e2)            # resultado em $a0\n   $t1 <- pop         # recupera e1\n   $a0 <- $t1 op $a0  # aplica a operação")
       ),
       C.domStep(
@@ -73,7 +73,7 @@
 
     steps.push(
       C.codeStep({
-        title: "Lendo o assembly (Lista C, Q1)",
+        title: "Lendo o assembly",
         body: "A ordem das operações na pilha revela a expressão. As linhas em destaque consomem da " +
           "pilha: <code>sub</code> faz 4−3, depois <code>add</code> faz 5+(4−3).",
         code:
@@ -94,17 +94,23 @@
         lang: "text",
       }),
       C.tableStep({
-        title: "Quantos temporários? (Lista C, Q3)",
-        body: "Esta tabela segue o gabarito da Lista C, Q3: conta nomes/slots temporários distintos " +
-          "emitidos por uma tradução ingênua, sem reutilização de slots. Não é análise de vivacidade: " +
-          "no IR da condição, <code>t1</code> já morreu quando <code>ifFalse</code> testa " +
-          "<code>t2</code>. Os ramos de um <code>if</code> continuam alternativos, então não são somados.",
+        title: "Quantos temporários?",
+        body:
+          "<p>Conte os temporários gerados para esta função:</p>" +
+          "<pre class='formula'>def potenciaDeDois(x) =\n" +
+          "  if x % 2 == 0\n" +
+          "  then potenciaDeDois(x / 2)\n" +
+          "  else x == 1</pre>" +
+          "<p>A palavra-chave aqui é <b>convenção</b>. Vamos contar nomes/slots temporários emitidos " +
+          "por uma tradução ingênua, sem reutilização.</p>" +
+          "<p>Isso não é análise de vivacidade: <code>t1</code> já morreu quando <code>ifFalse</code> " +
+          "testa <code>t2</code>. E ramos de <code>if</code> são alternativas, não somas.</p>",
         headers: ["subexpressão", "temporários", "por quê"],
         rows: [
           ["x % 2 == 0", "2", "dois nomes emitidos: t1 para x%2 e t2 para a comparação; isso não exige que ambos estejam vivos no branch"],
           ["potenciaDeDois(x/2)", "1", "um para o argumento x/2"],
           ["x == 1", "0", "comparação direta"],
-          ["total da função", "2", "maior contagem entre os itens do gabarito; then/else não somam"],
+          ["total da função", "2", "maior contagem entre os itens; then/else não somam"],
         ],
       }),
       C.domStep(
@@ -112,8 +118,8 @@
         "A máquina de pilha gera código correto para qualquer expressão aninhada.",
         "<div class='ex-callout tip'><div class='ex-callout-title'>Em uma frase</div>" +
           "Avalie no acumulador, <b>empilhe</b> o que precisa esperar; a profundidade da pilha segue o " +
-          "aninhamento. Para a Q3, a ressalva é outra: o gabarito conta nomes temporários emitidos por " +
-          "tradução ingênua sem reutilização, não o pico de valores vivos.</div>"
+          "aninhamento. Ao <b>contar temporários</b>, a ressalva é o critério: conte os nomes emitidos " +
+          "por uma tradução ingênua, sem reutilização de slots — não o pico de valores vivos.</div>"
       )
     );
     return steps;

@@ -1,0 +1,116 @@
+Briefing: Subtipagem na Linguagem Cool e em Sistemas Orientados a Objetos
+
+Sumário Executivo
+
+Este documento analisa o conceito de subtipagem e sua aplicação nas regras de tipagem da linguagem Cool. A subtipagem permite que o sistema de tipos seja mais flexível e permissivo, sem sacrificar a correção da execução. O princípio fundamental é que um objeto de um subtipo pode ser utilizado onde um supertipo é esperado. O documento detalha como a subtipagem redefine as regras para expressões let, atribuições e inicialização de atributos. Além disso, introduz-se o conceito de Menor Limite Superior (Least Upper Bound - LUB) como a solução para determinar tipos em estruturas de controle com múltiplos caminhos de execução, como if-then-else e expressões case.
+
+Fundamentos da Subtipagem
+
+A subtipagem em Cool baseia-se diretamente na hierarquia de herança das classes. As regras fundamentais que definem a relação de subtipo (\leq) são:
+
+* Herança Direta: Se uma classe X herda explicitamente de uma classe Y, então X é um subtipo de Y.
+* Transitividade: Se X é um subtipo de Y e Y é um subtipo de Z, então X é um subtipo de Z.
+* Reflexividade: Toda classe é um subtipo de si mesma.
+
+A árvore de herança, geralmente originada em uma classe raiz (como Object), organiza essas relações. O uso da subtipagem torna o sistema de tipos mais "permissivo", permitindo que mais programas sejam validados como corretos em comparação com regras que exigem correspondência exata de tipos.
+
+Aplicações Práticas nas Regras de Tipagem
+
+A introdução da subtipagem modifica significativamente como as expressões são validadas pelo verificador de tipos (type checker).
+
+1. Expressões Let com Inicialização
+
+Em uma regra de tipagem estrita (sem subtipagem), o inicializador de uma variável em um bloco let deveria ter exatamente o mesmo tipo declarado para a variável. Com a subtipagem, a regra torna-se mais abrangente:
+
+* Para let X : T <- E0 in E1, o tipo T_0 da expressão de inicialização E_0 deve ser um subtipo do tipo declarado T (T_0 \leq T).
+* O ambiente de tipagem para E_0 não inclui a nova definição de X, garantindo que referências a X dentro de E_0 apontem para definições externas ao bloco let.
+
+2. Atribuição e Inicialização de Atributos
+
+As regras para atribuição de variáveis e inicialização de atributos de classe seguem uma lógica similar:
+
+* Atribuição Comum: Na expressão X \leftarrow E_1, se o tipo de X no ambiente é T_0 e o tipo de E_1 é T_1, a operação é válida se T_1 \leq T_0. Ou seja, o receptáculo (X) deve ser capaz de conter o valor (E_1).
+* Inicialização de Atributos: Ocorre no escopo da classe, utilizando um ambiente especial (O_C) que contém todos os atributos da classe. O tipo da expressão de inicialização deve ser um subtipo do tipo declarado para o atributo.
+
+O Menor Limite Superior (LUB)
+
+Quando o fluxo do programa pode seguir caminhos diferentes, o verificador de tipos não consegue prever em tempo de compilação qual ramo será executado. Surge então a necessidade de calcular o Menor Limite Superior (Least Upper Bound).
+
+Definição de LUB
+
+O LUB de dois tipos X e Y é um tipo Z que satisfaz:
+
+1. Z é um limite superior: X \leq Z e Y \leq Z.
+2. Z é o menor possível: Para qualquer outro limite superior Z', temos Z \leq Z'.
+
+Em linguagens orientadas a objetos, o LUB de dois tipos é o ancestral comum mais próximo na árvore de herança.
+
+Aplicação em Estruturas de Decisão
+
+Estrutura	Regra de Tipagem
+If-Then-Else	O predicado deve ser do tipo Bool. O tipo resultante da expressão completa é o LUB(T_1, T_2), onde T_1 é o tipo do ramo then e T_2 é o tipo do ramo else.
+Expressão Case	O tipo da expressão é o LUB de todos os tipos resultantes de todos os ramos do case (T'_1, T'_2, \dots, T'_n).
+
+Expressões Case como "If-Then-Else Glorificado"
+
+A expressão case é descrita como uma versão complexa do if-then-else. Seu funcionamento baseia-se no tipo dinâmico (em tempo de execução) da expressão avaliada:
+
+1. Avalia-se a expressão E_0 para obter seu tipo dinâmico.
+2. O sistema seleciona o ramo cujo tipo declarado mais se aproxima (é o menor supertipo) do tipo dinâmico de E_0.
+3. A variável do ramo selecionado é vinculada ao valor de E_0 com o tipo declarado para aquele ramo.
+4. O tipo estático de toda a expressão case é calculado como o LUB dos tipos de todos os corpos dos ramos, garantindo que qualquer que seja o ramo escolhido em tempo de execução, o valor resultante pertencerá ao tipo determinado estaticamente.
+
+Guia de Estudo: Subtipagem em COOL e Linguagens Orientadas a Objetos
+
+Este guia de estudo aborda o conceito fundamental de subtipagem, explorando como essa relação de tipos permite maior flexibilidade e correção em sistemas de tipos de linguagens orientadas a objetos, com foco específico na linguagem COOL.
+
+Questionário de Revisão
+
+Responda às seguintes perguntas com base nos conceitos apresentados no material de origem.
+
+1. Qual é a principal limitação da regra original de tipagem para a expressão let com inicialização e como a subtipagem a resolve?
+2. Como a relação de herança direta define a subtipagem entre duas classes?
+3. Explique as propriedades de transitividade e reflexividade na subtipagem.
+4. Qual é a restrição de tipo necessária para que uma operação de atribuição (x <- E1) seja considerada correta?
+5. O que diferencia o ambiente de tipagem usado na inicialização de atributos em relação a uma atribuição comum?
+6. Por que a regra de tipagem para expressões if-then-else exige o cálculo do Menor Limite Superior (Least Upper Bound - LUB)?
+7. Como o Menor Limite Superior (LUB) é determinado visualmente em uma árvore de herança?
+8. Qual é a função do tipo dinâmico de uma expressão E0 no processamento de uma expressão case?
+9. Na expressão case, como o ambiente de tipagem é modificado para a avaliação de cada ramo?
+10. Como o tipo final de uma expressão case complexa é determinado?
+
+Chave de Respostas
+
+1. A regra original exigia que o tipo da expressão inicializadora fosse exatamente igual ao tipo declarado da variável. A subtipagem permite que a regra seja mais permissiva, aceitando qualquer inicializador cujo tipo seja um subtipo do tipo declarado, aumentando o número de programas que podem ser compilados corretamente.
+2. A forma mais óbvia de subtipagem ocorre quando há herança direta no código: se uma classe X herda de uma classe Y (indicado por X inherits from Y), então X é automaticamente considerado um subtipo de Y.
+3. A transitividade estabelece que se X é subtipo de Y e Y é subtipo de Z, então X é subtipo de Z. A reflexividade determina que toda classe é, obrigatoriamente, um subtipo de si mesma.
+4. Para uma atribuição ser correta, o tipo da expressão do lado direito (T1) deve ser um subtipo do tipo da variável do lado esquerdo (T0). Isso garante que a variável possa armazenar o valor resultante, pois seu tipo declarado é um "supertipo" ou tipo "maior" que o valor atribuído.
+5. A inicialização de atributos ocorre em um ambiente especial chamado O_c, que contém os tipos de todos os atributos declarados na classe. Isso permite que o inicializador de um atributo faça referência a qualquer outro atributo da mesma classe, independentemente da ordem.
+6. Como o verificador de tipos não sabe em tempo de compilação qual ramo (then ou else) será executado, ele deve assumir que o resultado pode ser de qualquer um dos dois tipos. O LUB fornece a estimativa mais precisa e segura, representando o menor ancestral comum que engloba ambas as possibilidades.
+7. Em uma árvore de herança (geralmente enraizada na classe Object), o LUB de dois tipos é encontrado ao retroceder na hierarquia a partir de ambos até encontrar o primeiro ancestral comum. Esse ponto de convergência é o menor supertipo que contém ambos os tipos.
+8. O tipo dinâmico (classe em tempo de execução) de E0 é usado para selecionar o ramo apropriado do case. O sistema busca o ramo cujo tipo declarado seja o supertipo mais próximo do tipo dinâmico do valor avaliado.
+9. Para cada ramo do case, o ambiente de tipagem original é estendido para incluir a variável específica daquele ramo (ex: X1) associada ao seu tipo correspondente (ex: T1). A expressão do ramo é então avaliada dentro deste ambiente expandido.
+10. O tipo final da expressão case é o Menor Limite Superior (LUB) de todos os tipos resultantes de cada um de seus ramos. Essa operação estende a lógica binária do LUB para uma operação n-ária que abrange todas as ramificações possíveis.
+
+Propostas de Redação/Discussão
+
+As questões a seguir foram desenhadas para aprofundar a análise crítica dos temas de subtipagem. Não são fornecidas respostas para estas questões.
+
+1. A Evolução das Regras de Tipagem: Discuta como a transição de uma regra de correspondência exata para uma regra baseada em subtipagem impacta a flexibilidade do programador e a robustez do compilador.
+2. O Papel da Árvore de Herança: Analise a importância da classe Object como raiz da hierarquia e como a estrutura de árvore facilita a resolução de tipos em expressões condicionais.
+3. Segurança de Tipos em Atribuições: Explique por que permitir que um supertipo receba um valor de um subtipo é uma operação segura, enquanto o inverso poderia comprometer a integridade do sistema de tipos.
+4. Comparação entre if-then-else e case: Avalie as semelhanças estruturais entre estas duas expressões e discuta por que o case é descrito como uma versão "glorificada" ou complexa do if-then-else.
+5. Ambientes de Tipagem e Escopo: Explore a necessidade de ambientes distintos (como o ambiente de atributos O_c e o ambiente de variáveis locais) na resolução de nomes e tipos durante a inicialização.
+
+Glossário de Termos-Chave
+
+* Ambiente (O): Um registro ou mapeamento que armazena as variáveis disponíveis e seus respectivos tipos em um determinado ponto do programa.
+* Ancestral Comum: Uma classe da qual duas ou mais classes herdam na hierarquia de herança.
+* Árvore de Herança: A estrutura hierárquica (geralmente com uma raiz comum como Object) que define as relações de parentesco entre as classes em uma linguagem orientada a objetos.
+* Atributo: Uma variável definida no nível superior de uma classe, representando o estado de um objeto.
+* Inicializador: Uma expressão usada para atribuir um valor inicial a uma variável ou atributo no momento de sua declaração.
+* Menor Limite Superior (Least Upper Bound - LUB): O menor supertipo comum a dois ou mais tipos; em COOL, é o ancestral comum mais próximo na árvore de herança.
+* Reflexividade: Propriedade da subtipagem que estabelece que um tipo é sempre um subtipo de si mesmo (T \leq T).
+* Subtipagem: Uma relação entre tipos que permite que um tipo (subtipo) seja usado em contextos onde outro tipo (supertipo) é esperado.
+* Supertipo: Um tipo que está acima de outro na hierarquia de herança; um tipo que pode "conter" seus subtipos.
+* Transitividade: Propriedade da subtipagem onde, se A é subtipo de B e B é subtipo de C, então A é necessariamente subtipo de C.

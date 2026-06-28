@@ -36,7 +36,7 @@
         },
       },
       G.gstep(
-        "Exemplo — recursão direta (Lista A)",
+        "Exemplo — recursão direta",
         "Cada não-terminal abaixo é recursivo à esquerda (<code>S→S a S</code>, <code>U→U u U</code>, " +
           "<code>T→T n</code>). Aplicando a transformação a cada um:",
         [
@@ -83,7 +83,7 @@
         },
       },
       G.gstep(
-        "Indireta — passo a passo (Lista A)",
+        "Indireta — passo a passo",
         "Substituindo <code>B</code> e depois <code>C</code> dentro de <code>A</code>, a recursão fica " +
           "direta; aí aplicamos a regra do passo 2:",
         [

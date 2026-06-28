@@ -51,6 +51,7 @@ const templateLikeDirs = [
   "Compiladores-Lista-A",
   "Compiladores-Lista-B",
   "Compiladores-Lista-C",
+  "Compiladores-Lista-D",
   "Guia-de-Computacao-Grafica",
 ];
 

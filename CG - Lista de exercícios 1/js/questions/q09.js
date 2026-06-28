@@ -23,7 +23,10 @@
     title: "O comando que diferencia os casos",
     type: "conceitual",
     hubDesc: "passos = max(|Δx|,|Δy|): a comparação decide qual incremento vale ±1.",
-    enunciado: "Qual(is) comando(s) diferenciam o 1º do 2º caso?",
+    enunciado:
+      "No DDA, quais comandos diferenciam o 1º caso do 2º caso? Considere " +
+      "<code>passos = max(|Δx|, |Δy|)</code>, <code>xinc = Δx/passos</code> e " +
+      "<code>yinc = Δy/passos</code>.",
     parts: [
       {
         label: "Explicação",

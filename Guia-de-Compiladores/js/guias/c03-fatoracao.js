@@ -58,7 +58,7 @@
       },
       G.gstep(
         "Exemplo — antes",
-        "Gramática da Lista A. Note os prefixos comuns <code>S +</code> e <code>P ∗</code> — e os " +
+        "Gramática de exemplo. Note os prefixos comuns <code>S +</code> e <code>P ∗</code> — e os " +
           "casos-base <code>S → P</code> e <code>P → I</code>, que fazem a gramática gerar cadeias terminais:",
         [
           "S → S + S | S + P | P",

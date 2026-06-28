@@ -65,17 +65,20 @@
       {
         title: "O lattice dos valores",
         body:
-          "<p>Os valores abstratos formam um <b>lattice</b>: no topo <code>⊤</code> (“alcançável, mas " +
-          "não-constante”), no fundo <code>⊥</code> (“ainda sem valor / inalcançável”), e entre eles " +
-          "<b>todas as constantes</b>. <code>⊥</code> e <code>⊤</code> <b>não são sinônimos</b>. Os " +
-          "pontos internos começam otimistas em <code>⊥</code> e só <b>sobem</b>; já os valores que " +
-          "chegam <b>desconhecidos de fora</b> (parâmetros) entram como <code>⊤</code>.</p>",
+          "<p>Para cada variável, a análise guarda uma resposta aproximada: “sei a constante”, " +
+          "“ainda não sei nada” ou “sei que não é uma constante única”.</p>" +
+          "<p>Esse desenho é o <b>lattice</b>. <code>⊥</code> significa sem informação; constantes " +
+          "ficam no meio; <code>⊤</code> significa alcançável, mas não-constante. " +
+          "<code>⊥</code> e <code>⊤</code> <b>não são sinônimos</b>.</p>" +
+          "<p>Durante a análise, fatos internos começam em <code>⊥</code> e só sobem. Valores que " +
+          "chegam <b>desconhecidos de fora</b>, como parâmetros, entram como <code>⊤</code>.</p>",
         visual: latticeVisual(),
       },
       C.domStep(
         "O lattice e a junção",
-        "O passo crucial é o <b>encontro</b> (junção) onde caminhos do CFG se reúnem: combinam-se os " +
-          "valores vindos de cada caminho, <b>subindo</b> no lattice.",
+        "Quando dois caminhos do programa se encontram, a análise precisa combinar as respostas. " +
+          "Essa combinação é a <b>junção</b>: se os caminhos concordam, mantemos a constante; se " +
+          "discordam, perdemos precisão.",
         "<div class='ex-callout tip'><div class='ex-callout-title'>Regra da junção</div>" +
           "<ul>" +
           "<li>mesmo valor em todos os caminhos → mantém a <b>constante</b>;</li>" +
@@ -113,9 +116,11 @@
       {
         title: "Loop — 1ª passada",
         body:
-          "<p>Com loops, uma <b>back-edge</b> faz a análise <b>recircular</b>. Na primeira passada, " +
-          "<code>X := 4</code> entra no corpo; lá <code>X := Z + 3</code> usa <code>Z</code>, que ainda " +
-          "é <b>⊤</b> (vindo do laço) → <code>X</code> vira <b>⊤</b> no corpo.</p>",
+          "<p>Num loop, uma aresta volta para um ponto já analisado. Essa aresta de retorno é a " +
+          "<b>back-edge</b>, e ela obriga a análise a recircular.</p>" +
+          "<p>Na primeira passada, <code>X := 4</code> entra no corpo. Depois " +
+          "<code>X := Z + 3</code> usa <code>Z</code>, que já vem como <b>⊤</b> pelo laço; por isso " +
+          "<code>X</code> também vira <b>⊤</b>.</p>",
         visual: loopVisual({
           act: "b",
           h: ["X := 4 ; B > 0", "entra X = 4"],
@@ -126,9 +131,10 @@
       {
         title: "Loop — junção da back-edge → ponto fixo",
         body:
-          "<p>A back-edge leva o valor do corpo (<code>X = ⊤</code>) de volta ao topo, onde há uma " +
-          "<b>junção</b>: <code>X = 4 ⊔ ⊤ = ⊤</code>. Agora <code>X</code> é <b>⊤</b> também no topo; " +
-          "repetir não muda mais nada → <b>ponto fixo</b>.</p>",
+          "<p>A back-edge leva <code>X = ⊤</code> de volta ao topo. Lá ela encontra o valor inicial " +
+          "<code>4</code>: <code>4 ⊔ ⊤ = ⊤</code>.</p>" +
+          "<p>Agora repetir a análise não muda mais o resultado. Esse estado estável é o " +
+          "<b>ponto fixo</b>.</p>",
         visual: loopVisual({
           act: "h",
           h: ["junção: 4 ⊔ ⊤", "X = ⊤"],

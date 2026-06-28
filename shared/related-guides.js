@@ -129,11 +129,35 @@
     guide(COMP_BASE, "c12-self-type", "SELF_TYPE", [
       "self_type",
     ]),
+    guide(COMP_BASE, "c21-tabela-simbolos", "Tabelas de símbolos como estrutura de compilador", [
+      "tabela de simbolos", "symbol table", "enter_scope", "exit_scope", "check_scope", "travessia recursiva", "passagens multiplas",
+    ]),
+    guide(COMP_BASE, "c22-semantica-linguagens", "Semântica formal de linguagens", [
+      "semantica formal", "semantica de linguagens", "denotacional", "axiomatica", "definir linguagem por assembly",
+    ]),
+    guide(COMP_BASE, "c23-semantica-operacional", "Semântica operacional formal", [
+      "semantica operacional", "environment", "store", "julgamento", "so e s", "efeitos colaterais",
+    ]),
+    guide(COMP_BASE, "c24-semantica-cool", "Semântica operacional de COOL", [
+      "semantica de cool", "new t", "inicializacao hierarquica", "dispatch dinamico", "erros dinamicos",
+    ]),
     guide(COMP_BASE, "c13-geracao-codigo", "Geração de código (máquina de pilha)", [
       "assembly", "pilha", "temporarios", "geracao de codigo",
     ]),
     guide(COMP_BASE, "c14-registros-ativacao", "Registros de ativação e layout de objetos", [
       "activation-record", "stack-frame", "registro de ativacao", "layout",
+    ]),
+    guide(COMP_BASE, "c25-runtime-organization", "Organização geral do runtime", [
+      "runtime", "organizacao do runtime", "front-end", "back-end", "dados estaticos", "globais", "heap stack", "colisao heap",
+    ]),
+    guide(COMP_BASE, "c26-alinhamento-memoria", "Alinhamento de memória e padding", [
+      "alinhamento", "padding", "word boundary", "dados desalinhados",
+    ]),
+    guide(COMP_BASE, "c27-codigo-intermediario", "Código intermediário / three-address code", [
+      "codigo intermediario", "three-address", "three address", "temporarios ilimitados", "retargeting",
+    ]),
+    guide(COMP_BASE, "c32-otimizacao-dataflow", "Otimização e dataflow: visão geral", [
+      "dataflow", "optimization overview", "cfg", "meet", "join", "lattice", "ponto fixo",
     ]),
     guide(COMP_BASE, "c15-otimizacao-local", "Otimização local (bloco básico)", [
       "otimizacao", "codigo-morto",
@@ -144,14 +168,29 @@
     guide(COMP_BASE, "c17-vivacidade", "Análise de vivacidade", [
       "vivacidade", "dataflow",
     ]),
+    guide(COMP_BASE, "c28-peephole-optimization", "Peephole optimization", [
+      "peephole", "lhs", "rhs", "janela deslizante",
+    ]),
+    guide(COMP_BASE, "c30-cache-loop-interchange", "Cache e loop interchange", [
+      "cache", "cache miss", "loop interchange", "hierarquia de memoria",
+    ]),
     guide(COMP_BASE, "c18-rig-coloracao", "RIG e coloração de grafos", [
       "rig", "coloracao", "spill", "simplify",
+    ]),
+    guide(COMP_BASE, "c29-spilling-avancado", "Spilling avançado", [
+      "spilling avancado", "coloracao otimista", "live range", "loads stores", "reconstruir o rig",
+    ]),
+    guide(COMP_BASE, "c33-gerenciamento-automatico-memoria", "Gerenciamento automático de memória: visão geral", [
+      "automatic memory management", "gerenciamento automatico de memoria", "raizes", "alcancabilidade", "layout de frames",
     ]),
     guide(COMP_BASE, "c19-coleta-lixo", "Coleta de lixo: Mark-Sweep e Stop-Copy", [
       "gc", "mark-sweep", "copying",
     ]),
     guide(COMP_BASE, "c20-contagem-referencias", "Contagem de referências", [
       "reference-counting", "contagem de referencias",
+    ]),
+    guide(COMP_BASE, "c31-coleta-conservadora", "Coleta de lixo conservadora", [
+      "coleta conservadora", "conservative collection", "c/c++", "parece ponteiro", "ponteiros ambiguos",
     ]),
   ];
 

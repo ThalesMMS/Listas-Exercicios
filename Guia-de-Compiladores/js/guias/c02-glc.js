@@ -53,7 +53,7 @@
       ),
       G.gstep(
         "Projetar uma GLC: multiplicações com sinal",
-        "Tarefa (Lista A): gerar produtos de inteiros <code>{1,2}</code> com <code>∗</code> e " +
+        "Tarefa: gerar produtos de inteiros <code>{1,2}</code> com <code>∗</code> e " +
           "<code>−</code> cujo <b>valor seja positivo</b>. A ideia é separar <b>dois não-terminais</b> " +
           "por sinal e deixar as regras fazerem a “álgebra de sinais”:",
         [

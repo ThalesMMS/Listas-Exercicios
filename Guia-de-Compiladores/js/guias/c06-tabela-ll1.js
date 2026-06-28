@@ -103,7 +103,7 @@
           "</ul></div>"
       ),
       C.tableStep({
-        title: "Diagnóstico (Lista A, Q7)",
+        title: "Diagnóstico das quatro gramáticas",
         body: "Aplicando os dois testes a quatro gramáticas:",
         headers: ["gramática", "LL(1)?", "motivo"],
         rows: [

@@ -10,29 +10,38 @@
   function build() {
     return [
       {
-        title: "Um tipo estático ancorado em C",
+        title: "Por que SELF_TYPE existe",
         body:
-          "<p><code>SELF_TYPE_C</code> é um <b>tipo estático</b> especial, ancorado na classe corrente " +
-          "<code>C</code>: denota “o tipo de <code>self</code> — <code>C</code> ou alguma subclasse de " +
-          "<code>C</code>”. É verificado em tempo de <b>compilação</b> e preserva o tipo do receptor.</p>" +
-          "<p>Serve para métodos que devolvem <em>o próprio tipo</em> — como <code>copy()</code>: chamado " +
-          "num Square, tem tipo estático Square, não Object. Não confunda com a <b>classe dinâmica</b> do " +
-          "objeto, que só decide <em>qual</em> implementação roda (despacho).</p>",
+          "<p>Pense em um método que devolve o próprio objeto, como <code>copy()</code>. Se você chama " +
+          "<code>copy()</code> em um <code>Square</code>, o compilador não quer perder essa informação e " +
+          "tratar o resultado só como <code>Object</code>.</p>" +
+          "<p><code>SELF_TYPE</code> é a forma de escrever na assinatura: “o resultado tem o mesmo " +
+          "<b>tipo estático</b> do receptor da chamada”. Então <code>s.copy()</code>, com " +
+          "<code>s : Square</code>, também tem tipo estático <code>Square</code>.</p>" +
+          "<p>Quando aparece <code>SELF_TYPE_C</code>, o <code>C</code> só indica a classe corrente usada " +
+          "na checagem. O compilador verifica isso em tempo de compilação. A <b>classe dinâmica</b> do " +
+          "objeto ainda serve para outra coisa: decidir, em runtime, qual implementação do método roda.</p>",
         visual: G.coolTree([]),
       },
       C.domStep(
         "Regras de conformância",
-        "SELF_TYPE não é uma classe fixa, então tem regras próprias de subtipo:",
+        "Conformância é a pergunta “este tipo pode ser usado onde aquele outro tipo é esperado?”. " +
+          "Com <code>SELF_TYPE</code>, leia a notação antes de aplicar a fórmula:",
         "<div class='ex-callout tip'><div class='ex-callout-title'>Conformidade</div>" +
+          "<p><code>SELF_TYPE_C</code> aparece do lado esquerdo: leia como “o próprio tipo de um " +
+          "objeto cuja classe corrente é <code>C</code>”.</p>" +
+          "<p>Para saber se ele cabe em <code>P</code>, pergunte: <code>C</code> é um <code>P</code>? " +
+          "Se sim, <code>SELF_TYPE_C</code> também cabe em <code>P</code>.</p>" +
           "<ul>" +
           "<li><code>SELF_TYPE_C ≤ P</code> <b>se</b> <code>C ≤ P</code> (herda as relações de C);</li>" +
-          "<li>um tipo comum <code>T</code> <b>não</b> conforma a <code>SELF_TYPE_P</code> (uma classe " +
-          "concreta não pode prometer ser “o self de quem chamou”);</li>" +
+          "<li>um tipo comum <code>T</code> <b>não</b> conforma a <code>SELF_TYPE_P</code>; " +
+          "<code>SELF_TYPE</code> não significa “qualquer subclasse”, e sim “o tipo do próprio " +
+          "receptor”;</li>" +
           "<li><code>SELF_TYPE_C</code> não vira subtipo de uma classe <b>irmã</b>.</li>" +
           "</ul></div>"
       ),
       C.tableStep({
-        title: "Avaliando relações (Lista B, Q7)",
+        title: "Avaliando relações",
         body: "Com a hierarquia Object … Shape → {Quad, Circle}; Quad → Rect → Square:",
         headers: ["relação", "vale?", "por quê"],
         rows: [

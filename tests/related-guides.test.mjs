@@ -64,6 +64,41 @@ assertHas(
   { subject: "Compiladores - Lista C", section: "Gerenciamento de Memoria", title: "Contagem de referencias apos atribuicoes", tags: ["gc", "reference-counting"] },
   "Contagem de referências",
 );
+assertHas(
+  api,
+  { subject: "Compiladores", section: "Semantica operacional", title: "Environment store julgamento so E S", tags: ["semantica operacional"] },
+  "Semântica operacional formal",
+);
+assertHas(
+  api,
+  { subject: "Compiladores", section: "Codigo intermediario", title: "Three-address code com temporarios ilimitados", tags: ["ir", "retargeting"] },
+  "Código intermediário / three-address code",
+);
+assertHas(
+  api,
+  { subject: "Compiladores", section: "Otimizacao", title: "Peephole com regras LHS RHS em assembly", tags: ["peephole"] },
+  "Peephole optimization",
+);
+assertHas(
+  api,
+  { subject: "Compiladores", section: "Otimizacao", title: "Cache miss e loop interchange", tags: ["cache", "loop interchange"] },
+  "Cache e loop interchange",
+);
+assertHas(
+  api,
+  { subject: "Compiladores", section: "Dataflow", title: "CFG meet join lattice ponto fixo", tags: ["dataflow", "optimization overview"] },
+  "Otimização e dataflow: visão geral",
+);
+assertHas(
+  api,
+  { subject: "Compiladores", section: "Gerenciamento de Memoria", title: "Coleta conservadora em C/C++", tags: ["conservative collection"] },
+  "Coleta de lixo conservadora",
+);
+assertHas(
+  api,
+  { subject: "Compiladores", section: "Gerenciamento de Memoria", title: "Raizes alcancabilidade layout de frames para GC", tags: ["automatic memory management"] },
+  "Gerenciamento automático de memória: visão geral",
+);
 
 for (const rel of [
   "CG - Lista de exercícios 2/js/manifest.js",

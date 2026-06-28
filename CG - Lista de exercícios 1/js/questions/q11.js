@@ -16,7 +16,9 @@
     title: "Vantagem do Bresenham sobre o DDA",
     type: "conceitual",
     hubDesc: "Só inteiros: sem divisão nem ponto flutuante → mais rápido e exato.",
-    enunciado: "Qual é a vantagem desse algoritmo em relação ao DDA?",
+    enunciado:
+      "Qual é a vantagem do algoritmo de Bresenham em relação ao DDA, especialmente quanto ao uso " +
+      "de aritmética inteira em vez de divisão e ponto flutuante?",
     parts: [
       {
         label: "Explicação",

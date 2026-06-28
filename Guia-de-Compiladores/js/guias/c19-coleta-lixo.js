@@ -29,10 +29,11 @@
       {
         title: "O que é lixo",
         body:
-          "<p>Um objeto é <b>lixo</b> quando não há mais como o programa alcançá-lo a partir das " +
-          "<b>raízes</b> (variáveis na pilha, registradores, globais). O coletor encontra os " +
-          "alcançáveis e libera o resto.</p>" +
-          "<p>Aqui, A→B→C e A→E são alcançáveis; <b>D e F</b> formam um ciclo que ninguém alcança.</p>",
+          "<p>Comece pelos lugares que o programa ainda consegue usar diretamente: variáveis na pilha, " +
+          "registradores e globais. Esses pontos de partida são as <b>raízes</b>.</p>" +
+          "<p>Objeto vivo é o que dá para alcançar seguindo ponteiros a partir das raízes. O que não " +
+          "dá para alcançar é <b>lixo</b>.</p>" +
+          "<p>Aqui, A→B→C e A→E são alcançáveis. <b>D e F</b> formam um ciclo, mas ninguém chega neles.</p>",
         visual: markHeap([], "raiz → A. D e F só se apontam (ciclo). Vamos descobrir o que é alcançável."),
       },
       {
@@ -76,11 +77,11 @@
       {
         title: "Alternativa: Stop-and-Copy",
         body:
-          "<p>O heap é dividido em <b>dois espaços</b>. O coletor <b>copia</b> os objetos alcançáveis " +
-          "(em ordem de varredura) para o espaço novo, <b>atualizando os ponteiros</b>, e depois troca " +
+          "<p>Em vez de deixar os vivos onde estão, o Stop-and-Copy prepara um espaço novo vazio.</p>" +
+          "<p>O coletor copia para lá só os objetos alcançáveis, atualiza os ponteiros e depois troca " +
           "os espaços.</p>" +
-          "<p>Efeito colateral ótimo: os vivos ficam <b>contíguos</b> (compactação, sem fragmentação). " +
-          "Custo: usa só metade da memória por vez.</p>",
+          "<p>Resultado: os vivos ficam <b>contíguos</b>, sem fragmentação. Custo: só metade da memória " +
+          "fica disponível por vez.</p>",
         visual: {
           type: "svg",
           draw: function (svg) {

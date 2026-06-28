@@ -22,7 +22,7 @@
     return C.domStep(title, body, EX.GuiaC.grammar(lines));
   };
 
-  // Hierarquia de classes COOL usada nas questões de semântica (Lista B).
+  // Hierarquia de classes COOL usada nas questões de semântica.
   // Object → Bool/Point/Line/Shape ; Shape → Quad/Circle ; Quad → Rect → Square.
   EX.GuiaC.COOL = {
     w: 760,

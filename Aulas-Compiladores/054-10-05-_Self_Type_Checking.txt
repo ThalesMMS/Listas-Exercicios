@@ -1,0 +1,136 @@
+Verificação de Tipos com SELF_TYPE na Linguagem Cool
+
+Sumário Executivo
+
+Este documento detalha a integração do SELF_TYPE no sistema de verificação de tipos da linguagem Cool. A inclusão do SELF_TYPE visa aumentar a expressividade do sistema de tipos, permitindo que métodos retornem objetos do mesmo tipo da classe que os invoca, preservando informações de tipo precisas em hierarquias de herança.
+
+As principais conclusões indicam que:
+
+* A verificação de tipos agora depende formalmente da classe envolvente (C) para resolver o significado de SELF_TYPE.
+* A maioria das regras de tipagem existentes permanece inalterada, mas passa a utilizar definições estendidas de subtipagem e de Menor Limite Superior (LUB).
+* As regras de despacho (dinâmico e estático) sofreram modificações críticas para lidar com métodos que retornam SELF_TYPE, garantindo a segurança estática do sistema.
+* Embora aumente a complexidade, o SELF_TYPE exemplifica o equilíbrio necessário entre a sofisticação técnica de um compilador e a utilidade prática para o programador.
+
+1. O Ambiente de Verificação de Tipos
+
+A lógica de tipos em Cool utiliza sentenças que provam que uma expressão E possui um tipo T. Para incorporar o SELF_TYPE, o ambiente de tipagem é composto por três elementos fundamentais:
+
+* O (Object Identifiers): Mapeia identificadores de objetos aos seus respectivos tipos.
+* M (Method Signatures): Contém as assinaturas de todos os métodos disponíveis.
+* C (Enclosing Class): Representa a classe atual onde a expressão E reside.
+
+A inclusão da classe C no ambiente é essencial porque o significado de SELF_TYPE é relativo. A notação SELF\_TYPE_C é utilizada para registrar em qual classe uma ocorrência específica de SELF_TYPE está situada, permitindo que o verificador identifique corretamente a qual tipo ela se refere durante a análise.
+
+2. Impacto nas Regras de Tipagem Existentes
+
+A introdução do SELF_TYPE não exige a reescrita total das regras de tipagem; em vez disso, ela as estende.
+
+Subtipagem e Menor Limite Superior (LUB)
+
+As regras que dependem de subtipagem (como a regra de atribuição) permanecem visualmente idênticas, mas operam sob uma definição estendida. Essa definição agora incorpora a lógica necessária para comparar nomes de classes normais com SELF_TYPE.
+
+Regra de Atribuição
+
+Na atribuição, se o tipo da expressão à direita for um subtipo do identificador à esquerda, a regra é validada. Com a definição estendida, essa regra funciona de forma transparente tanto para classes normais quanto para SELF_TYPE.
+
+3. Atualizações no Despacho Dinâmico (Dynamic Dispatch)
+
+O despacho dinâmico é a área onde o SELF_TYPE oferece maior poder expressivo, especialmente quando um método é definido para retornar o próprio tipo da instância invocadora.
+
+Casos de Retorno
+
+Cenário	Tipo Resultante da Expressão
+O tipo de retorno do método não é SELF_TYPE	O tipo declarado na assinatura do método.
+O tipo de retorno do método é SELF_TYPE	O tipo da expressão de despacho (T_0).
+
+Lógica de Tipagem para Retorno SELF_TYPE
+
+Quando um método f invocado em uma expressão E_0 (de tipo T_0) retorna SELF_TYPE:
+
+1. O verificador analisa E_0 e seus argumentos.
+2. Busca-se a assinatura de f na classe T_0.
+3. Se o retorno for SELF_TYPE, o tipo estático de toda a expressão de despacho passa a ser T_0.
+4. Isso é considerado um tipo estático seguro para o resultado da expressão.
+
+Consideração Especial: E_0 como SELF_TYPE
+
+Se a própria expressão de despacho E_0 tiver o tipo SELF_TYPE_C, o sistema utiliza a classe atual C para realizar a busca da assinatura do método no ambiente M.
+
+4. Atualizações no Despacho Estático (Static Dispatch)
+
+No despacho estático, a regra também deve ser ajustada para casos em que o retorno é SELF_TYPE.
+
+* Comportamento: Se um despacho estático é feito para uma classe T (onde T_0 é um subtipo de T), e o método invocado retorna SELF_TYPE, o tipo resultante é T_0.
+* Justificativa: O parâmetro self ainda possui o tipo T_0, mesmo que o despacho acesse uma definição de método em uma superclasse (T). O despacho estático serve para alcançar métodos que podem ter sido sobrescritos, mas não altera o tipo intrínseco do parâmetro self.
+
+5. Novas Regras Específicas para SELF_TYPE
+
+Duas novas regras fundamentais foram introduzidas para gerenciar a auto-referência e a alocação de objetos:
+
+1. Objeto self: O objeto self possui inerentemente o tipo SELF\_TYPE_C.
+2. Alocação (new SELF_TYPE): A expressão new SELF_TYPE produz um objeto cujo tipo é SELF\_TYPE_C.
+
+6. Implementação e Restrições
+
+A implementação da verificação de tipos com SELF_TYPE exige atenção a detalhes sutis:
+
+* Centralização da Lógica: Grande parte do trabalho de implementação é absorvida pelas operações estendidas de subtipagem e LUB.
+* Uso Restrito: O SELF_TYPE não pode ser usado em qualquer lugar (por exemplo, parâmetros formais de funções não podem ser SELF_TYPE). É responsabilidade do verificador garantir que essas restrições sejam respeitadas.
+* Escopo de Lookup: Ao buscar um método em uma classe C que retorna SELF_TYPE, esse SELF_TYPE refere-se à classe onde a busca está ocorrendo, e não necessariamente à classe que está sendo verificada no momento. Não há conflito entre diferentes tipos de SELF_TYPE de classes distintas.
+
+Conclusão
+
+O SELF_TYPE representa um conceito avançado em sistemas de tipos, comumente encontrado em contextos de pesquisa e menos frequente em linguagens de programação convencionais. Sua inclusão no Cool demonstra que a verificação de tipos não se limita a operações simples (como somar inteiros), mas envolve um raciocínio sofisticado sobre a identidade e a hierarquia dos objetos. O desafio fundamental reside em equilibrar a complexidade técnica do sistema de tipos com a expressividade que ele oferece aos desenvolvedores.
+
+Guia de Estudo: Verificação de Tipos com SELF_TYPE na Linguagem Cool
+
+Este guia de estudo sintetiza os conceitos fundamentais da incorporação de SELF_TYPE nas regras de verificação de tipos da linguagem Cool, explorando como essa adição amplia a expressividade do sistema de tipos e as sutilezas envolvidas em sua implementação.
+
+Questionário de Revisão (Quiz)
+
+Perguntas
+
+1. Qual é a função do componente C no ambiente de lógica de tipos (O, M, C)?
+2. Como a regra de atribuição (assignment) é afetada pela introdução do SELF_TYPE?
+3. Qual é o principal propósito e benefício de permitir que métodos tenham SELF_TYPE como tipo de retorno?
+4. Na verificação de um despacho dinâmico, se o tipo de retorno do método for SELF_TYPE, qual será o tipo estático da expressão completa?
+5. Como o sistema de tipos lida com a busca de um método (lookup) quando a expressão de despacho e_0 possui o tipo SELF_TYPE?
+6. Quais são as restrições quanto ao uso de SELF_TYPE em parâmetros formais de funções?
+7. Na regra de despacho estático, por que o tipo de retorno é T_0 (o tipo do receptor) em vez do tipo da classe T para a qual o despacho foi direcionado, quando o retorno é SELF_TYPE?
+8. Qual é o tipo atribuído ao objeto self dentro de uma classe C?
+9. O que a expressão new SELF_TYPE produz de acordo com as novas regras de tipos?
+10. Por que o SELF_TYPE é considerado um exemplo de "subtileza" em sistemas de tipos, mesmo não sendo comum em linguagens de programação convencionais?
+
+Chave de Respostas
+
+1. O componente C representa a "classe envolvente" ou a classe atual na qual a expressão está sendo verificada. Ele é essencial porque o significado de SELF_TYPE depende diretamente da classe em que ele ocorre, permitindo que o verificador rastreie a qual SELF\_TYPE_C o código se refere.
+2. A regra de atribuição permanece visualmente idêntica à original, mas sua funcionalidade é alterada internamente. Ela passa a utilizar as definições estendidas de subtipagem e de "menor limite superior" (Least Upper Bound - LUB), que incorporam a lógica necessária para lidar com SELF_TYPE e nomes de classes normais.
+3. O objetivo principal é aumentar o poder de expressão da linguagem. Isso permite que métodos retornem objetos cujo tipo é garantido como sendo o mesmo do receptor do despacho, facilitando padrões de programação onde o tipo específico da subclasse deve ser preservado.
+4. Se o retorno de um método for SELF_TYPE, o tipo da expressão de despacho será o tipo do próprio receptor (e_0). Isso ocorre porque o tipo de e_0 (denotado como T_0) é um tipo estático seguro e sólido para representar o resultado retornado pelo método.
+5. Se e_0 tem o tipo SELF_TYPE em uma classe C, o sistema substitui com segurança SELF_TYPE pela própria classe C para realizar a busca da assinatura do método no ambiente de métodos M. A partir daí, a verificação prossegue utilizando a classe atual como referência.
+6. Os parâmetros formais de uma função não podem ter o tipo SELF_TYPE. No entanto, os argumentos reais passados durante uma chamada de método podem ter o tipo SELF_TYPE, e o relacionamento de subtipagem estendido é capaz de validar essa compatibilidade.
+7. O tipo de retorno é T_0 porque SELF_TYPE refere-se ao tipo do parâmetro self. Mesmo que o despacho estático force a execução de um método definido em uma superclasse T, o objeto self ainda mantém seu tipo original T_0, que é um subtipo de T.
+8. O objeto self possui o tipo SELF\_TYPE_C, onde C é a classe envolvente. Este é um dos pontos críticos onde o verificador precisa conhecer a classe atual para definir o tipo corretamente.
+9. A expressão new SELF_TYPE aloca um novo objeto cujo tipo é SELF\_TYPE_C. Assim como o objeto self, o resultado desta expressão é vinculado à classe em que a alocação ocorre.
+10. O SELF_TYPE ilustra que a verificação de tipos envolve raciocínios sofisticados além de operações simples (como "int + int"). Ele demonstra a necessidade de equilibrar a complexidade do sistema de tipos com a expressividade que ele oferece ao programador.
+
+Propostas de Redação (Questões Dissertativas)
+
+1. Análise do Ambiente de Tipagem: Explique detalhadamente por que a introdução do SELF_TYPE exigiu a modificação do estado do verificador de tipos para incluir a classe envolvente (C). Discuta como essa informação é utilizada na resolução de nomes e na segurança da tipagem.
+2. Impacto na Subtipagem e LUB: Discuta como a extensão das operações de subtipagem e "Least Upper Bound" (LUB) simplifica a implementação das regras de verificação para expressões que não mudaram formalmente, como a atribuição e condicionais.
+3. Mecânica do Despacho com SELF_TYPE: Compare as regras de despacho dinâmico e estático quando o tipo de retorno do método invocado é SELF_TYPE. Por que, em ambos os casos, o tipo resultante da expressão está vinculado ao tipo do receptor e não à classe onde o método foi definido?
+4. Restrições e Implementação: O texto menciona que SELF_TYPE só pode ser usado em locais específicos. Avalie as implicações de segurança para o sistema de tipos se SELF_TYPE fosse permitido em parâmetros formais de métodos.
+5. Complexidade vs. Expressividade: Com base na discussão de que o SELF_TYPE é uma "ideia de pesquisa" e não é comum em linguagens mainstream, disserte sobre o equilíbrio necessário no design de linguagens entre ter um sistema de tipos poderoso e um sistema que seja fácil de aprender e utilizar.
+
+Glossário de Termos-Chave
+
+Termo	Definição
+SELF_TYPE	Um tipo especial em Cool que representa o tipo do objeto self (o receptor do método) e pode mudar dependendo da classe de herança.
+Classe Envolvente (C)	A classe atual na qual o código está sendo verificado; necessária para contextualizar o significado de SELF_TYPE.
+Despacho Dinâmico	Uma chamada de método onde a implementação a ser executada é determinada em tempo de execução com base no tipo real do objeto.
+Despacho Estático	Uma chamada de método onde o programador especifica explicitamente de qual classe a implementação do método deve ser retirada.
+Ambiente de Tipos (O, M, C)	Estrutura lógica que armazena os tipos de objetos (O), as assinaturas de métodos (M) e a classe atual (C) durante a verificação.
+Subtipagem Estendida	Uma versão ampliada das regras de hierarquia de classes que inclui lógica para comparar SELF_TYPE com outros tipos.
+Assinatura do Método	O registro que define o nome, os tipos dos parâmetros e o tipo de retorno de um método em uma classe.
+Least Upper Bound (LUB)	A operação que encontra o tipo comum mais específico entre dois tipos diferentes na hierarquia de classes.
+Receptor (Receiver)	O objeto (geralmente e_0) sobre o qual um método é chamado em uma expressão de despacho.

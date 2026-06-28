@@ -1,0 +1,136 @@
+Verificação de Tipos para Métodos na Linguagem Cool: Documento de Briefing
+
+Sumário Executivo
+
+Este documento detalha os mecanismos de verificação de tipos para métodos e chamadas de métodos (dispatches) na linguagem de programação Cool. A análise fundamenta-se na necessidade de determinar o tipo de retorno de uma expressão de despacho e validar a compatibilidade dos argumentos fornecidos. O sistema de tipagem da Cool utiliza três componentes essenciais em seu ambiente: um mapeamento de identificadores de objetos (O), um mapeamento de assinaturas de métodos (M) e a classe atual em que a expressão reside (C).
+
+Os principais pontos de destaque incluem:
+
+* Separação de Namespaces: Objetos e métodos operam em espaços de nomes distintos, permitindo o uso do mesmo identificador para ambos sem conflitos.
+* Assinaturas de Métodos: Definidas como sequências de tipos que especificam os parâmetros de entrada e o tipo de retorno.
+* Regras de Dispatch: A verificação de tipos exige que os argumentos reais sejam subtipos dos parâmetros formais declarados.
+* Natureza Indutiva: As regras de tipagem são definidas com base na estrutura das expressões, onde o tipo de uma expressão depende dos tipos de suas subexpressões.
+
+1. Arquitetura de Ambientes de Tipagem
+
+Na linguagem Cool, a verificação de tipos não pode depender apenas de referências de variáveis, pois o comportamento e os tipos de retorno dos métodos precisam ser conhecidos previamente. Para gerenciar isso, o sistema emprega múltiplos ambientes.
+
+1.1. Separação de Namespaces
+
+Diferente de algumas linguagens, a Cool permite que um método e um objeto compartilhem o mesmo nome (ex: foo) no mesmo escopo. O compilador distingue o uso com base no contexto sintático, o que resulta na necessidade de ambientes de mapeamento separados.
+
+1.2. O Ambiente Triplo
+
+A sentença completa da lógica de verificação de tipos na Cool é composta por:
+
+Componente	Símbolo	Função
+Ambiente de Objetos	O	Mapeia identificadores de objetos aos seus respectivos tipos.
+Ambiente de Métodos	M	Armazena as assinaturas de todos os métodos definidos em cada classe.
+Classe Atual	C	Indica a classe que contém a expressão que está sendo verificada.
+
+A notação formal estabelece que, sob as suposições de O, M e C, pode-se provar que uma expressão E possui o tipo T.
+
+2. Estrutura e Significado das Assinaturas de Métodos
+
+A assinatura de um método é a representação técnica de seu contrato de interface, detalhando os tipos de entrada e saída.
+
+* Representação: Uma assinatura é escrita como uma lista ou tupla de tipos: (T_1, T_2, \dots, T_n, T_{n+1}).
+* Argumentos: Todos os tipos, exceto o último (T_1 a T_n), representam os tipos dos argumentos formais na ordem em que aparecem.
+* Tipo de Retorno: O último tipo da lista (T_{n+1}) define o tipo do valor que o método retorna após a execução.
+* Mapeamento no Ambiente M: O ambiente de métodos funciona como uma tabela de consulta que recebe o nome de uma classe e o nome de um método para retornar a assinatura correspondente.
+
+3. Regras de Tipagem para Chamadas de Métodos (Dispatch)
+
+A verificação de um "dispatch" (chamada de método) envolve a análise da expressão alvo, dos argumentos fornecidos e da conformidade com a assinatura declarada.
+
+3.1. Dispatch Regular
+
+Para uma chamada do tipo E0.f(E1, ..., En):
+
+1. Tipagem da Base: A expressão E0 é avaliada para encontrar seu tipo T_0.
+2. Tipagem dos Argumentos: Cada argumento E_1 \dots E_n é verificado para determinar seus tipos T_1 \dots T_n.
+3. Consulta de Assinatura: O compilador busca no ambiente M o método f na classe T_0.
+4. Requisito de Subtipagem: Os tipos dos argumentos reais (T_i) devem ser subtipos dos tipos dos parâmetros formais (T'_i) definidos na assinatura.
+5. Resultado: Se todas as condições forem atendidas, o tipo da expressão de dispatch é o tipo de retorno T_{n+1} do método.
+
+3.2. Dispatch Estático
+
+O dispatch estático ocorre quando o programador especifica explicitamente a classe de onde o método deve ser extraído (ex: E0@T.f(...)).
+
+* Restrição Adicional: O tipo da expressão E0 deve ser um subtipo da classe T especificada.
+* Busca: O método f é buscado diretamente na classe T (ou em seus ancestrais), garantindo que a implementação executada seja a de uma classe específica na hierarquia.
+
+4. Propagação de Ambientes e Princípios Gerais
+
+A verificação de tipos na Cool segue um modelo rigoroso de propagação de informações através da árvore sintática.
+
+4.1. Passagem de Ambientes
+
+A maioria das regras de tipagem (como operações aritméticas de adição) não utiliza diretamente o ambiente de métodos (M) ou a classe atual (C). No entanto, esses componentes devem ser propagados de forma transparente das subexpressões até as folhas da árvore de análise. Isso garante que, quando um dispatch for encontrado em qualquer profundidade, as informações necessárias estejam disponíveis.
+
+4.2. Temas Centrais da Tipagem
+
+O processo de verificação na Cool ilustra princípios fundamentais de design de linguagens:
+
+* Definição Estrutural: As regras são aplicadas de forma indutiva sobre a estrutura das expressões.
+* Modelagem de Nomes Livres: Nomes que não estão vinculados localmente (como nomes de métodos e variáveis globais) são resolvidos através dos ambientes (O e M).
+* Densidade Informacional: As regras de tipagem são notacionalmente compactas, mas carregam uma quantidade significativa de restrições lógicas e semânticas que exigem leitura cuidadosa para compreensão integral.
+
+Conclusão
+
+O sistema de tipos da Cool para métodos é projetado para garantir a segurança de tipos através de uma validação rigorosa de assinaturas e hierarquias de classes. Ao separar os namespaces de objetos e métodos e utilizar um ambiente triplo (O, M, C), a linguagem provê uma estrutura robusta para lidar com dispatch dinâmico e estático, assegurando que todas as interações entre objetos respeitem as definições de tipo estabelecidas.
+
+Guia de Estudo: Verificação de Tipos de Métodos na Linguagem Cool
+
+Este guia de estudo foi desenvolvido para aprofundar a compreensão sobre as regras de verificação de tipos (type checking) aplicadas a métodos e chamadas de métodos (disparos) na linguagem de programação Cool. O conteúdo baseia-se na análise da estrutura de ambientes, assinaturas de métodos e regras de despacho estático e dinâmico.
+
+Questionário de Revisão
+
+Responda às perguntas abaixo com base nas definições e regras apresentadas no texto.
+
+1. Qual é o desafio inicial ao tentar verificar o tipo de uma chamada de método como E0.f(E1, ..., En)?
+2. Por que a linguagem Cool utiliza ambientes distintos para objetos e métodos?
+3. O que compõe a "assinatura" de um método de acordo com o ambiente de métodos M?
+4. Como o ambiente de métodos M é estruturado para realizar a busca de uma função?
+5. Qual é a regra de subtipagem aplicada aos argumentos reais em uma chamada de método?
+6. Qual é a principal diferença sintática e funcional no despacho estático (static dispatch)?
+7. Como as regras de tipagem que não envolvem métodos (como a soma) tratam o ambiente de métodos?
+8. Quais são os três componentes que formam o ambiente completo de verificação de tipos em Cool?
+9. O que significa dizer que as regras de tipagem são definidas de forma "indutiva"?
+10. Como se interpreta uma sentença lógica completa na lógica de verificação de tipos de Cool?
+
+Chave de Respostas
+
+1. O desafio é que, ao encontrar um nome de método f, o verificador não possui informações intrínsecas sobre seu comportamento ou tipo de retorno. Sem informações externas sobre o que f faz, é impossível determinar o tipo do valor que a expressão retornará após a execução.
+2. Cool permite que identificadores de métodos e de objetos coexistam no mesmo escopo com o mesmo nome sem conflitos. Como eles são usados de formas suficientemente diferentes, a linguagem mantém namespaces (espaços de nomes) separados, refletidos em ambientes de mapeamento distintos.
+3. A assinatura de um método consiste em uma lista ou tupla de tipos que define seus parâmetros de entrada e seu tipo de saída. Os primeiros elementos da lista correspondem aos tipos dos argumentos na ordem em que aparecem, e o último elemento representa o tipo do valor de retorno.
+4. O ambiente M funciona como uma tabela de mapeamento que recebe dois parâmetros: o nome de uma classe e o nome de um método contido nessa classe. A partir dessa busca, o ambiente fornece a assinatura correspondente (tipos dos argumentos e do resultado).
+5. Para que a chamada seja válida, o tipo de cada argumento real (E_1 \dots E_n) deve ser um subtipo do tipo do parâmetro formal declarado na assinatura do método. Se E_1 tem tipo T_1 e o parâmetro formal tem tipo T_1', então T_1 deve ser obrigatoriamente um subtipo de T_1'.
+6. No despacho estático, o programador especifica explicitamente o nome de uma classe ancestral para executar o método. A regra de tipagem exige que o tipo da expressão de despacho (E_0) seja um subtipo da classe especificada, e o método é buscado diretamente nessa classe ancestral.
+7. Essas regras simplesmente propagam o ambiente de métodos de forma inalterada da raiz para as folhas da árvore de expressão. Como apenas as regras de despacho utilizam as informações dos métodos, as demais operações apenas repassam o mapeamento para suas subexpressões.
+8. O ambiente completo consiste no mapeamento O (identificadores de objetos para tipos), no mapeamento M (nomes de métodos para assinaturas) e no identificador C, que representa a classe atual onde a expressão está sendo verificada.
+9. Significa que o tipo de uma expressão complexa é determinado com base nos tipos de suas subexpressões. As regras seguem a estrutura da linguagem, onde a validade do todo depende da validade e dos tipos comprovados para suas partes componentes.
+10. A sentença é lida como: sob a suposição de que os objetos têm tipos dados por O, os métodos têm assinaturas dadas por M e a expressão reside na classe C, então pode-se provar que a expressão E possui o tipo T.
+
+Propostas de Redação (Dissertativas)
+
+As questões abaixo visam estimular a análise crítica e a síntese dos conceitos. Não são fornecidas respostas padrão.
+
+1. Análise de Namespaces: Discorra sobre as vantagens e as implicações de design de linguagem ao separar os espaços de nomes para objetos e métodos. Como isso afeta a construção dos ambientes de tipagem?
+2. Mecanismos de Despacho: Compare o despacho regular com o despacho estático em Cool. Explique como a hierarquia de classes e a subtipagem influenciam a validade de cada um desses mecanismos sob a ótica do verificador de tipos.
+3. A Importância da Subtipagem: Explique detalhadamente por que a verificação de tipos em chamadas de métodos depende fundamentalmente da relação de subtipagem entre argumentos reais e parâmetros formais.
+4. Estrutura dos Ambientes: Avalie a necessidade da inclusão da classe atual (C) no ambiente de verificação de tipos. De que forma o "Self Type" justifica a expansão do ambiente para além dos mapeamentos O e M?
+5. A Natureza das Regras de Tipagem: O texto afirma que as regras de tipagem são "compactas, mas densas em informação". Analise essa afirmação discutindo como a notação formal consegue capturar restrições complexas de uma linguagem de programação.
+
+Glossário de Termos-Chave
+
+Termo	Definição
+Ambiente de Métodos (M)	Um mapeamento que armazena as assinaturas de todos os métodos disponíveis, indexados pelo nome da classe e pelo nome do método.
+Ambiente de Objetos (O)	Um mapeamento que associa identificadores de objetos (variáveis) aos seus respectivos tipos.
+Assinatura	O conjunto de tipos de entrada (parâmetros) e o tipo de saída (retorno) que define a interface de um método ou função.
+Despacho (Dispatch)	O ato de chamar ou invocar um método em um objeto; pode ser dinâmico (regular) ou estático.
+Despacho Estático	Uma chamada de método onde a classe em que o método deve ser buscado é explicitamente definida pelo programador, devendo ser uma ancestral do tipo da expressão.
+Namespace	Um espaço lógico que isola nomes de identificadores, permitindo que o mesmo nome seja usado para diferentes entidades (como um objeto e um método) sem ambiguidade.
+Regra Indutiva	Um método de definição onde o tipo de uma expressão é derivado a partir dos tipos de suas partes constituintes (subexpressões).
+Subtipagem	Uma relação entre tipos que permite que um valor de um tipo mais específico seja usado onde um tipo mais geral é esperado.
+Turnstile (\vdash)	Símbolo lógico usado para indicar que, dadas certas premissas (à esquerda), uma conclusão (à direita) pode ser provada.

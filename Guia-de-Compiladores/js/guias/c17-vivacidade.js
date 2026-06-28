@@ -57,16 +57,19 @@
       ),
       C.domStep(
         "Cálculo para trás (backward)",
-        "A vivacidade flui do <b>uso futuro para trás</b>. Para cada bloco do CFG:",
+        "A vivacidade flui do <b>uso futuro para trás</b>. Primeiro marque o que o bloco lê " +
+          "(<code>USE</code>) e o que ele escreve (<code>DEF</code>). Depois aplique a regra:",
         C.codeHtml("LIVE_out[B] = ∪ LIVE_in[sucessores de B]\nLIVE_in[B]  = USE[B] ∪ ( LIVE_out[B] − DEF[B] )") +
-          "<p><code>USE</code> = lidas antes de escritas no bloco; <code>DEF</code> = escritas. " +
-          "Itera-se até o ponto fixo.</p>"
+          "<p>Leitura da fórmula: tudo que será necessário depois entra em <code>out</code>. Na entrada " +
+          "do bloco, ficam os valores usados pelo bloco mais os valores futuros que o bloco não redefiniu.</p>" +
+          "<p>Com laços, repita até nada mudar: esse é o ponto fixo.</p>"
       ),
       {
         title: "O grafo de fluxo e seus USE/DEF",
         body:
-          "<p>Vamos analisar este <code>if</code> como um CFG de 4 blocos. Primeiro, o " +
-          "<code>USE</code>/<code>DEF</code> de cada bloco:</p>" +
+          "<p>Vamos analisar este <code>if</code> como um CFG de 4 blocos. Para cada bloco, separe " +
+          "duas listas: o que ele lê antes de escrever (<code>USE</code>) e o que ele escreve " +
+          "(<code>DEF</code>).</p>" +
           "<ul>" +
           "<li><code>X &gt; 0 ?</code> — USE <code>{X}</code>, DEF <code>{}</code>;</li>" +
           "<li><code>Y := Y + 1</code> — USE <code>{Y}</code>, DEF <code>{Y}</code>;</li>" +
@@ -110,7 +113,7 @@
         }),
       },
       C.codeStep({
-        title: "O resultado (Lista C, Q8)",
+        title: "O resultado",
         body: "Quais variáveis estão vivas <b>antes do teste</b>? Exatamente <code>LIVE_in[test]</code>:",
         code: "if X > 0\n  then Y := Y + 1\n  else Z := W + 4",
         active: [1],

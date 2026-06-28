@@ -113,7 +113,9 @@
     title: "Elementos que caracterizam a projeção",
     type: "conceitual",
     hubDesc: "Objeto, centro/direção de projeção, plano de projeção e projetores.",
-    statement: "Quais são os elementos que caracterizam a projeção?",
+    statement:
+      "Quais são os elementos que caracterizam a projeção: objeto/cena, COP ou DOP, " +
+      "plano de projeção e projetores?",
     parts: [{ label: "Resolução", build: build }],
   });
 })();

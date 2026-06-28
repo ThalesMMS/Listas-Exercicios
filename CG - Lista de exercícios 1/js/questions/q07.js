@@ -22,7 +22,10 @@
     title: "1º caso × 2º caso",
     type: "conceitual",
     hubDesc: "Qual eixo é o independente: caso 1 anda em x; caso 2 anda em y.",
-    enunciado: "O que diferencia o 1º caso do 2º caso?",
+    enunciado:
+      "No DDA para rasterização de retas, o que diferencia o 1º caso " +
+      "(<code>|Δx| >= |Δy|</code>, eixo independente <code>x</code>) do 2º caso " +
+      "(<code>|Δy| > |Δx|</code>, eixo independente <code>y</code>)?",
     parts: [
       {
         label: "Explicação",

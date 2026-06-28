@@ -1,0 +1,134 @@
+Diretrizes e Fundamentos de Ambientes de Tipagem na Linguagem COOL
+
+Sumário Executivo
+
+Este documento detalha o desenvolvimento da verificação de tipos para a linguagem COOL, com foco central na introdução e aplicação de Ambientes de Tipagem (Type Environments). A análise demonstra que, embora regras estruturais locais sejam suficientes para constantes e expressões simples, elas falham ao lidar com variáveis. O ambiente de tipagem resolve essa lacuna ao atuar como uma função que mapeia identificadores de objetos a tipos, permitindo a verificação de "variáveis livres". O processo de tipagem é bidirecional na Árvore de Sintaxe Abstrata (AST): o ambiente de tipagem é passado da raiz para as folhas (estendendo o escopo), enquanto os tipos resultantes são computados das folhas para a raiz.
+
+1. Regras de Tipagem para Expressões Básicas
+
+A verificação de tipos em COOL começa com regras diretas onde a informação necessária para determinar o tipo é inerente à própria expressão.
+
+Tabela de Regras para Literais e Instanciação
+
+Expressão	Tipo Resultante	Observações
+false	Bool	Constante booleana.
+s (literal de string)	String	Qualquer cadeia de caracteres.
+new T	T	Produz um objeto do tipo explicitamente declarado T.
+not E	Bool	Válido se E tiver o tipo Bool.
+
+O Caso da Estrutura while
+
+A regra para o loop while (while E1 loop E2 pool) apresenta complexidades específicas de design:
+
+* Predicado (E1): Deve obrigatoriamente ser do tipo Bool.
+* Corpo do Loop (E2): Pode possuir qualquer tipo T.
+* Tipo do Loop Inteiro: É sempre classificado como Object.
+* Justificativa de Design: Se o predicado for falso na entrada, o corpo nunca é executado e nenhum valor é produzido. Para evitar erros de tempo de execução ao tentar desreferenciar valores nulos (void), a linguagem desencoraja a dependência do valor de retorno do loop, tipando-o como Object.
+
+2. O Problema das Variáveis Livres
+
+Uma expressão consistindo apenas de um nome de variável x não pode ser tipada apenas com regras estruturais locais. As regras de inferência exigem que toda a informação necessária esteja presente na própria regra, sem dados externos. Sem saber onde x foi definido, a tipagem é impossível.
+
+Distinção entre Variáveis Livres e Ligadas
+
+A necessidade de um ambiente de tipagem surge da presença de variáveis livres:
+
+* Variáveis Livres: Variáveis que não são definidas dentro da expressão atual (ex: em x + y, tanto x quanto y são livres).
+* Variáveis Ligadas: Variáveis cuja definição ocorre dentro da expressão (ex: em let y : T in x + y, y está ligada pela declaração let, mas x permanece livre).
+
+Para verificar o tipo de uma expressão com variáveis livres, é obrigatório fornecer as definições de tipo dessas variáveis externamente.
+
+3. Definição e Notação do Ambiente de Tipagem
+
+O ambiente de tipagem, denotado por O, é uma função que mapeia nomes de identificadores de objetos para seus respectivos tipos.
+
+Notação Lógica
+
+A verificação de tipos passa a utilizar a seguinte estrutura formal:
+
+O ⊢ E : T
+
+Esta notação é lida como: "Sob as suposições de que as variáveis livres possuem os tipos definidos em O, é provável que a expressão E tenha o tipo T". Esta separação distingue claramente o que é entrada (suposições no ambiente) do que é o resultado (o tipo provado).
+
+Aplicação em Regras Existentes
+
+* Constantes: Para um literal inteiro, o ambiente O é ignorado, pois o tipo é fixo.
+* Soma (E1 + E2): Ambas as subexpressões E1 e E2 são verificadas sob o mesmo ambiente O. Se ambas resultarem em Int, a soma é provada como Int.
+* Variáveis: O tipo de uma variável x é obtido simplesmente consultando seu valor na função O.
+
+4. Dinâmica e Modificação de Ambientes
+
+O ambiente de tipagem não é estático; ele é modificado à medida que o verificador de tipos navega por expressões que introduzem novos escopos, como o let.
+
+A Expressão let
+
+Ao encontrar uma expressão let x : T0 in E1, o ambiente de tipagem é alterado:
+
+1. Cria-se um novo ambiente modificado, onde o identificador x é mapeado para o tipo T0.
+2. A subexpressão E1 é verificada sob este novo ambiente.
+3. Qualquer outra variável y (onde y ≠ x) mantém o tipo que possuía no ambiente original O.
+4. Após a verificação de E1, a suposição sobre x é removida, retornando ao estado original do ambiente fora do escopo do let.
+
+5. Implementação e Fluxo na AST
+
+Na prática de construção de compiladores, o ambiente de tipagem é implementado por meio de uma Tabela de Símbolos.
+
+Processamento na Árvore de Sintaxe Abstrata (AST)
+
+O fluxo de informações ocorre em duas direções distintas:
+
+1. Top-Down (Raiz para as Folhas): O ambiente de tipagem é passado para baixo na AST. À medida que o compilador atravessa definições (como classes, métodos e expressões let), o ambiente é estendido com novos identificadores e tipos.
+2. Bottom-Up (Folhas para a Raiz): Os tipos são computados para cima. Inicia-se nas folhas (literais e variáveis consultadas no ambiente) e, de forma ascendente, calculam-se os tipos de expressões complexas até chegar à raiz da AST.
+
+Nota: Conforme mencionado na análise original, discussões sobre o tipo SELF_TYPE foram omitidas deste escopo e serão tratadas em módulos subsequentes.
+
+Guia de Estudo: Ambientes de Tipos na Verificação de Tipos Cool
+
+Este guia foi elaborado para fornecer uma compreensão profunda sobre a implementação de ambientes de tipos no processo de verificação de tipos da linguagem Cool. Ele aborda desde regras básicas até a formalização de ambientes para lidar com variáveis.
+
+Questionário de Revisão
+
+Perguntas (Respostas Curtas)
+
+1. Qual é o tipo resultante de uma expressão while em Cool e qual é a justificativa para essa escolha de design?
+2. Como a regra de tipo para literais de string e constantes booleanas (como false) é definida?
+3. O que caracteriza uma variável como "livre" em uma expressão?
+4. Qual é a definição formal de um ambiente de tipos (O)?
+5. Como a notação lógica O ⊢ E : T deve ser interpretada no contexto da verificação de tipos?
+6. Por que as regras de inferência locais, por si só, são insuficientes para determinar o tipo de uma variável isolada?
+7. Como o ambiente de tipos lida com a verificação de uma expressão de soma (e1 + e2)?
+8. De que maneira uma expressão let sem inicialização modifica o ambiente de tipos para sua subexpressão?
+9. Qual é a relação entre o ambiente de tipos e a tabela de símbolos de um compilador?
+10. Como as informações do ambiente e os tipos computados fluem através da Árvore de Sintaxe Abstrata (AST)?
+
+Chave de Respostas
+
+1. O tipo resultante é sempre Object. Essa decisão visa desencorajar programadores de dependerem do valor de retorno do loop, já que, se a condição inicial for falsa, o corpo do loop nunca é executado, o que poderia resultar em um valor nulo (void) e causar erros de tempo de execução.
+2. A regra é direta e local: é provável que a constante false tenha o tipo Bool e que qualquer literal de string s tenha o tipo String. Da mesma forma, a expressão new T produz um objeto do tipo T.
+3. Uma variável é considerada livre se não for definida dentro da própria expressão em que é utilizada. Por exemplo, em x + y, ambas as variáveis são livres porque não há uma declaração local que governe seus usos.
+4. Um ambiente de tipos é uma função que mapeia identificadores de objetos (nomes de variáveis) para seus respectivos tipos. Ele atua como um conjunto de suposições sobre os tipos das variáveis livres presentes em uma expressão.
+5. A notação significa que, sob as suposições fornecidas pelo ambiente O sobre as variáveis livres, é provável que a expressão E possua o tipo T. Isso separa as entradas (suposições) do resultado provado.
+6. Regras de inferência exigem que todas as informações necessárias sejam locais à regra, sem estruturas de dados externas. Uma variável x sozinha não contém informações intrínsecas sobre seu tipo, exigindo que essa informação seja "passada" através do ambiente.
+7. Para verificar e1 + e2, o verificador utiliza o mesmo ambiente O para provar que e1 tem o tipo Int e que e2 também tem o tipo Int. Se ambas as suposições forem provadas, conclui-se que a soma tem o tipo Int.
+8. O let estende o ambiente original O criando uma nova função de ambiente onde o identificador x é mapeado para o tipo T0. A subexpressão e1 é então verificada sob este novo ambiente modificado, e o tipo resultante de e1 torna-se o tipo de toda a expressão let.
+9. O ambiente de tipos é a formalização lógica das informações que são tipicamente armazenadas e gerenciadas pela tabela de símbolos. Na prática, a tabela de símbolos implementa o comportamento do ambiente de tipos durante a compilação.
+10. O ambiente de tipos é passado de cima para baixo na AST (da raiz para as folhas) conforme novas definições são encontradas. Em contraste, os tipos são computados de baixo para cima (das folhas para a raiz), começando pelas constantes e variáveis simples.
+
+Propostas de Redação/Ensaios
+
+1. A Evolução da Verificação Local para a Contextual: Discuta por que a introdução de ambientes de tipos é um passo necessário para a verificação de linguagens de programação reais, contrastando com regras puramente estruturais e locais.
+2. Compensações de Design na Tipagem de Estruturas de Controle: Analise a decisão de atribuir o tipo Object ao ciclo while. Avalie as implicações de segurança e as alternativas de design mencionadas no texto, como o retorno do último valor executado.
+3. Escopo e Variáveis Ligadas: Explique como o ambiente de tipos gerencia o escopo de variáveis, diferenciando variáveis livres de ligadas e como a regra do let garante que as definições de variáveis não "vazem" para fora de seu contexto.
+4. Implementação de Compiladores e Formalismo Lógico: Explore como os conceitos teóricos de ambientes de tipos e funções de mapeamento se traduzem em estruturas de dados práticas, como tabelas de símbolos e manipulação de escopos.
+5. Fluxo de Dados na Árvore de Sintaxe Abstrata (AST): Descreva o processo bidirecional de verificação de tipos, detalhando como o ambiente "desce" a árvore e os tipos "sobem", e por que essa ordem é essencial para a resolução de expressões complexas.
+
+Glossário de Termos-Chave
+
+* Ambiente de Tipos (O): Uma função que mapeia nomes de variáveis (identificadores) para seus tipos correspondentes, servindo como o contexto necessário para verificar expressões com variáveis livres.
+* Árvore de Sintaxe Abstrata (AST): A representação em árvore da estrutura gramatical de um código-fonte, usada pelo compilador para passar contextos (descendo) e computar tipos (subindo).
+* Identificador de Objeto: O nome técnico para uma variável ou nome de atributo dentro do código Cool.
+* Regra de Inferência: Um constructo lógico onde, dadas certas premissas acima de uma linha, uma conclusão pode ser provada abaixo dela. No Cool, essas regras devem conter todas as informações necessárias localmente.
+* Tabela de Símbolos: A estrutura de dados de um compilador que implementa o ambiente de tipos, armazenando informações sobre identificadores durante o processo de tradução.
+* Turnstile (⊢): O símbolo lógico usado em regras de tipo para separar as suposições (à esquerda) do que está sendo provado (à direita).
+* Variável Bound (Ligada): Uma variável cujo uso é governado por uma definição ou declaração dentro da própria expressão (ex: o x dentro de um let x : T in ...).
+* Variável Free (Livre): Uma variável que é utilizada em uma expressão, mas cuja definição não ocorre dentro dessa mesma expressão, exigindo uma fonte externa (o ambiente) para determinar seu tipo.

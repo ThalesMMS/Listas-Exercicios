@@ -1,0 +1,114 @@
+Diretrizes e Restrições do Uso de SELF_TYPE na Linguagem COOL
+
+Sumário Executivo
+
+O uso de SELF_TYPE na linguagem COOL é governado por regras semânticas mais estritas do que a simples permissividade do parser. Embora o parser permita SELF_TYPE em quase todos os lugares onde tipos são aceitos, a integridade do sistema de tipos e a segurança em tempo de execução exigem limitações específicas. O SELF_TYPE é permitido em declarações de atributos, variáveis locais, alocação de novos objetos e tipos de retorno de métodos. No entanto, é expressamente proibido em nomes de classes, herança, despacho estático e, crucialmente, em tipos de parâmetros formais de métodos. A proibição em parâmetros de métodos evita falhas catastróficas em tempo de execução resultantes da incompatibilidade entre tipos estáticos e dinâmicos.
+
+Áreas de Uso Permitido
+
+O SELF_TYPE pode ser utilizado em contextos onde o tipo se refere dinamicamente à classe do objeto atual (self). As aplicações válidas incluem:
+
+* Declarações de Atributos: É permitido declarar um atributo com o tipo SELF_TYPE (ex: x : SELF_TYPE).
+* Variáveis Locais (Let-bound): Variáveis declaradas em escopos let podem ser do tipo SELF_TYPE.
+* Alocação de Objetos (new): A expressão new SELF_TYPE é válida. Ela aloca um novo objeto que possui o mesmo tipo dinâmico do objeto self atual. Isso garante que o novo objeto seja da mesma classe que a instância em execução, mesmo que esta pertença a uma subclasse da classe onde o código foi originalmente definido.
+* Tipos de Retorno de Métodos: Este é um uso fundamental para permitir o encadeamento de métodos e garantir que o tipo de retorno reflita com precisão o objeto retornado.
+
+Restrições e Proibições
+
+Existem locais específicos onde, embora outros tipos sejam permitidos, o SELF_TYPE é proibido:
+
+Definições de Classe e Herança
+
+O SELF_TYPE não é considerado um nome de classe real. Portanto:
+
+* Não pode ser usado como o nome de uma classe em uma definição.
+* Não pode ser usado como a classe da qual se herda (classe pai).
+
+Despacho Estático (Static Dispatch)
+
+O tipo nomeado em um despacho estático deve ser um nome de classe real e fixo. Como SELF_TYPE é variável e depende do tipo dinâmico, ele não pode ser o alvo de um despacho estático.
+
+A Proibição de SELF_TYPE em Parâmetros de Métodos
+
+A restrição mais complexa e vital é a proibição de SELF_TYPE como tipo de parâmetro formal em métodos. Existem duas razões principais para essa regra:
+
+1. Inconsistência no Sistema de Subtipagem
+
+No COOL, para um despacho de método ser válido, o tipo do argumento real (T_0) deve ser um subtipo do tipo do parâmetro formal (T). Se permitíssemos que o parâmetro formal fosse SELF_TYPE, a regra exigiria que:
+
+T_0 \le \text{SELF\_TYPE}_C
+
+Onde C é a classe onde o método está definido. No entanto, o sistema de tipos do COOL não pode provar essa relação de forma geral, pois SELF_TYPE pode variar sobre todos os subtipos da classe C. Essa incerteza tornaria o sistema de tipos inseguro.
+
+2. Risco de Falha em Tempo de Execução (Runtime Crash)
+
+A permissão de SELF_TYPE em argumentos levaria a erros de comportamento indefinido. Considere o seguinte cenário técnico:
+
+Elemento	Descrição
+Classe A	Possui um método comp(x : SELF_TYPE) : Bool.
+Classe B	Subclasse de A. Adiciona um campo inteiro b. Sobrescreve comp para acessar o campo b do argumento x.
+O Problema	Se uma variável X tem tipo estático A, mas tipo dinâmico B, e chamamos X.comp(new A).
+
+Análise do Erro:
+
+1. O verificador de tipos (se permitisse SELF_TYPE em argumentos) aceitaria a chamada porque, estaticamente, ambos são de tipo A.
+2. Em tempo de execução, o despacho dinâmico invoca o método comp da Classe B (já que o tipo dinâmico de X é B).
+3. O método da Classe B tenta acessar o campo b no argumento fornecido.
+4. No entanto, o argumento fornecido é um objeto puramente da Classe A (new A), que não possui o campo b.
+5. Resultado: O programa sofre um crash ou apresenta comportamento indefinido ao tentar acessar memória inexistente.
+
+Portanto, para garantir que os objetos passados como argumentos sempre possuam todos os campos e métodos esperados pela implementação do método invocado, o COOL restringe o SELF_TYPE apenas ao tipo de retorno, onde tais conflitos de acesso a campos não ocorrem.
+
+Guia de Estudo: Uso de SELF_TYPE na Linguagem Cool
+
+Este guia de estudo foi desenvolvido para fornecer uma compreensão profunda das regras e restrições associadas ao uso de SELF_TYPE no contexto da linguagem de programação Cool. O conteúdo aborda desde as permissões básicas de sintaxe até as implicações complexas de segurança de tipos em tempo de execução.
+
+Questionário de Revisão
+
+As perguntas a seguir visam testar o conhecimento sobre as regras de uso e a lógica semântica de SELF_TYPE.
+
+1. Onde o parser de Cool permite o uso de SELF_TYPE e por que essa permissão é considerada excessiva? O parser verifica se SELF_TYPE aparece apenas onde tipos são permitidos, o que é uma regra geral. No entanto, isso é muito permissivo, pois existem locais específicos onde outros tipos podem aparecer, mas SELF_TYPE é proibido por regras semânticas adicionais.
+2. SELF_TYPE pode ser utilizado na definição do nome de uma classe ou na cláusula de herança? Não, SELF_TYPE não é considerado um nome de classe real. Portanto, ele não pode ser usado como o nome de uma classe que está sendo definida, nem como o nome da classe da qual se deseja herdar.
+3. Qual é a regra para o uso de SELF_TYPE em declarações de atributos e variáveis locais? É permitido declarar atributos com o tipo SELF_TYPE (ex: x : SELF_TYPE). Da mesma forma, variáveis locais vinculadas por expressões let também podem ser declaradas validamente com esse tipo.
+4. O que ocorre tecnicamente ao executar a operação new SELF_TYPE? Essa operação aloca um novo objeto que possui o mesmo tipo dinâmico do objeto self atual. Isso significa que o tipo do novo objeto será o tipo de execução do objeto que encerra a operação, e não necessariamente o tipo da classe de definição.
+5. Por que SELF_TYPE é proibido em operações de despacho estático (static dispatch)? O despacho estático exige explicitamente o nome de uma classe real para direcionar a chamada do método. Como SELF_TYPE funciona como um marcador para tipos que podem variar, ele não atende ao requisito de ser um nome de classe fixo e identificado.
+6. Quais são as restrições de SELF_TYPE especificamente em definições de métodos? Em um método, apenas o tipo de retorno pode ser SELF_TYPE. É expressamente proibido que qualquer parâmetro formal (argumento) do método seja declarado com o tipo SELF_TYPE.
+7. Qual é o problema de subtipagem que impede o uso de SELF_TYPE como argumento de método? Para que um argumento seja válido, o tipo do valor passado deve ser um subtipo do parâmetro formal. Como SELF_TYPE pode variar entre todos os subtipos de uma classe, o sistema não pode provar estaticamente que um tipo regular é um subtipo de SELF_TYPE, tornando a verificação impossível.
+8. No exemplo das classes A e B, qual é a discrepância entre os tipos da variável X que leva ao erro? A variável X é declarada com o tipo estático A, mas recebe um objeto de tipo dinâmico B. Essa lacuna entre o que o compilador espera (A) e o que realmente existe na memória (B) é fundamental para demonstrar a falha de segurança se SELF_TYPE fosse permitido em argumentos.
+9. Por que a execução de x.comp(new A) resultaria em um erro de tempo de execução se o parâmetro fosse SELF_TYPE? Porque o despacho dinâmico invocaria o método na classe B (o tipo dinâmico de X). O método de B tentaria acessar um campo específico (como o campo b), mas o argumento passado (new A) possui apenas a estrutura da classe A e carece dos campos definidos em B, causando um colapso no sistema.
+10. Como o tipo dinâmico de self influencia a criação de objetos em tempo de execução? O tipo de self em tempo de execução pode ser qualquer subtipo da classe onde o código está escrito. Assim, qualquer operação que dependa de SELF_TYPE, como new SELF_TYPE, deve respeitar essa natureza dinâmica para garantir que o novo objeto seja idêntico em tipo ao objeto em execução.
+
+Gabarito do Questionário
+
+* Resposta 1: O parser permite SELF_TYPE em qualquer lugar destinado a tipos, mas isso é insuficiente porque certas construções, como parâmetros de métodos ou nomes de classes, exigem nomes de classes concretos por razões de segurança e lógica.
+* Resposta 2: Não. Ele não pode ser usado nem como o nome da classe definida nem como a classe base na herança, pois não é um nome de classe estático.
+* Resposta 3: É totalmente permitido. Atributos de classe e variáveis locais em blocos let podem ser tipados como SELF_TYPE.
+* Resposta 4: Cria-se um objeto cujo tipo dinâmico coincide com o tipo do objeto self no momento da execução, independentemente da classe onde o código foi originalmente escrito.
+* Resposta 5: O despacho estático precisa de um nome de classe fixo e existente no programa; como SELF_TYPE é uma referência variável ao tipo do objeto atual, ele não serve para essa finalidade.
+* Resposta 6: Apenas o tipo de retorno pode ser SELF_TYPE. Parâmetros formais devem ter tipos de classe explícitos e não podem usar SELF_TYPE.
+* Resposta 7: A regra de verificação exige que o tipo do argumento seja um subtipo do parâmetro. Não se pode provar que um tipo comum é subtipo de SELF_TYPE porque este último representa um conjunto variável de subtipos potenciais da classe atual.
+* Resposta 8: O tipo estático de X é A, permitindo que o compilador aceite chamadas de métodos de A. No entanto, o tipo dinâmico é B, o que significa que as implementações de métodos de B serão executadas.
+* Resposta 9: O método invocado seria o da classe B, que espera acessar campos exclusivos de B. Como o objeto passado como argumento é da classe A, ele não possui esses campos, gerando um comportamento indefinido ou crash.
+* Resposta 10: O tipo dinâmico de self define a identidade real do objeto em execução. O SELF_TYPE rastreia essa identidade, garantindo que novas instâncias criadas via new SELF_TYPE mantenham a mesma classe dinâmica, mesmo em subclasses herdadas.
+
+Temas para Redação
+
+Os tópicos abaixo são sugeridos para dissertações acadêmicas ou exercícios de escrita técnica:
+
+1. A Dualidade de SELF_TYPE: Analise por que o parser de Cool é mais permissivo que as regras semânticas e discuta a importância das verificações de tipo adicionais na robustez de uma linguagem.
+2. Segurança de Tipos e Parâmetros de Métodos: Explore detalhadamente a lógica matemática e prática por trás da proibição de SELF_TYPE em argumentos de métodos, relacionando-a com os riscos de acesso a memória inválida.
+3. Diferenciação entre Tipos Estáticos e Dinâmicos: Utilize o exemplo das classes A e B fornecido no texto para explicar como a discrepância entre tipos pode levar a falhas de tempo de execução (runtime crashes) em linguagens com herança.
+4. O Papel de SELF_TYPE na Reutilização de Código: Discuta como o uso de SELF_TYPE em tipos de retorno e alocação de novos objetos facilita a escrita de código genérico e extensível através da herança.
+5. Limitações de SELF_TYPE em Estruturas de Classe: Justifique as razões pelas quais SELF_TYPE não pode ser usado na definição de nomes de classes ou em despachos estáticos, comparando-o com nomes de classes convencionais.
+
+Glossário de Termos Chave
+
+Termo	Definição
+Atributo	Uma variável associada a uma classe que armazena dados específicos de uma instância; pode ser declarada com o tipo SELF_TYPE.
+Despacho Dinâmico	O processo de selecionar qual implementação de método executar baseando-se no tipo dinâmico do objeto em tempo de execução.
+Despacho Estático	Uma chamada de método onde a classe da implementação é explicitamente nomeada, proibindo o uso de SELF_TYPE.
+Parâmetro Formal	A variável de entrada definida na assinatura de um método; em Cool, seu tipo nunca pode ser SELF_TYPE.
+SELF_TYPE	Um tipo especial em Cool que se refere ao tipo do objeto self atual, podendo variar dependendo da subclasse em execução.
+Tipo Dinâmico	O tipo real do objeto que reside na memória durante a execução do programa.
+Tipo Estático	O tipo atribuído a uma variável ou expressão pelo compilador durante a análise do código.
+Tipo de Retorno	O tipo de dado que um método devolve; em Cool, este campo é um local válido para o uso de SELF_TYPE.

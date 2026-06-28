@@ -36,5 +36,25 @@ assert.ok(
   rootIndex.includes("<h2>Guia de Compiladores</h2>"),
   "root index should display the compilers guide card",
 );
+assert.ok(
+  rootIndex.includes('<span class="count">guia ampliado</span>'),
+  "root index should avoid a brittle hardcoded compiler guide count",
+);
+assert.ok(
+  !rootIndex.includes("20 guias") && !rootIndex.includes("20 tópicos"),
+  "root index should not keep stale 20-guide compiler copy",
+);
+assert.ok(
+  rootIndex.includes("listas A-D e TPs") && rootIndex.includes("semântica operacional"),
+  "root index compiler guide card should describe the expanded A-D/TP coverage",
+);
+assert.ok(
+  html.includes("listas A-D e nos TPs"),
+  "compiler guide hub copy should reference lists A-D and TPs",
+);
+assert.ok(
+  !html.includes("três listas"),
+  "compiler guide hub copy should not refer to only three lists",
+);
 
 console.log("Guia-de-Compiladores hub checks passed.");

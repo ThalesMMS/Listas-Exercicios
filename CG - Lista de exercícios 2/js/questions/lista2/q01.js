@@ -109,7 +109,9 @@
     title: "O que é projeção?",
     type: "conceitual",
     hubDesc: "Mapear 3D→2D por projetores a partir de um centro de projeção.",
-    statement: "O que é projeção?",
+    statement:
+      "O que é projeção geométrica em Computação Gráfica, isto é, o mapeamento de uma cena " +
+      "3D para uma imagem 2D em um plano de projeção?",
     parts: [{ label: "Resolução", build: build }],
   });
 })();

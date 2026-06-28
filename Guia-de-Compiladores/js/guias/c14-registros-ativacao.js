@@ -65,10 +65,10 @@
       {
         title: "O registro de ativação",
         body:
-          "<p>Cada <b>chamada</b> de função recebe um <b>registro de ativação</b> (stack frame) na " +
-          "pilha, com: os <b>parâmetros</b>, as <b>variáveis locais</b>, o <b>endereço de retorno</b> e " +
-          "elos de controle. Quando <code>main</code> chama <code>f(1,2,3)</code>, empilha-se o frame de " +
-          "<code>f</code>:</p>",
+          "<p>Quando uma função é chamada, ela precisa de um espaço próprio para trabalhar. Esse espaço " +
+          "é o <b>registro de ativação</b>, também chamado de <b>stack frame</b>.</p>" +
+          "<p>O frame guarda parâmetros, variáveis locais, endereço de retorno e elos de controle. " +
+          "Quando <code>main</code> chama <code>f(1,2,3)</code>, empilha-se o frame de <code>f</code>:</p>",
         visual: stackVisual({ f: "hot", tag: "← topo (f ativo)", tagY: 110, tagColor: "var(--accent)" }),
       },
       {
@@ -97,7 +97,7 @@
         visual: stackVisual({ f: "faded", tag: "↩ retorna a main", tagY: 110, tagColor: "var(--red)" }),
       },
       C.tableStep({
-        title: "Quem mora no frame de f? (Lista C, Q2)",
+        title: "Quem mora no frame de f?",
         body: "Em <code>f(x,y,z) = if x then g(y) else g(z)</code>, com <code>g(t) = t+1</code>:",
         headers: ["símbolo", "no frame de f?", "por quê"],
         rows: [
@@ -109,9 +109,10 @@
       {
         title: "Layout de objetos",
         body:
+          "<p>O layout responde uma pergunta prática: em que posição da memória fica cada campo?</p>" +
           "<p>Um objeto começa com <b>metadados</b> (id da classe, tamanho, ponteiro para a tabela de " +
-          "despacho) e, em seguida, os <b>atributos</b> — na <b>ordem de herança</b>: os da classe-base " +
-          "primeiro, depois os da subclasse.</p>" +
+          "despacho). Depois vêm os <b>atributos</b>, na <b>ordem de herança</b>: base primeiro, " +
+          "subclasse depois.</p>" +
           "<p>Isso permite que código da base acesse seus atributos no mesmo deslocamento, mesmo num " +
           "objeto da subclasse.</p>",
         visual: {
@@ -132,7 +133,7 @@
         },
       },
       C.domStep(
-        "Deduzir a herança pelo layout (Lista C, Q4)",
+        "Deduzir a herança pelo layout",
         "Como os atributos aparecem <b>base primeiro</b>, a ordem <code>x, y → z → u, v</code> revela a " +
           "cadeia de herança.",
         "<div class='ex-callout tip'><div class='ex-callout-title'>Leitura</div>" +

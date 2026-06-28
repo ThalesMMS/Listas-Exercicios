@@ -8,15 +8,20 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { loadCompilersGuides, makeEl } from "./_compilers-harness.mjs";
 
-const ROOTS = ["Compiladores-Lista-A", "Compiladores-Lista-B", "Compiladores-Lista-C"];
+const ROOTS = [
+  { root: "Compiladores-Lista-A", min: 8 },
+  { root: "Compiladores-Lista-B", min: 8 },
+  { root: "Compiladores-Lista-C", min: 8 },
+  { root: "Compiladores-Lista-D", min: 5 },
+];
 const read = (p) => readFileSync(p, "utf8");
 
 let totalSteps = 0;
 const failures = [];
 
-for (const root of ROOTS) {
+for (const { root, min } of ROOTS) {
   const { specs, SvgSurface } = loadCompilersGuides(root);
-  assert.ok(specs.length >= 8, `${root}: expected >= 8 questions, got ${specs.length}`);
+  assert.ok(specs.length >= min, `${root}: expected >= ${min} questions, got ${specs.length}`);
   for (const spec of specs) {
     for (const part of spec.parts) {
       let steps;
@@ -94,5 +99,23 @@ for (const s of ["Z := W + 4", "Y := Y + 1", "U := Z", "if X > 0"])
 // Lista C Q10 — all four elimination sequences, not just the valid one.
 for (const seq of ["d, e, c, b, a, f", "e, f, d, c, b, a", "d, c, e, b, a, f", "d, e, b, c, a, f"])
   assert.ok(C.includes(seq), `#10 C-Q10: sequence "${seq}" shown`);
+
+/* ── Lista D: the answer each question references is actually in the file ── */
+const D = read("Compiladores-Lista-D/js/questions/compiladores/lista-d.js");
+// Q1 — SELF_TYPE fill-ins and the exact target output.
+for (const s of ["new SELF_TYPE", "Cool compilers are Cool"])
+  assert.ok(D.includes(s), `D-Q1: "${s}" present`);
+assert.ok(!/SELF_TYPE[^"]+tipo dinâmico do receptor/.test(D), "D-Q1: SELF_TYPE is not framed as merely the receiver dynamic type");
+// Q2 — reference counting: both assignments and the cycle-leak caveat.
+for (const s of ["C.ptrParaB = D", "A.ptrParaB = NULL", "ciclos vazam"])
+  assert.ok(D.includes(s), `D-Q2: "${s}" present`);
+// Q3 — the stack offsets (in order) and the assembly it fills.
+for (const s of ["16($sp)", "(1) 16", "case_abort", "String.length"])
+  assert.ok(D.includes(s), `D-Q3: "${s}" present`);
+// Q4 — liveness boundary, RIG edges and the minimum registers.
+for (const s of ["OUT[10] = { f }", '["a", "b"]', '["c", "e"]', "mínimo = 3 registradores"])
+  assert.ok(D.includes(s), `D-Q4: "${s}" present`);
+// Q5 — a valid simplify elimination sequence for k = 3.
+assert.ok(D.includes("d, e, c, a, b, f"), "D-Q5: valid elimination sequence shown");
 
 console.log(`Compilers listas render + content checks passed (${totalSteps} steps across ${ROOTS.length} listas).`);

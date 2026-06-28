@@ -15,7 +15,7 @@
           "<p>Qual o tipo de um <code>if … then a else b</code> quando <code>a</code> e <code>b</code> " +
           "têm tipos distintos? O menor tipo que serve para <b>ambos</b>: o <b>LUB</b> (limite superior " +
           "mínimo), o ancestral comum mais baixo na hierarquia de herança.</p>" +
-          "<p>Hierarquia de trabalho (Lista B):</p>",
+          "<p>Hierarquia de trabalho:</p>",
         visual: G.coolTree([]),
       },
       C.domStep(
